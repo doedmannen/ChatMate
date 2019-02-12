@@ -46,6 +46,7 @@ public class ServerApp {
     public void run(){
         if(running){
             new Thread(messageHandler).start();
+            System.out.println("Server is running on port " + PORT);
         }
         while (running){
             try {

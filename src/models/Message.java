@@ -22,5 +22,8 @@ public class Message implements Serializable {
         this.CHANNEL = null;
     }
 
-
+    @Override
+    public String toString() {
+        return "I am a message that was sent as an object :)";
+    }
 }
