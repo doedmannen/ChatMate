@@ -10,14 +10,16 @@ public class Reciever extends Thread{
     private Socket socket;
     private ObjectInputStream objectInputStream;
     public Reciever(Socket socket){
-    this.socket=socket;
-    try {
-        this.objectInputStream = new ObjectInputStream(socket.getInputStream());
-    }catch (IOException e){
-        System.out.println("failed to create input stream");
-    }catch (Exception e){
-        e.printStackTrace();
-    }
+        this.socket=socket;
+        try {
+            this.objectInputStream = new ObjectInputStream(socket.getInputStream());
+        }catch (IOException e){
+            System.out.println("failed to create input stream");
+            TEMP_CLIENT.isRunning = false;
+            // todo kolla om server är död, prova återanslutning
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -28,7 +30,8 @@ public class Reciever extends Thread{
                 System.out.println(message);
             }catch (IOException e){
                 System.out.println("Read Error");
-                return; //todo retry connection
+                TEMP_CLIENT.isRunning = false;
+                // todo kolla om server är död, prova återanslutning
             }catch (ClassNotFoundException e){
                 System.out.println("Message Error");
             }catch (Exception e){

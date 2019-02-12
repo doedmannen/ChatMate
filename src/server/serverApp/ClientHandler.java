@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.List;
 
 public class ClientHandler implements Runnable {
 
@@ -43,6 +42,8 @@ public class ClientHandler implements Runnable {
         catch (IOException e) {
             // Kolla om möjlig återanslutning till server
             System.out.println("Error in Clientreader");
+            isRunning = false;
+            // todo kolla om klienten är död, prova återanslutning
         } catch (ClassNotFoundException e) {
             System.out.println("Felaktig klass skickad");
         } catch (Exception e) {
@@ -57,6 +58,8 @@ public class ClientHandler implements Runnable {
             streamOut.writeObject(message);
         } catch (IOException e) {
             System.out.println("Error in clientWriter");
+            isRunning = false;
+            // todo kolla om klienten är död, prova återanslutning
         } catch (Exception e) {
             e.printStackTrace();
         }
