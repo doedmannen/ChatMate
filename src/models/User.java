@@ -6,7 +6,7 @@ import java.util.UUID;
 
 // TODO: 2019-02-13 Maybe implement comparable interface
 // TODO: 2019-02-12 Undersök vad vi behöver för trädsortering.
-public class User implements Serializable {
+public class User implements Serializable, Comparable<User> {
 
    private final UUID ID;
    private String nickName;
@@ -27,7 +27,7 @@ public class User implements Serializable {
          return false;
       }
 
-      if(obj instanceof UUID){
+      if (obj instanceof UUID) {
          UUID ID = (UUID) obj;
          return this.ID.equals(ID);
       }
@@ -40,6 +40,10 @@ public class User implements Serializable {
       return false;
    }
 
+   @Override
+   public int compareTo(User o) {
+      return this.nickName.compareTo(o.getNickName());
+   }
 
    public UUID getID() {
       return ID;
