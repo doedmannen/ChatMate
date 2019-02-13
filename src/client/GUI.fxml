@@ -9,12 +9,12 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <center>
-      <VBox prefHeight="274.0" prefWidth="700.0" BorderPane.alignment="CENTER">
+      <VBox alignment="BOTTOM_LEFT" prefHeight="274.0" prefWidth="700.0" BorderPane.alignment="CENTER">
          <children>
-            <TextArea id="output_text" fx:id="output_text" prefHeight="560.0" prefWidth="600.0" />
+            <TextArea id="output_text" fx:id="output_text" nodeOrientation="LEFT_TO_RIGHT" prefHeight="560.0" prefWidth="600.0" style="-fx-text-alignment: center;" />
             <HBox alignment="CENTER" prefHeight="39.0" prefWidth="698.0">
                <children>
-                  <TextField id="input_text" onAction="#startTask" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" />
+                  <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" />
                   <Button id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                </children>
             </HBox>

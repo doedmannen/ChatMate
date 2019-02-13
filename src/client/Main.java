@@ -1,10 +1,13 @@
 package client;
 
+import client.clientApp.Client;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import static client.Main.primaryStage;
 
 public class Main extends Application {
     public static Stage primaryStage;
@@ -16,6 +19,8 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         primaryStage.setUserData(controller);
+        Client client = new Client();
+
 
         primaryStage.setTitle("Chatter Matter");
         primaryStage.setScene(new Scene(root, 800, 600));

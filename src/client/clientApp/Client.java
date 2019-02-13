@@ -1,25 +1,15 @@
 package client.clientApp;
 
-import models.Message;
-
 import java.net.Socket;
 
-public class TEMP_CLIENT {
-    /*
-     * TODO TESTING ONLY, REMOVE THIS SHIT LATER :/
-     *
-     * */
+public class Client {
     static boolean isRunning;
-    static Socket socket;
-    static Sender sender;
-    static Reciever reciever;
-
-
-    public static void main(String[] args) {
-
-
+    Socket socket;
+    Sender sender;
+    Reciever reciever;
+    public Client() {
         try {
-            socket = new Socket("10.155.90.44", 54321);
+            socket = new Socket("10.155.90.30", 54321);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Reciever(socket);
@@ -30,7 +20,6 @@ public class TEMP_CLIENT {
         }
 
     }
-
     public void kill() {
         isRunning=false;
 
