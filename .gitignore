@@ -1,0 +1,6 @@
+# all IML-files
+*.iml 
+
+# Idea and output
+.idea/*
+out/*
