@@ -44,11 +44,11 @@ public class Reciever extends Thread{
                     controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
                 } else if (inData instanceof Channel) {
                     Channel channel = (Channel) inData;
-                    if (Client.getInstance().channelList.contains(channel)) {
-                        Client.getInstance().channelList.remove(channel);
-                        Client.getInstance().channelList.add(channel);
+                    if (Client.getInstance().channelList.containsKey(channel.getName())) {
+                        Client.getInstance().channelList.remove(channel.getName());
+                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
                     } else {
-                        Client.getInstance().channelList.add(channel);
+                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
                     }
                 }
 //                System.out.println(message);

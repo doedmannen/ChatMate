@@ -87,7 +87,7 @@ public class ClientHandler implements Runnable {
    public void run() {
       while (serverApp.isRunning() && this.isRunning) {
          readMessage();
-         writeMessage();
+         //writeMessage();
       }
    }
 }

@@ -40,8 +40,9 @@ public class Controller {
     }
 
     @FXML
+    //Client.getInstance().channelList
     private void printUsers(){
-        for (User user : Client.getInstance().userList) {
+        for (User user : Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel())) {
             Label label = new Label();
             label.setText(user.getNickName());
             online_list.getChildren().add(label);
