@@ -6,12 +6,10 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class Channel implements Comparable<Channel> {
    private String name;
    private ConcurrentSkipListSet<User> users;
-   private UUID ID;
 
    public Channel(String name) {
       this.name = name;
       this.users = new ConcurrentSkipListSet<>();
-      this.ID = UUID.randomUUID();
    }
 
    public String getName() {
@@ -22,10 +20,6 @@ public class Channel implements Comparable<Channel> {
       return Collections.unmodifiableSortedSet(this.users);
    }
 
-   public UUID getID() {
-      return ID;
-
-   }
 
    public void setName(String name) {
       this.name = name;
@@ -45,14 +39,10 @@ public class Channel implements Comparable<Channel> {
          return false;
       }
 
-      if (obj instanceof UUID) {
-         UUID ID = (UUID) obj;
-         return this.ID.equals(ID);
-      }
 
       if (obj instanceof Channel) {
          Channel c = (Channel) obj;
-         return this.ID.equals(c.ID);
+         return this.name.equals(c.name);
       }
 
       return false;

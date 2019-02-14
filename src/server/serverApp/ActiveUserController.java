@@ -32,7 +32,7 @@ public class ActiveUserController {
 
    public boolean removeUser(User user) {
       // TODO: 2019-02-13 Remove user from all channels
-
+      ActiveChannelController.getInstance().removeUserFromChannels(user);
       return this.connectedUsers.remove(user) != null;
    }
 
