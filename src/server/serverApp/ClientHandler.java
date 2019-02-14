@@ -45,11 +45,19 @@ public class ClientHandler implements Runnable {
       } catch (Exception e) {
          e.printStackTrace();
       }
+
+      Message m = new Message(MessageType.CONNECT);
+      m.RECIVER = this.user.getID();
+
+      this.userOutbox.add(m);
+
+      System.out.println(socket.getInetAddress().toString());
    }
 
    private void readMessage() {
       try {
          Message message = (Message) streamIn.readObject();
+         message.SENDER = this.user.getID();
          System.out.println(message);//Debug
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {

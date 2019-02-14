@@ -3,12 +3,8 @@ package server.serverApp;
 import models.Channel;
 import models.User;
 
-import java.util.Collections;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
 public class ActiveChannelController {
@@ -36,6 +32,9 @@ public class ActiveChannelController {
       return null;
    }
 
+   public boolean removeUserFromChannel(UUID userID, String channel) {
+      return this.getChannel(channel).removeUser(ActiveUserController.getInstance().getUser(userID));
+   }
 
    public boolean addChannel(String name) {
       return channels.add(new Channel(name));
@@ -77,7 +76,7 @@ public class ActiveChannelController {
          this.addChannel(name);
          this.addUserToChannel(user, name);
       } else {
-         this.addUserToChannel(user, channel.getName());
+         channel.addUser(user);
       }
 
    }

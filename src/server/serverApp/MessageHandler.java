@@ -45,6 +45,9 @@ public class MessageHandler implements Runnable {
          case JOIN_CHANNEL:
             addUserToChannel(m);
             break;
+         case LEAVE_CHANNEL:
+            removeUserFromChannel(m);
+            break;
       }
    }
 
@@ -75,6 +78,13 @@ public class MessageHandler implements Runnable {
             ActiveChannelController.getInstance().addUserToChannel(u, channel);
             sendToChannel(m);
          }
+      }
+   }
+
+   private void removeUserFromChannel(Message m) {
+      if (m.SENDER != null && m.CHANNEL != null && m.CHANNEL != "") {
+         ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL);
+         this.sendToChannel(m);
       }
    }
 
