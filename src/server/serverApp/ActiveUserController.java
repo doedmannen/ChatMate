@@ -54,4 +54,12 @@ public class ActiveUserController {
       return Collections.unmodifiableMap(this.connectedUsers);
    }
 
+   public User getUser(UUID ID) {
+      for (Map.Entry e : this.connectedUsers.entrySet()) {
+         if (e.getKey().equals(ID)) ;
+         return (User) e.getKey();
+      }
+      return null;
+   }
+
 }

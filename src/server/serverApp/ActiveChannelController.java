@@ -82,5 +82,11 @@ public class ActiveChannelController {
 
    }
 
+   public String[] getChannelsForUser(User user) {
+      return this.channels.stream()
+              .filter(c -> c.getUsers().contains(user))
+              .map(c -> c.getName())
+              .toArray(String[]::new);
+   }
 
 }

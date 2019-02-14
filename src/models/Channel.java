@@ -33,6 +33,8 @@ public class Channel implements Comparable<Channel> {
       return this.users.remove(user);
    }
 
+   // TODO: 2019-02-14 Implement getSorted method
+
    @Override
    public boolean equals(Object obj) {
       if (obj == null) {

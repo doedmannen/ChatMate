@@ -1,6 +1,7 @@
 package server.serverApp;
 
 import models.Message;
+import models.MessageType;
 import models.User;
 
 import java.io.IOException;
@@ -9,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Stream;
 
 public class ClientHandler implements Runnable {
 
@@ -20,12 +23,14 @@ public class ClientHandler implements Runnable {
    private final int TIMEOUT_MS = 500;
    private final User user;
    private final LinkedBlockingDeque<Message> userOutbox;
+   private final LinkedBlockingQueue<Message> messageHandlerQueue;
 
-   public ClientHandler(Socket socket, ServerApp serverApp) {
+   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Message> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
       this.user = new User("Unknown");
       this.userOutbox = new LinkedBlockingDeque<>();
+      this.messageHandlerQueue = messageHandlerQueue;
 
       ActiveUserController.getInstance().addUser(this.user, this.userOutbox);
 
@@ -46,11 +51,12 @@ public class ClientHandler implements Runnable {
       try {
          Message message = (Message) streamIn.readObject();
          System.out.println(message);//Debug
+         messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
          // Kolla om möjlig återanslutning till server
          System.out.println("Error in Clientreader");
-         tryReconnect();
+         tryDisconnect();
          // todo kolla om klienten är död, prova återanslutning
       } catch (ClassNotFoundException e) {
          System.out.println("Felaktig klass skickad");
@@ -60,16 +66,30 @@ public class ClientHandler implements Runnable {
    }
 
    private void writeMessage() {
-      /// TODO: 2019-02-12 Hämta lista med clients meddelande och skicka dem.
-      try {
-         Message message = new Message();
-         streamOut.writeObject(message);
-      } catch (IOException e) {
-         System.out.println("Error in clientWriter");
-         tryReconnect();
-         // todo kolla om klienten är död, prova återanslutning
-      } catch (Exception e) {
-         e.printStackTrace();
+      int stop = 1;
+      for (int i = 0; i < stop; i++) {
+         if (clientHasMessages()) {
+            Message m = this.userOutbox.getFirst();
+            try {
+               streamOut.writeObject(m);
+               this.userOutbox.removeFirst();
+               break;
+            } catch (IOException e) {
+               System.out.println("Error in clientWriter");
+               stop = 10;
+               try {
+                  Thread.sleep(100);
+               } catch (Exception exception) {
+               }
+               if (i == stop - 1) {
+                  tryDisconnect();
+               }
+               // todo kolla om klienten är död, prova återanslutning
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+
       }
    }
 
@@ -77,10 +97,21 @@ public class ClientHandler implements Runnable {
       return userOutbox.size() > 0;
    }
 
-   private void tryReconnect() {
-      ActiveUserController.getInstance().removeUser(this.user);
+   private void tryDisconnect() {
+      cleanUpAfterUser();
       this.isRunning = false;
       System.out.println("Connection lost");
+   }
+
+   private void cleanUpAfterUser() {
+      String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(this.user);
+      Stream.of(userChannels).forEach(c -> {
+         Message message = new Message(MessageType.DISCONNECT);
+         message.CHANNEL = c;
+         message.SENDER = this.user.getID();
+         this.messageHandlerQueue.add(message);
+      });
+      ActiveUserController.getInstance().removeUser(this.user);
    }
 
    @Override

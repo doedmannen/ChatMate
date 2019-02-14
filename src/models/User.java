@@ -42,7 +42,8 @@ public class User implements Serializable, Comparable<User> {
 
    @Override
    public int compareTo(User o) {
-      return this.nickName.compareTo(o.getNickName());
+//      return this.nickName.compareTo(o.getNickName());
+      return this.getID().toString().compareTo(o.ID.toString());
    }
 
    public UUID getID() {
