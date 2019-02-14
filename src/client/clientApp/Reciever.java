@@ -20,7 +20,7 @@ public class Reciever extends Thread{
             this.objectInputStream = new ObjectInputStream(socket.getInputStream());
         }catch (IOException e){
             System.out.println("failed to create input stream");
-            Client.isRunning = false;
+            Client.getInstance().isRunning = false;
             // todo kolla om server är död, prova återanslutning
         }catch (Exception e){
             e.printStackTrace();
@@ -29,14 +29,14 @@ public class Reciever extends Thread{
 
     @Override
     public void run() {
-        while (Client.isRunning){
+        while (Client.getInstance().isRunning){
             try {
                 Message message = (Message) objectInputStream.readObject();
                 controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
 //                System.out.println(message);
             }catch (IOException e){
                 System.out.println("Read Error");
-                Client.isRunning = false;
+                Client.getInstance().isRunning = false;
                 // todo kolla om server är död, prova återanslutning
             }catch (ClassNotFoundException e){
                 System.out.println("Message Error");

@@ -20,11 +20,11 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         primaryStage.setUserData(controller);
-        Client client = new Client();
+        Client.getInstance();
 
-        primaryStage.setOnCloseRequest(e -> client.kill());
+        primaryStage.setOnCloseRequest(e -> Client.getInstance().kill());
         primaryStage.setTitle("Chatter Matter");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 900, 600));
         primaryStage.show();
     }
 

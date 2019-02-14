@@ -1,27 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <center>
-      <VBox alignment="BOTTOM_LEFT" prefHeight="274.0" prefWidth="700.0" BorderPane.alignment="CENTER">
+      <VBox alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="626.0" BorderPane.alignment="CENTER">
          <children>
-            <TextArea id="output_text" fx:id="output_text" nodeOrientation="LEFT_TO_RIGHT" prefHeight="560.0" prefWidth="600.0" style="-fx-text-alignment: center;" />
+            <TextArea id="output_text" fx:id="output_text" nodeOrientation="LEFT_TO_RIGHT" prefHeight="560.0" prefWidth="625.0" style="-fx-text-alignment: center;" />
             <HBox alignment="CENTER" prefHeight="39.0" prefWidth="698.0">
                <children>
-                  <TextField id="input_text" fx:id="input_text" onAction="#sendMessage" prefHeight="39.0" prefWidth="508.0" />
-                  <Button id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
+                  <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" />
+                  <Button id="send_button" fx:id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                </children>
             </HBox>
          </children></VBox>
    </center>
    <right>
-      <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: GRAY;" BorderPane.alignment="CENTER" />
+      <VBox prefHeight="600.0" prefWidth="195.0" BorderPane.alignment="CENTER">
+         <children>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="216.0" prefWidth="190.0">
+               <children>
+                  <Label layoutX="21.0" layoutY="14.0" prefHeight="27.0" prefWidth="168.0" text="Nickname change:" />
+                  <TextField fx:id="nickname_change" layoutX="21.0" layoutY="41.0" prefHeight="39.0" prefWidth="152.0" />
+               </children>
+            </AnchorPane>
+            <ScrollPane hbarPolicy="NEVER" prefHeight="636.0" prefWidth="195.0">
+               <content>
+                  <FlowPane fx:id="online_list" prefHeight="488.0" prefWidth="157.0">
+                     <children>
+                        <Label prefHeight="27.0" prefWidth="157.0" text="Online:" />
+                        <Label prefHeight="27.0" prefWidth="154.0" text="Placeholder user" />
+                     </children></FlowPane>
+               </content>
+               <padding>
+                  <Insets left="20.0" right="20.0" top="20.0" />
+               </padding>
+            </ScrollPane>
+         </children></VBox>
    </right>
    <left>
       <VBox prefHeight="590.0" prefWidth="100.0" style="-fx-background-color: GRAY;" BorderPane.alignment="CENTER" />

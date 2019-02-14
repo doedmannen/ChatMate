@@ -17,7 +17,7 @@ public class Sender extends Thread {
         }
         catch (IOException e){
             System.out.println("failed to create stream");
-            Client.isRunning = false;
+            Client.getInstance().isRunning = false;
             // todo kolla om server är död, prova återanslutning
         }
         catch (Exception e){
@@ -35,7 +35,7 @@ public class Sender extends Thread {
 
     @Override
     public void run() {
-        while (Client.isRunning) {
+        while (Client.getInstance().isRunning) {
 //            try{
 //                objectOutputStream.writeObject(new Message());
 //                Thread.sleep(5000);
