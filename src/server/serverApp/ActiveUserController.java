@@ -3,6 +3,9 @@ package server.serverApp;
 import models.Message;
 import models.User;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -29,16 +32,26 @@ public class ActiveUserController {
 
    public boolean removeUser(User user) {
       // TODO: 2019-02-13 Remove user from all channels
-
+      ActiveChannelController.getInstance().removeUserFromChannels(user);
       return this.connectedUsers.remove(user) != null;
-   }
-
-   public LinkedBlockingDeque<Message> getUserOutbox(UUID id) {
-      return connectedUsers.get(id);
    }
 
    public LinkedBlockingDeque<Message> getUserOutbox(User user) {
       return connectedUsers.get(user);
    }
-   
+
+   public LinkedBlockingDeque getUserOutbox(UUID ID) {
+      for (Map.Entry e : this.connectedUsers.entrySet()) {
+         UUID entryID = ((User) e.getValue()).getID();
+         if (entryID.equals(ID)) {
+            return (LinkedBlockingDeque) e.getValue();
+         }
+      }
+      return null;
+   }
+
+   public Map getUsers() {
+      return Collections.unmodifiableMap(this.connectedUsers);
+   }
+
 }
