@@ -5,7 +5,7 @@ import java.net.Socket;
 public class Client {
     static boolean isRunning;
     Socket socket;
-    Sender sender;
+    public static Sender sender;
     Reciever reciever;
     public Client() {
         try {

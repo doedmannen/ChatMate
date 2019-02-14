@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class Sender extends Thread {
     private Socket socket;
-    private ObjectOutputStream objectOutputStream;
+    private static ObjectOutputStream objectOutputStream;
 
     public Sender(Socket socket) {
         this.socket = socket;
@@ -25,17 +25,25 @@ public class Sender extends Thread {
         }
     }
 
+    public void sendToServer(Object o) {
+        try{
+            objectOutputStream.writeObject(o);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         while (Client.isRunning) {
-            try{
-                objectOutputStream.writeObject(new Message());
-                Thread.sleep(5000);
-            }
-            catch (Exception e){
-                Client.isRunning = false;
-                // todo kolla om server är död, prova återanslutning
-            }
+//            try{
+//                objectOutputStream.writeObject(new Message());
+//                Thread.sleep(5000);
+//            }
+//            catch (Exception e){
+//                Client.isRunning = false;
+//                // todo kolla om server är död, prova återanslutning
+//            }
         }
 
     }

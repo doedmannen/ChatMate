@@ -17,7 +17,7 @@ public class Message implements Serializable {
         this.SENDER = null;
         this.RECIVER = null;
         this.TYPE = MessageType.CHANNEL_MESSAGE;
-        this.TEXT_CONTENT = null;
+        this.TEXT_CONTENT = "";
         this.USER_LIST = null;
         this.CHANNEL = null;
     }

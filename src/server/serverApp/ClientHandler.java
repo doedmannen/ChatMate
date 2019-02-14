@@ -36,6 +36,7 @@ public class ClientHandler implements Runnable {
     private void readMessage() {
         try {
             Message message = (Message) streamIn.readObject();
+            streamOut.writeObject(message);
             System.out.println(message);//Debug
         } catch (SocketTimeoutException e) {
         }

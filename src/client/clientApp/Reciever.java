@@ -13,6 +13,7 @@ import static client.Main.primaryStage;
 public class Reciever extends Thread{
     private Socket socket;
     private ObjectInputStream objectInputStream;
+    private Controller controller = (client.Controller) primaryStage.getUserData();
     public Reciever(Socket socket){
         this.socket=socket;
         try {
@@ -28,12 +29,11 @@ public class Reciever extends Thread{
 
     @Override
     public void run() {
-        Controller controller = (client.Controller) primaryStage.getUserData();
         while (Client.isRunning){
             try {
                 Message message = (Message) objectInputStream.readObject();
-                controller.getOutput_text().appendText(message.toString() + "\n");
-                System.out.println(message);
+                controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
+//                System.out.println(message);
             }catch (IOException e){
                 System.out.println("Read Error");
                 Client.isRunning = false;

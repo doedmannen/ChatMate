@@ -2,6 +2,7 @@ package client;
 
 import client.clientApp.Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,7 +22,7 @@ public class Main extends Application {
         primaryStage.setUserData(controller);
         Client client = new Client();
 
-
+        primaryStage.setOnCloseRequest(e -> client.kill());
         primaryStage.setTitle("Chatter Matter");
         primaryStage.setScene(new Scene(root, 800, 600));
         primaryStage.show();

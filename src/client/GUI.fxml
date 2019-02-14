@@ -14,7 +14,7 @@
             <TextArea id="output_text" fx:id="output_text" nodeOrientation="LEFT_TO_RIGHT" prefHeight="560.0" prefWidth="600.0" style="-fx-text-alignment: center;" />
             <HBox alignment="CENTER" prefHeight="39.0" prefWidth="698.0">
                <children>
-                  <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" />
+                  <TextField id="input_text" fx:id="input_text" onAction="#sendMessage" prefHeight="39.0" prefWidth="508.0" />
                   <Button id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                </children>
             </HBox>

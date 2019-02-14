@@ -1,8 +1,11 @@
 package client;
 
+import client.clientApp.Client;
+import client.clientApp.Sender;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import models.Message;
 
 public class Controller {
 
@@ -15,6 +18,17 @@ public class Controller {
 
     @FXML
     private TextArea output_text;
+
+    @FXML
+    private void sendMessage(){
+        final String status = input_text.getText();
+        Message message = new Message();
+        message.TEXT_CONTENT = status;
+        input_text.clear();
+//        output_text.appendText(message.TEXT_CONTENT);
+//        System.out.println(message.TEXT_CONTENT);
+        Client.sender.sendToServer(message);
+    }
 
 //    @FXML
 //    public void startRead() {
@@ -32,7 +46,7 @@ public class Controller {
 //    public void runRead() {
 //        try {
 //            // Get the Status
-//            final String status = input_text.getCharacters().toString();
+//
 //            input_text.clear();
 //
 //            // Update the Label on the JavaFx Application Thread
