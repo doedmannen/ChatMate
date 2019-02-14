@@ -1,6 +1,5 @@
 package client.clientApp;
 
-import models.Channel;
 import models.User;
 
 import java.net.Socket;
@@ -16,7 +15,7 @@ public class Client {
     boolean isRunning;
     Socket socket;
     public Sender sender;
-    public Reciever reciever;
+    public Receiver reciever;
     public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
     private String currentChannel;
 
@@ -24,18 +23,18 @@ public class Client {
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
-        /*
+
         ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
         c.add(new User("Failip"));
         c.add(new User("Ted"));
         c.add(new User("Anton"));
         channelList.put("General",c);
-        */
+
         try {
             socket = new Socket("10.155.88.94", 54322);
             isRunning = true;
             sender = new Sender(socket);
-            reciever = new Reciever(socket);
+            reciever = new Receiver(socket);
             sender.start();
             reciever.start();
         } catch (Exception e) {

@@ -15,12 +15,12 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import static client.Main.primaryStage;
 
-public class Reciever extends Thread{
+public class Receiver extends Thread{
     private Socket socket;
     private ObjectInputStream objectInputStream;
     private Controller controller = (client.Controller) primaryStage.getUserData();
 
-    public Reciever(Socket socket){
+    public Receiver(Socket socket){
         this.socket=socket;
         try {
             this.objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -41,7 +41,8 @@ public class Reciever extends Thread{
 
                 if (inData instanceof Message) {
                     Message message = (Message) inData;
-                    controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
+                    MessageInboxHandler.getInstance().messageSwitch(message);
+//                    controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
                 } else if (inData instanceof Channel) {
                     Channel channel = (Channel) inData;
                     if (Client.getInstance().channelList.containsKey(channel.getName())) {
@@ -50,6 +51,7 @@ public class Reciever extends Thread{
                     } else {
                         Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
                     }
+                    controller.printUsers();
                 }
 //                System.out.println(message);
             }catch (IOException e){

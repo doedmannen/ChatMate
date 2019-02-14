@@ -41,7 +41,7 @@ public class Controller {
 
     @FXML
     //Client.getInstance().channelList
-    private void printUsers(){
+    public void printUsers(){
         for (User user : Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel())) {
             Label label = new Label();
             label.setText(user.getNickName());
@@ -59,7 +59,6 @@ public class Controller {
 //        System.out.println(message.TEXT_CONTENT);
         Client.getInstance().sender.sendToServer(message);
     }
-
 
 
 //    @FXML
