@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import models.Message;
 import models.User;
 
@@ -25,7 +26,8 @@ public class Controller {
     private Button send_button;
 
     @FXML
-    private FlowPane user_list;
+    private VBox online_list;
+
 
     public TextArea getOutput_text() {
         return output_text;
@@ -39,16 +41,11 @@ public class Controller {
 
     @FXML
     private void printUsers(){
-//        Client.getInstance().userList.forEach(u -> {
-//            Label label = new Label();
-//            label.setText(u.getNickName());
-//            user_list.getChildren().add(label);
-//        });
-//        System.out.println(Client.getInstance().userList);
-
-//        for (User user : Client.getInstance().userList) {
-//            System.out.println("Value -  " + user.getNickName());
-//        }
+        for (User user : Client.getInstance().userList) {
+            Label label = new Label();
+            label.setText(user.getNickName());
+            online_list.getChildren().add(label);
+        }
     }
 
     @FXML

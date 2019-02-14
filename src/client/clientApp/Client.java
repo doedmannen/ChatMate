@@ -1,5 +1,6 @@
 package client.clientApp;
 
+import models.Channel;
 import models.User;
 
 import java.net.Socket;
@@ -15,14 +16,10 @@ public class Client {
     Socket socket;
     public Sender sender;
     public Reciever reciever;
-    public ConcurrentSkipListSet<User> userList;
-    private Client() {
-        userList = new ConcurrentSkipListSet<User>();
+    public ConcurrentSkipListSet<Channel> channelList;
 
-        userList.add(new User("Failip"));
-        userList.add(new User("Ted"));
-        userList.add(new User("Anton"));
-        System.out.println(userList.first().getNickName());
+    private Client() {
+        channelList = new ConcurrentSkipListSet<>();
 
         try {
             socket = new Socket("10.155.88.94", 54322);
