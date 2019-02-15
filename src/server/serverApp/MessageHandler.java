@@ -73,13 +73,14 @@ public class MessageHandler implements Runnable {
    }
 
    private void addUserToChannel(Message m) {
-      System.out.println("Adding User " + m.SENDER + " to channel");
+      System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;
       UUID userID = m.SENDER;
       if (channel != null && userID != null) {
          User u = ActiveUserController.getInstance().getUser(userID);
          if (u != null) {
             ActiveChannelController.getInstance().addUserToChannel(u, channel);
+//            ActiveUserController.getInstance().getUserOutbox(u).add(ActiveChannelController.getInstance().getChannel(channel));
             sendToChannel(m);
          }
       }

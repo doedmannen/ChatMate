@@ -35,7 +35,6 @@ public class ActiveChannelController {
    public boolean removeUserFromChannel(UUID userID, String channel) {
       boolean value = this.getChannel(channel).removeUser(ActiveUserController.getInstance().getUser(userID));
       if (this.getChannel(channel).getUsers().size() == 0) {
-         System.out.println("Channel is empty");
          this.removeChannel(channel);
       }
       return value;
@@ -46,8 +45,6 @@ public class ActiveChannelController {
    }
 
    public boolean removeChannel(String name) {
-
-      System.out.println("Removing Channel " + name);
 
       var n = new Object() {
          boolean value = false;

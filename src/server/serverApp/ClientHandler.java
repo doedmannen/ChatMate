@@ -33,7 +33,7 @@ public class ClientHandler implements Runnable {
       this.messageHandlerQueue = messageHandlerQueue;
 
       ActiveUserController.getInstance().addUser(this.user, this.userOutbox);
-      System.out.println(ActiveUserController.getInstance().getUsers().size());
+      System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
 
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
@@ -83,7 +83,7 @@ public class ClientHandler implements Runnable {
             try {
                streamOut.writeObject(m);
                this.userOutbox.removeFirst();
-               i=10;
+               i = 10;
             } catch (IOException e) {
                System.out.println("Error in clientWriter");
                stop = 10;
@@ -93,7 +93,7 @@ public class ClientHandler implements Runnable {
                }
                if (i == stop - 1) {
                   tryDisconnect();
-                  i=10;
+                  i = 10;
                }
                // todo kolla om klienten är död, prova återanslutning
             } catch (Exception e) {
@@ -112,6 +112,7 @@ public class ClientHandler implements Runnable {
       cleanUpAfterUser();
       this.isRunning = false;
       System.out.println("Connection to " + socket.getInetAddress() + " lost");
+      System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
    }
 
    private void cleanUpAfterUser() {
