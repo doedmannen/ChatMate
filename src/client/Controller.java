@@ -32,6 +32,12 @@ public class Controller {
     private VBox chat_box;
 
     @FXML
+    private VBox online_Chanel;
+
+    @FXML
+    private Label curent_channel;
+
+    @FXML
     private ScrollPane scroll_pane;
 
     public VBox getChatBox() {
@@ -42,6 +48,7 @@ public class Controller {
         input_text.setOnAction(e -> sendMessage());
         send_button.setOnAction(e -> printUsers());
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
+        channelYouIn();
     }
 
     @FXML
@@ -66,4 +73,23 @@ public class Controller {
         input_text.clear();
         Client.getInstance().sender.sendToServer(message);
     }
+
+    @FXML
+    //Hämtar vartman är
+    private void printChannel(){
+        String channelname = Client.getInstance().getCurrentChannel();
+        //Vart som detta ska skrivas ut?
+    }
+
+    @FXML
+    //Hämtar vart man tillhör
+    private void channelYouIn(){
+        Client.getInstance().channelList.keySet().stream().forEach(key -> {
+            System.out.println(key);
+            Label label = new Label();
+            label.setText(key);
+            online_Chanel.getChildren().add(label);
+        });
+    }
+
 }
