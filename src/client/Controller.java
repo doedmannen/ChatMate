@@ -42,7 +42,6 @@ public class Controller {
         input_text.setOnAction(e -> sendMessage());
         send_button.setOnAction(e -> printUsers());
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
-
     }
 
     @FXML
@@ -61,8 +60,9 @@ public class Controller {
         //// TODO: 2019-02-15 Create constructor for message
         Message message = new Message();
         message.CHANNEL = Client.getInstance().getCurrentChannel();
-        message.TYPE = MessageType.WARNING;
+        message.TYPE = MessageType.CHANNEL_MESSAGE;
         message.TEXT_CONTENT = status;
+        message.NICKNAME = Client.getInstance().getNickname();
         input_text.clear();
         Client.getInstance().sender.sendToServer(message);
     }

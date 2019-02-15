@@ -23,16 +23,17 @@ public class Client {
 
     private ConcurrentHashMap<String, ArrayList<Message>> channelMessages;
     private String currentChannel;
+    private String nickname;
 
 
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
-        currentChannel = "General";
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test
         channelMessages.put("General", new ArrayList<Message>());
-
+        setNickname("Boris");
+        currentChannel = "General";
 //        ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
 //        c.add(new User("Failip"));
 //        c.add(new User("Ted"));
@@ -54,6 +55,14 @@ public class Client {
     public void kill() {
         isRunning=false;
 
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public ConcurrentHashMap<String, ArrayList<Message>> getChannelMessages() {
