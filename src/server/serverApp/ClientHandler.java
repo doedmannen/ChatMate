@@ -56,6 +56,7 @@ public class ClientHandler implements Runnable {
    }
 
    private void readMessage() {
+      // TODO: 2019-02-14 try reconnect 
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
@@ -82,7 +83,7 @@ public class ClientHandler implements Runnable {
             try {
                streamOut.writeObject(m);
                this.userOutbox.removeFirst();
-               break;
+               i=10;
             } catch (IOException e) {
                System.out.println("Error in clientWriter");
                stop = 10;
@@ -92,6 +93,7 @@ public class ClientHandler implements Runnable {
                }
                if (i == stop - 1) {
                   tryDisconnect();
+                  i=10;
                }
                // todo kolla om klienten är död, prova återanslutning
             } catch (Exception e) {
