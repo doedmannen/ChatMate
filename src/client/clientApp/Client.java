@@ -20,7 +20,6 @@ public class Client {
     public Sender sender;
     public Receiver reciever;
     public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
-
     private ConcurrentHashMap<String, ArrayList<Message>> channelMessages;
     private String currentChannel;
 
@@ -28,6 +27,9 @@ public class Client {
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
+        channelList.put("General", new ConcurrentSkipListSet<>());
+        channelList.put("General2", new ConcurrentSkipListSet<>());
+        channelList.put("General3", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test
