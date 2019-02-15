@@ -96,8 +96,8 @@ public class MessageHandler implements Runnable {
    }
 
    private void sendToUser(Message m) {
-      System.out.println("Sending whisper message to " + m.RECIVER);
-      LinkedBlockingDeque<Message> outbox = ActiveUserController.getInstance().getUserOutbox(m.RECIVER);
+      System.out.println("Sending whisper message to " + m.RECEIVER);
+      LinkedBlockingDeque<Message> outbox = ActiveUserController.getInstance().getUserOutbox(m.RECEIVER);
       outbox.add(m);
    }
 

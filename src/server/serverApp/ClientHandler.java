@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
       }
 
       Message m = new Message(MessageType.CONNECT);
-      m.RECIVER = this.user.getID();
+//      m.RECIVER = this.user.getID();
 
       this.userOutbox.add(m);
 
@@ -60,6 +60,7 @@ public class ClientHandler implements Runnable {
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
+          streamOut.writeObject(message);
          // System.out.println(message);//Debug
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
