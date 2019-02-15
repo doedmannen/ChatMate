@@ -26,12 +26,9 @@ public class User implements Serializable, Comparable<User> {
       if (obj == null) {
          return false;
       }
-
       if (obj instanceof UUID) {
-         UUID ID = (UUID) obj;
-         return this.ID.equals(ID);
+         return this.ID.toString().equals(((UUID) obj).toString());
       }
-
       if (obj instanceof User) {
          User u = (User) obj;
          return this.ID.equals(u.ID);
@@ -42,7 +39,8 @@ public class User implements Serializable, Comparable<User> {
 
    @Override
    public int compareTo(User o) {
-      return this.nickName.compareTo(o.getNickName());
+//      return this.nickName.compareTo(o.getNickName());
+      return this.getID().toString().compareTo(o.ID.toString());
    }
 
    public UUID getID() {

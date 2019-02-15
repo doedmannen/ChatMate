@@ -27,7 +27,7 @@ public class Reciever extends Thread{
         while (TEMP_CLIENT.isRunning){
             try {
                 Message message = (Message) objectInputStream.readObject();
-                System.out.println(message);
+                System.out.println(message.TYPE.toString() + " : " + message.CHANNEL + " : " + message.TEXT_CONTENT);
             }catch (IOException e){
                 System.out.println("Read Error");
                 TEMP_CLIENT.isRunning = false;
