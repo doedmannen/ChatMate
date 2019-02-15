@@ -1,8 +1,11 @@
 package client.clientApp;
 
+import models.Message;
 import models.User;
 
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -17,21 +20,27 @@ public class Client {
     public Sender sender;
     public Receiver reciever;
     public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
+
+    private ConcurrentHashMap<String, ArrayList<Message>> channelMessages;
     private String currentChannel;
 
 
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
+        channelMessages = new ConcurrentHashMap<>();
 
-        ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
-        c.add(new User("Failip"));
-        c.add(new User("Ted"));
-        c.add(new User("Anton"));
-        channelList.put("General",c);
+        //temp test
+        channelMessages.put("General", new ArrayList<Message>());
+
+//        ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
+//        c.add(new User("Failip"));
+//        c.add(new User("Ted"));
+//        c.add(new User("Anton"));
+//        channelList.put("General",c);
 
         try {
-            socket = new Socket("10.155.88.94", 54322);
+            socket = new Socket("localhost", 54322);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Receiver(socket);
@@ -45,6 +54,14 @@ public class Client {
     public void kill() {
         isRunning=false;
 
+    }
+
+    public ConcurrentHashMap<String, ArrayList<Message>> getChannelMessages() {
+        return channelMessages;
+    }
+
+    public void setChannelMessages(ConcurrentHashMap<String, ArrayList<Message>> channelMessages) {
+        this.channelMessages = channelMessages;
     }
 
     public String getCurrentChannel() {
