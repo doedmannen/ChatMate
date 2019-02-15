@@ -3,7 +3,7 @@ package models;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class Channel implements Comparable<Channel> {
+public class Channel implements Comparable<Channel>, Sendable{
    private String name;
    private ConcurrentSkipListSet<User> users;
 
