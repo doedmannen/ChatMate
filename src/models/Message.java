@@ -1,7 +1,6 @@
 package models;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.UUID;
 
 public class Message implements Serializable, Sendable{
