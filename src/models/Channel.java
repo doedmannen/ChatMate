@@ -1,9 +1,11 @@
 package models;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class Channel implements Comparable<Channel>, Sendable{
+public class Channel implements Comparable<Channel>, Sendable, Serializable {
+
    private String name;
    private ConcurrentSkipListSet<User> users;
 
@@ -32,6 +34,8 @@ public class Channel implements Comparable<Channel>, Sendable{
    public boolean removeUser(User user) {
       return this.users.remove(user);
    }
+
+   // TODO: 2019-02-14 Implement getSorted method
 
    @Override
    public boolean equals(Object obj) {

@@ -1,7 +1,7 @@
 package server.serverApp;
 
 import models.Message;
-import models.Sendable;
+import models.MessageType;
 import models.User;
 
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Stream;
 
 public class ClientHandler implements Runnable {
 
@@ -18,17 +20,20 @@ public class ClientHandler implements Runnable {
    private Socket socket;
    private ServerApp serverApp;
    private boolean isRunning = false;
-   private final int TIMEOUT_MS = 500;
+   private final int TIMEOUT_MS = 50;
    private final User user;
    private final LinkedBlockingDeque<Message> userOutbox;
+   private final LinkedBlockingQueue<Message> messageHandlerQueue;
 
-   public ClientHandler(Socket socket, ServerApp serverApp) {
+   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Message> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
       this.user = new User("Unknown");
       this.userOutbox = new LinkedBlockingDeque<>();
+      this.messageHandlerQueue = messageHandlerQueue;
 
       ActiveUserController.getInstance().addUser(this.user, this.userOutbox);
+      System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
 
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
@@ -41,18 +46,28 @@ public class ClientHandler implements Runnable {
       } catch (Exception e) {
          e.printStackTrace();
       }
+
+      Message m = new Message(MessageType.CONNECT);
+//      m.RECIVER = this.user.getID();
+
+      this.userOutbox.add(m);
+
+      System.out.println(socket.getInetAddress().toString() + " connected");
    }
 
    private void readMessage() {
+      // TODO: 2019-02-14 try reconnect 
       try {
-         Sendable message = (Message) streamIn.readObject();
-         streamOut.writeObject(message);
-         System.out.println(message);//Debug
+         Message message = (Message) streamIn.readObject();
+         message.SENDER = this.user.getID();
+          streamOut.writeObject(message);
+         // System.out.println(message);//Debug
+         messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
          // Kolla om möjlig återanslutning till server
          System.out.println("Error in Clientreader");
-         tryReconnect();
+         tryDisconnect();
          // todo kolla om klienten är död, prova återanslutning
       } catch (ClassNotFoundException e) {
          System.out.println("Felaktig klass skickad");
@@ -62,16 +77,31 @@ public class ClientHandler implements Runnable {
    }
 
    private void writeMessage() {
-      /// TODO: 2019-02-12 Hämta lista med clients meddelande och skicka dem.
-      try {
-         Message message = new Message();
-         streamOut.writeObject(message);
-      } catch (IOException e) {
-         System.out.println("Error in clientWriter");
-         tryReconnect();
-         // todo kolla om klienten är död, prova återanslutning
-      } catch (Exception e) {
-         e.printStackTrace();
+      int stop = 1;
+      for (int i = 0; i < stop; i++) {
+         if (clientHasMessages()) {
+            Message m = this.userOutbox.getFirst();
+            try {
+               streamOut.writeObject(m);
+               this.userOutbox.removeFirst();
+               i = 10;
+            } catch (IOException e) {
+               System.out.println("Error in clientWriter");
+               stop = 10;
+               try {
+                  Thread.sleep(100);
+               } catch (Exception exception) {
+               }
+               if (i == stop - 1) {
+                  tryDisconnect();
+                  i = 10;
+               }
+               // todo kolla om klienten är död, prova återanslutning
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+
       }
    }
 
@@ -79,17 +109,34 @@ public class ClientHandler implements Runnable {
       return userOutbox.size() > 0;
    }
 
-   private void tryReconnect() {
-      ActiveUserController.getInstance().removeUser(this.user);
+   private void tryDisconnect() {
+      cleanUpAfterUser();
       this.isRunning = false;
-      System.out.println("Connection lost");
+      System.out.println("Connection to " + socket.getInetAddress() + " lost");
+      System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
+   }
+
+   private void cleanUpAfterUser() {
+      String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(this.user);
+      Stream.of(userChannels).forEach(c -> {
+         Message message = new Message(MessageType.DISCONNECT);
+         message.CHANNEL = c;
+         message.SENDER = this.user.getID();
+         this.messageHandlerQueue.add(message);
+      });
+      ActiveUserController.getInstance().removeUser(this.user);
+      try {
+         this.socket.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 
    @Override
    public void run() {
       while (serverApp.isRunning() && this.isRunning) {
          readMessage();
-         //writeMessage();
+         writeMessage();
       }
    }
 }

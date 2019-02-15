@@ -3,6 +3,7 @@ package server.serverApp;
 import models.Message;
 import models.User;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,15 @@ public class ActiveUserController {
 
    public Map getUsers() {
       return Collections.unmodifiableMap(this.connectedUsers);
+   }
+
+   public User getUser(UUID ID) {
+      for (Map.Entry e : this.connectedUsers.entrySet()) {
+         if (((User) e.getKey()).getID().equals(ID)) {
+            return (User) e.getKey();
+         }
+      }
+      return null;
    }
 
 }
