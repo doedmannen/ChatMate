@@ -26,7 +26,7 @@ public class MessageHandler implements Runnable {
             processMessages();
          }
          try {
-            Thread.sleep(100);
+            Thread.sleep(10);
          } catch (InterruptedException e) {
          }
 
@@ -48,6 +48,8 @@ public class MessageHandler implements Runnable {
          case LEAVE_CHANNEL:
             removeUserFromChannel(m);
             break;
+         case WHISPER_MESSAGE:
+            sendToUser(m);
       }
    }
 
@@ -55,6 +57,7 @@ public class MessageHandler implements Runnable {
       if (m.CHANNEL == null || m.CHANNEL.equals("")) {
          return;
       }
+      System.out.println("Sending message to channel " + m.CHANNEL);
       Channel channel = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
       if (channel != null) {
          SortedSet<User> users = channel.getUsers();
@@ -70,6 +73,7 @@ public class MessageHandler implements Runnable {
    }
 
    private void addUserToChannel(Message m) {
+      System.out.println("Adding User " + m.SENDER + " to channel");
       String channel = m.CHANNEL;
       UUID userID = m.SENDER;
       if (channel != null && userID != null) {
@@ -79,13 +83,21 @@ public class MessageHandler implements Runnable {
             sendToChannel(m);
          }
       }
+      System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
    }
 
    private void removeUserFromChannel(Message m) {
-      if (m.SENDER != null && m.CHANNEL != null && m.CHANNEL != "") {
-         ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL);
+      if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
          this.sendToChannel(m);
+         System.out.println(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER + " removed from channel " : "");
+         System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
       }
+   }
+
+   private void sendToUser(Message m) {
+      System.out.println("Sending whisper message to " + m.RECIVER);
+      LinkedBlockingDeque<Message> outbox = ActiveUserController.getInstance().getUserOutbox(m.RECIVER);
+      outbox.add(m);
    }
 
 

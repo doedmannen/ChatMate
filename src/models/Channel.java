@@ -1,9 +1,10 @@
 package models;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class Channel implements Comparable<Channel> {
+public class Channel implements Comparable<Channel>, Serializable {
    private String name;
    private ConcurrentSkipListSet<User> users;
 

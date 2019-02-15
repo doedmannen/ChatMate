@@ -56,8 +56,9 @@ public class ActiveUserController {
 
    public User getUser(UUID ID) {
       for (Map.Entry e : this.connectedUsers.entrySet()) {
-         if (e.getKey().equals(ID)) ;
-         return (User) e.getKey();
+         if (((User) e.getKey()).getID().equals(ID)) {
+            return (User) e.getKey();
+         }
       }
       return null;
    }

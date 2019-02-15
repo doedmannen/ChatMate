@@ -20,7 +20,7 @@ public class ClientHandler implements Runnable {
    private Socket socket;
    private ServerApp serverApp;
    private boolean isRunning = false;
-   private final int TIMEOUT_MS = 500;
+   private final int TIMEOUT_MS = 50;
    private final User user;
    private final LinkedBlockingDeque<Message> userOutbox;
    private final LinkedBlockingQueue<Message> messageHandlerQueue;
@@ -33,6 +33,7 @@ public class ClientHandler implements Runnable {
       this.messageHandlerQueue = messageHandlerQueue;
 
       ActiveUserController.getInstance().addUser(this.user, this.userOutbox);
+      System.out.println(ActiveUserController.getInstance().getUsers().size());
 
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
@@ -51,14 +52,14 @@ public class ClientHandler implements Runnable {
 
       this.userOutbox.add(m);
 
-      System.out.println(socket.getInetAddress().toString());
+      System.out.println(socket.getInetAddress().toString() + " connected");
    }
 
    private void readMessage() {
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
-         System.out.println(message);//Debug
+         // System.out.println(message);//Debug
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
@@ -108,7 +109,7 @@ public class ClientHandler implements Runnable {
    private void tryDisconnect() {
       cleanUpAfterUser();
       this.isRunning = false;
-      System.out.println("Connection lost");
+      System.out.println("Connection to " + socket.getInetAddress() + " lost");
    }
 
    private void cleanUpAfterUser() {
@@ -120,6 +121,11 @@ public class ClientHandler implements Runnable {
          this.messageHandlerQueue.add(message);
       });
       ActiveUserController.getInstance().removeUser(this.user);
+      try {
+         this.socket.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 
    @Override

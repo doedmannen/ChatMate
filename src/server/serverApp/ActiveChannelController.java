@@ -33,7 +33,12 @@ public class ActiveChannelController {
    }
 
    public boolean removeUserFromChannel(UUID userID, String channel) {
-      return this.getChannel(channel).removeUser(ActiveUserController.getInstance().getUser(userID));
+      boolean value = this.getChannel(channel).removeUser(ActiveUserController.getInstance().getUser(userID));
+      if (this.getChannel(channel).getUsers().size() == 0) {
+         System.out.println("Channel is empty");
+         this.removeChannel(channel);
+      }
+      return value;
    }
 
    public boolean addChannel(String name) {
@@ -41,6 +46,8 @@ public class ActiveChannelController {
    }
 
    public boolean removeChannel(String name) {
+
+      System.out.println("Removing Channel " + name);
 
       var n = new Object() {
          boolean value = false;
@@ -72,6 +79,7 @@ public class ActiveChannelController {
       } catch (ArrayIndexOutOfBoundsException e) {
       }
 
+      System.out.println(channel);
       if (channel == null) {
          this.addChannel(name);
          this.addUserToChannel(user, name);

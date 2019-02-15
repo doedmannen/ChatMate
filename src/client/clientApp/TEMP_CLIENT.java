@@ -19,7 +19,7 @@ public class TEMP_CLIENT {
 
 
         try {
-            socket = new Socket("10.155.90.44", 54321);
+            socket = new Socket("10.155.88.109", 54321);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Reciever(socket);
