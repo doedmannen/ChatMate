@@ -27,8 +27,9 @@ public class Client {
 
 
     private Client() {
-        //channelList = new ConcurrentSkipListMap<>();
+        channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
+        channelList.put("Generalhelvete", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test
