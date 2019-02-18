@@ -26,11 +26,11 @@ public class Client {
 
 
     private Client() {
-        channelList = new ConcurrentSkipListMap<>();
+        //channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
-        channelList.put("General", new ConcurrentSkipListSet<>());
-        channelList.put("General2", new ConcurrentSkipListSet<>());
-        channelList.put("General3", new ConcurrentSkipListSet<>());
+        //channelList.put("General", new ConcurrentSkipListSet<>());
+        //channelList.put("General2", new ConcurrentSkipListSet<>());
+        //channelList.put("General3", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test

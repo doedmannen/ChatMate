@@ -54,14 +54,14 @@ public class Controller {
 
    public ObservableList<Channel> channels;
 
-   public void initialize() {
-      input_text.setOnAction(e -> sendMessage());
-      send_button.setOnAction(e -> printUsers());
-      add_channel_button.setOnAction(e -> addCannelButtonPressed());
-      scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
-      channelYouIn();
-      Createchanellist();
-   }
+    public void initialize() {
+        input_text.setOnAction(e -> sendMessage());
+        channel_textField.setOnAction(event -> addCannel());
+        send_button.setOnAction(e -> printUsers());
+        add_channel_button.setOnAction(e -> addCannel());
+        scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
+        Createchanellist();
+    }
 
    @FXML
    public void printUsers() {
@@ -86,55 +86,35 @@ public class Controller {
       Client.getInstance().sender.sendToServer(message);
    }
 
-   @FXML
-   private void addCannelButtonPressed() {
-      System.out.println("Knap tryckt");
-      Message message = new Message();
-      message.CHANNEL = channel_textField.getText();
-      message.TYPE = MessageType.JOIN_CHANNEL;
-      Client.getInstance().sender.sendToServer(message);
-      channel_textField.clear();
-   }
-
-   @FXML
-   private void Createchanellist() {
-      channels = FXCollections.observableArrayList();
-      SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
-      channel_list_view.setItems(sortedList);
-      channel_list_view.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-      channels.add(new Channel("test"));
-      channels.add(new Channel("Java"));
-      channels.add(new Channel("Kaffe"));
-      channels.add(new Channel("Colla"));
-
-      channel_list_view.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Channel>() {
-         @Override
-         public void changed(ObservableValue<? extends Channel> observable, Channel oldValue, Channel newValue) {
-            Client.getInstance().setCurrentChannel(newValue.getName());
-            // scroll_pane.setContent(null); // TODO: 2019-02-18 it breaks output
-            chat_box.getChildren().clear();
-            System.out.println(newValue.getName());
-         }
-      });
-   }
-
-   @FXML
-   //Hämtar vartman är
-   private void printChannel() {
-      String channelname = Client.getInstance().getCurrentChannel();
-      //Vart som detta ska skrivas ut?
-   }
-
-   @FXML
-   //Hämtar vart man tillhör
-   private void channelYouIn() {
-      Client.getInstance().channelList.keySet().stream().forEach(key -> {
-         System.out.println(key);
-         Label label = new Label();
-         label.setText(key);
-         //online_Chanel.getChildren().add(label);
-      });
-   }
+    @FXML
+    private void addCannel(){
+        //System.out.println("Knap tryckt");
+       Message message = new Message();
+       message.CHANNEL = channel_textField.getText();
+       message.TYPE =  MessageType.JOIN_CHANNEL;
+       Client.getInstance().sender.sendToServer(message);
+       //channel_textField.clear();
+    }
+    @FXML
+    private void Createchanellist(){
+        channels = FXCollections.observableArrayList();
+        SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
+        channel_list_view.setItems(sortedList);
+        channel_list_view.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        /*
+        channels.add(new Channel("test"));
+        channels.add(new Channel("Java"));
+        channels.add(new Channel("Kaffe"));
+        channels.add(new Channel("Colla"));
+        */
+        channel_list_view.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Channel>() {
+            @Override
+            public void changed(ObservableValue<? extends Channel> observable, Channel oldValue, Channel newValue) {
+                Client.getInstance().setCurrentChannel(newValue.getName());
+                scroll_pane.setContent(null);
+                //System.out.println(newValue.getName());
+            }
+        });
+    }
 
 }
