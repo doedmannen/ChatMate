@@ -52,7 +52,7 @@ public class Message implements Serializable, Sendable {
     public String toString() {
         return "I am a message that was sent as an object :)";
     }
-    public static class MessageBuilder {
+    public static class MessageBuilder implements Serializable {
         private final MessageType type;
         private UUID sender;
         private UUID receiver;
