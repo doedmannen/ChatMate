@@ -107,12 +107,12 @@ public class Controller {
         SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
         channel_list_view.setItems(sortedList);
         channel_list_view.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        /*
+
         channels.add(new Channel("test"));
         channels.add(new Channel("Java"));
-        channels.add(new Channel("Kaffe"));
+        channels.add(new Channel("Te"));
         channels.add(new Channel("Colla"));
-        */
+
         channel_list_view.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Channel>() {
             @Override
             public void changed(ObservableValue<? extends Channel> observable, Channel oldValue, Channel newValue) {
@@ -128,7 +128,11 @@ public class Controller {
         listContextMenu = new ContextMenu();
         MenuItem deleteMenuItem = new MenuItem("Delite");
         deleteMenuItem.setOnAction((e)->{
-            System.out.println("Ej");
+            Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
+            channels.remove(channel);
+            System.out.println("To delete: " + channel.getName());
+            
+
         });
         listContextMenu.getItems().addAll(deleteMenuItem);
         channel_list_view.setCellFactory(new Callback<ListView<Channel>, ListCell<Channel>>() {
