@@ -20,7 +20,6 @@ public class Main extends Application {
         Parent root = loader.load();
         Controller controller = loader.getController();
         primaryStage.setUserData(controller);
-        Client.getInstance();
 
         primaryStage.setOnCloseRequest(e -> Client.getInstance().kill());
         primaryStage.setTitle("Chatter Matter");

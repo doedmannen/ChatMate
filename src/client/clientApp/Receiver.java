@@ -2,6 +2,8 @@ package client.clientApp;
 
 import client.Controller;
 import client.Main;
+import javafx.scene.control.Label;
+import javafx.scene.paint.Color;
 import models.Channel;
 import models.Message;
 import models.Sendable;
@@ -14,29 +16,30 @@ import java.net.SocketException;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import static client.Main.main;
 import static client.Main.primaryStage;
 
-public class Receiver extends Thread{
+public class Receiver extends Thread {
     private Socket socket;
     private ObjectInputStream objectInputStream;
-    private Controller controller = (client.Controller) primaryStage.getUserData();
+    private Controller controller = (Controller) primaryStage.getUserData();
 
-    public Receiver(Socket socket){
-        this.socket=socket;
+    public Receiver(Socket socket) {
+        this.socket = socket;
         try {
             this.objectInputStream = new ObjectInputStream(socket.getInputStream());
-        }catch (IOException e){
+        } catch (IOException e) {
             System.out.println("failed to create input stream");
             Client.getInstance().isRunning = false;
             // todo kolla om server är död, prova återanslutning
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
     public void run() {
-        while (Client.getInstance().isRunning){
+        while (Client.getInstance().isRunning) {
             try {
                 Sendable inData = (Sendable) objectInputStream.readObject();
 
@@ -46,25 +49,20 @@ public class Receiver extends Thread{
 //                    controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
                 } else if (inData instanceof Channel) {
                     Channel channel = (Channel) inData;
-                    if (Client.getInstance().channelList.containsKey(channel.getName())) {
-                        Client.getInstance().channelList.remove(channel.getName());
-                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
-                    } else {
-                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
-                    }
-                    controller.printUsers();
+                    Client.getInstance().channelList.put(channel.getName(), channel.getUsers());
+                    MessageInboxHandler.getInstance().printUsers();
                 }
 //                System.out.println(message);
-            }catch (SocketException e){
+            } catch (SocketException e) {
 
-            }catch (IOException e){
+            } catch (IOException e) {
 
                 System.out.println("Read Error");
                 Client.getInstance().isRunning = false;
                 // todo kolla om server är död, prova återanslutning
-            }catch (ClassNotFoundException e){
+            } catch (ClassNotFoundException e) {
                 System.out.println("Message Error");
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

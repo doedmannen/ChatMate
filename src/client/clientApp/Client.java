@@ -1,5 +1,7 @@
 package client.clientApp;
 
+import client.Controller;
+import client.Main;
 import models.Message;
 import models.MessageType;
 import models.User;
@@ -29,13 +31,12 @@ public class Client {
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
-        channelList.put("Generalhelvete", new ConcurrentSkipListSet<>());
+        channelList.put("General2", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test
         channelMessages.put("General", new ArrayList<Message>());
         setNickname("Boris");
-        currentChannel = "General";
 //        ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
 //        c.add(new User("Failip"));
 //        c.add(new User("Ted"));
@@ -43,7 +44,7 @@ public class Client {
 //        channelList.put("General",c);
 
         try {
-            socket = new Socket("10.155.88.109", 54323);
+            socket = new Socket("localhost", 54323);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Receiver(socket);

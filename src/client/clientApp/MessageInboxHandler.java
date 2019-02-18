@@ -3,11 +3,7 @@ package client.clientApp;
 import client.Controller;
 import client.Main;
 import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 import models.Message;
-import models.MessageType;
-import models.Sendable;
 
 public class MessageInboxHandler {
     private static MessageInboxHandler ourInstance = new MessageInboxHandler();
@@ -34,6 +30,7 @@ public class MessageInboxHandler {
                 messageCreator.joinChannelMessage(message);
                 break;
             case LEAVE_CHANNEL:
+                messageCreator.leaveChannelMessage(message);
                 break;
             case DISCONNECT:
                 break;
@@ -50,6 +47,10 @@ public class MessageInboxHandler {
 //                Platform.runLater(() -> controller.warningLabel(message));
                 break;
         }});
+    }
+
+    public void printUsers() {
+        Platform.runLater(() ->controller.printUsers());
     }
 
 }

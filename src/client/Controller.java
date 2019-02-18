@@ -52,17 +52,17 @@ public class Controller {
     }
 
     @FXML
-    public void printUsers(){
-        for (User user : Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel())) {
+    public void printUsers() {
+        Client.getInstance().channelList.get("General").forEach(u ->{
             Label label = new Label();
-            label.setText(user.getNickName());
+            label.setText(u.getNickName());
             label.setMinHeight(20);
             online_list.getChildren().add(label);
-        }
+        });
     }
 
     @FXML
-    private void sendMessage(){
+    private void sendMessage() {
         final String status = input_text.getText();
         Message message = new Message.MessageBuilder(MessageType.CHANNEL_MESSAGE)
                 .toChannel(Client.getInstance().getCurrentChannel())
@@ -74,14 +74,14 @@ public class Controller {
 
     @FXML
     //Hämtar vartman är
-    private void printChannel(){
+    private void printChannel() {
         String channelname = Client.getInstance().getCurrentChannel();
         //Vart som detta ska skrivas ut?
     }
 
     @FXML
     //Hämtar vart man tillhör
-    private void channelYouIn(){
+    private void channelYouIn() {
         Client.getInstance().channelList.keySet().stream().forEach(key -> {
             System.out.println(key);
             Label label = new Label();
