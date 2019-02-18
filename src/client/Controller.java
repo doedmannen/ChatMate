@@ -64,9 +64,7 @@ public class Controller {
     @FXML
     private void sendMessage(){
         final String status = input_text.getText();
-        //// TODO: 2019-02-15 Create constructor for message
         Message message = new Message.MessageBuilder(MessageType.CHANNEL_MESSAGE)
-                .nickname("Boris")
                 .toChannel(Client.getInstance().getCurrentChannel())
                 .withContent(status)
                 .build();

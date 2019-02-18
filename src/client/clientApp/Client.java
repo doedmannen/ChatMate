@@ -45,7 +45,7 @@ public class Client {
 //        channelList.put("General",c);
 
         try {
-            socket = new Socket("localhost", 54322);
+            socket = new Socket("10.155.90.35", 54322);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Receiver(socket);

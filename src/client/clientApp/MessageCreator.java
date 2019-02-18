@@ -28,7 +28,7 @@ public class MessageCreator{
 
     @FXML
     public void channelMessage(Message message) {
-        Label channelMessage = labelCreator(message.getNickname() + ": " + message.getTextContent(), Color.BLACK, "channel_message");
+        Label channelMessage = labelCreator(message.getSender() + ": " + message.getTextContent(), Color.BLACK, "channel_message");
         controller.getChatBox().getChildren().add(channelMessage);
     }
 
