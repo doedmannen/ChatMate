@@ -47,7 +47,7 @@ public class ClientHandler implements Runnable {
          e.printStackTrace();
       }
 
-      Message m = new Message(MessageType.CONNECT);
+      Message m = new Message.MessageBuilder(MessageType.CONNECT).build();
 //      m.RECIVER = this.user.getID();
 
       this.userOutbox.add(m);
@@ -59,7 +59,7 @@ public class ClientHandler implements Runnable {
       // TODO: 2019-02-14 try reconnect 
       try {
          Message message = (Message) streamIn.readObject();
-         message.SENDER = this.user.getID();
+         message.setSender(this.user.getID());
           streamOut.writeObject(message);
          // System.out.println(message);//Debug
          messageHandlerQueue.add(message);
@@ -119,9 +119,10 @@ public class ClientHandler implements Runnable {
    private void cleanUpAfterUser() {
       String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(this.user);
       Stream.of(userChannels).forEach(c -> {
-         Message message = new Message(MessageType.DISCONNECT);
-         message.CHANNEL = c;
-         message.SENDER = this.user.getID();
+         Message message = new Message.MessageBuilder(MessageType.DISCONNECT)
+                 .toChannel(c)
+                 .fromSender(this.user.getID())
+                 .build();
          this.messageHandlerQueue.add(message);
       });
       ActiveUserController.getInstance().removeUser(this.user);
