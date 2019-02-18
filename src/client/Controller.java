@@ -59,15 +59,15 @@ public class Controller {
    public ObservableList<Channel> channels;
 
 
-    public void initialize() {
-        input_text.setOnAction(e -> sendMessage());
-        channel_textField.setOnAction(event -> addCannel());
-        send_button.setOnAction(e -> printUsers());
-        add_channel_button.setOnAction(e -> addCannel());
-        scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
-        Createchanellist();
-        delitefromChanelList();
-    }
+   public void initialize() {
+      input_text.setOnAction(e -> sendMessage());
+      channel_textField.setOnAction(event -> addCannel());
+      send_button.setOnAction(e -> printUsers());
+      add_channel_button.setOnAction(e -> addCannel());
+      scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
+      Createchanellist();
+      delitefromChanelList();
+   }
 
    @FXML
    public void printUsers() {
@@ -79,96 +79,86 @@ public class Controller {
       }
    }
 
+
    @FXML
    private void sendMessage() {
       final String status = input_text.getText();
-      //// TODO: 2019-02-15 Create constructor for message
-      Message message = new Message();
-      message.CHANNEL = Client.getInstance().getCurrentChannel();
-      message.TYPE = MessageType.CHANNEL_MESSAGE;
-      message.TEXT_CONTENT = status;
-      message.NICKNAME = Client.getInstance().getNickname();
+      Message message = new Message.MessageBuilder(MessageType.CHANNEL_MESSAGE)
+              .toChannel(Client.getInstance().getCurrentChannel())
+              .withContent(status)
+              .build();
       input_text.clear();
       Client.getInstance().sender.sendToServer(message);
    }
 
-    @FXML
-    private void sendMessage(){
-        final String status = input_text.getText();
-        Message message = new Message.MessageBuilder(MessageType.CHANNEL_MESSAGE)
-                .toChannel(Client.getInstance().getCurrentChannel())
-                .withContent(status)
-                .build();
-        input_text.clear();
-        Client.getInstance().sender.sendToServer(message);
-  
-    private void addCannel(){
-        //System.out.println("Knap tryckt");
-       Message message = new Message();
-       message.CHANNEL = channel_textField.getText();
-       message.TYPE =  MessageType.JOIN_CHANNEL;
-       Client.getInstance().sender.sendToServer(message);
-       //channel_textField.clear()
-    }
-    @FXML
-    private void Createchanellist(){
-        channels = FXCollections.observableArrayList();
-        SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
-        channel_list_view.setItems(sortedList);
-        channel_list_view.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+   private void addCannel() {
+      //System.out.println("Knap tryckt");
 
-        channels.add(new Channel("test"));
-        channels.add(new Channel("Java"));
-        channels.add(new Channel("Te"));
-        channels.add(new Channel("Colla"));
+      Message message = new Message.MessageBuilder(MessageType.JOIN_CHANNEL)
+              .toChannel(channel_textField.getText()).build();
+      Client.getInstance().sender.sendToServer(message);
+      //channel_textField.clear()
+   }
 
-        channel_list_view.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Channel>() {
-            @Override
-            public void changed(ObservableValue<? extends Channel> observable, Channel oldValue, Channel newValue) {
-                Client.getInstance().setCurrentChannel(newValue.getName());
-                scroll_pane.setContent(null);
-                //System.out.println(newValue.getName());
-            }
-        });
-    }
+   @FXML
+   private void Createchanellist() {
+      channels = FXCollections.observableArrayList();
+      SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
+      channel_list_view.setItems(sortedList);
+      channel_list_view.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-    @FXML
-    private void delitefromChanelList(){
-        listContextMenu = new ContextMenu();
-        MenuItem deleteMenuItem = new MenuItem("Delite");
-        deleteMenuItem.setOnAction((e)->{
-            Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
-            channels.remove(channel);
-            System.out.println("To delete: " + channel.getName());
-            
+      channels.add(new Channel("test"));
+      channels.add(new Channel("Java"));
+      channels.add(new Channel("Te"));
+      channels.add(new Channel("Colla"));
 
-        });
-        listContextMenu.getItems().addAll(deleteMenuItem);
-        channel_list_view.setCellFactory(new Callback<ListView<Channel>, ListCell<Channel>>() {
-            @Override
-            public ListCell<Channel> call(ListView<Channel> param) {
-                ListCell<Channel> cell = new ListCell<>() {
-                    @Override
-                    protected void updateItem(Channel item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setText(null);
-                        } else {
-                            setText(item.getName());
-                        }
-                    }
-                };
-                cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
-                    if (isNowEmpty) {
-                        cell.setContextMenu(null);
-                    } else {
-                        cell.setContextMenu(listContextMenu);
-                    }
-                });
+      channel_list_view.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Channel>() {
+         @Override
+         public void changed(ObservableValue<? extends Channel> observable, Channel oldValue, Channel newValue) {
+            Client.getInstance().setCurrentChannel(newValue.getName());
+//            scroll_pane.setContent(null);
+            //System.out.println(newValue.getName());
+         }
+      });
+   }
 
-                return cell;
-            }
-        });
+   @FXML
+   private void delitefromChanelList() {
+      listContextMenu = new ContextMenu();
+      MenuItem deleteMenuItem = new MenuItem("Delite");
+      deleteMenuItem.setOnAction((e) -> {
+         Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
+         channels.remove(channel);
+         System.out.println("To delete: " + channel.getName());
 
-    }
+
+      });
+      listContextMenu.getItems().addAll(deleteMenuItem);
+      channel_list_view.setCellFactory(new Callback<ListView<Channel>, ListCell<Channel>>() {
+         @Override
+         public ListCell<Channel> call(ListView<Channel> param) {
+            ListCell<Channel> cell = new ListCell<>() {
+               @Override
+               protected void updateItem(Channel item, boolean empty) {
+                  super.updateItem(item, empty);
+                  if (empty) {
+                     setText(null);
+                  } else {
+                     setText(item.getName());
+                  }
+               }
+            };
+            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+               if (isNowEmpty) {
+                  cell.setContextMenu(null);
+               } else {
+                  cell.setContextMenu(listContextMenu);
+               }
+            });
+
+            return cell;
+         }
+      });
+
+   }
 }
