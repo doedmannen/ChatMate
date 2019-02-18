@@ -26,32 +26,32 @@ public class MessageInboxHandler {
         MessageCreator messageCreator = new MessageCreator();
         Platform.runLater(() ->{
             switch (message.TYPE) {
-            case CHANNEL_MESSAGE:
-                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
-                messageCreator.channelMessage(message);
-                break;
-            case JOIN_CHANNEL:
-                messageCreator.joinChannelMessage(message);
-                break;
-            case LEAVE_CHANNEL:
-                break;
-            case DISCONNECT:
-                Main.primaryStage.close();
-                Client.getInstance().kill();
-                break;
-            case NICKNAME_CHANGE:
-                break;
-            case WHISPER_MESSAGE:
-                break;
-            case CONNECT:
-                break;
-            case ERROR:
-                break;
-            case WARNING:
-                messageCreator.warningMessage(message);
+                case CHANNEL_MESSAGE:
+                    Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
+                    messageCreator.channelMessage(message);
+                    break;
+                case JOIN_CHANNEL:
+                    messageCreator.joinChannelMessage(message);
+                    break;
+                case LEAVE_CHANNEL:
+                    break;
+                case DISCONNECT:
+                    Main.primaryStage.close();
+                    Client.getInstance().kill();
+                    break;
+                case NICKNAME_CHANGE:
+                    break;
+                case WHISPER_MESSAGE:
+                    break;
+                case CONNECT:
+                    break;
+                case ERROR:
+                    break;
+                case WARNING:
+                    messageCreator.warningMessage(message);
 //                Platform.runLater(() -> controller.warningLabel(message));
-                break;
-        }});
+                    break;
+            }});
     }
 
 }

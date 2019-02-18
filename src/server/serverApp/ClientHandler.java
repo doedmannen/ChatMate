@@ -39,7 +39,6 @@ public class ClientHandler implements Runnable {
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
          streamOut = new ObjectOutputStream(socket.getOutputStream());
-         //Flush?
          socket.setSoTimeout(TIMEOUT_MS);
          isRunning = true;
       } catch (IOException e) {
@@ -51,7 +50,6 @@ public class ClientHandler implements Runnable {
       Message m = new Message(MessageType.CONNECT);
       m.RECEIVER = this.user.getID();
       m.NICKNAME = user.getNickName();
-
       this.userOutbox.add(m);
 
       System.out.println(socket.getInetAddress().toString() + " connected");
@@ -62,6 +60,7 @@ public class ClientHandler implements Runnable {
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
+         message.NICKNAME = this.user.getNickName();
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
