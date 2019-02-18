@@ -93,13 +93,22 @@ public class Controller {
    }
 
     @FXML
+    private void sendMessage(){
+        final String status = input_text.getText();
+        Message message = new Message.MessageBuilder(MessageType.CHANNEL_MESSAGE)
+                .toChannel(Client.getInstance().getCurrentChannel())
+                .withContent(status)
+                .build();
+        input_text.clear();
+        Client.getInstance().sender.sendToServer(message);
+  
     private void addCannel(){
         //System.out.println("Knap tryckt");
        Message message = new Message();
        message.CHANNEL = channel_textField.getText();
        message.TYPE =  MessageType.JOIN_CHANNEL;
        Client.getInstance().sender.sendToServer(message);
-       //channel_textField.clear();
+       //channel_textField.clear()
     }
     @FXML
     private void Createchanellist(){

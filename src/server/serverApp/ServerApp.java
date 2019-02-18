@@ -2,6 +2,7 @@ package server.serverApp;
 
 
 import models.Message;
+import models.Sendable;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -16,11 +17,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ServerApp {
 
    private ServerSocket serverSocket;
-   private final int PORT = 54322;
+   private final int PORT = 54323;
    private ExecutorService clientHandlers;
    private MessageHandler messageHandler;
    private boolean running = false;
-   private final LinkedBlockingQueue<Message> messageHandlerQueue;
+   private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
 
    public ServerApp() {
       try {

@@ -1,20 +1,20 @@
 package server.serverApp;
 
 
-import models.Channel;
-import models.Message;
-import models.User;
+import models.*;
 
 import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import static models.MessageType.*;
+
 public class MessageHandler implements Runnable {
 
-   private LinkedBlockingQueue<Message> messages;
+   private LinkedBlockingQueue<Sendable> messages;
 
-   public MessageHandler(LinkedBlockingQueue<Message> messages) {
+   public MessageHandler(LinkedBlockingQueue<Sendable> messages) {
       this.messages = messages;
    }
 
@@ -26,7 +26,7 @@ public class MessageHandler implements Runnable {
             processMessages();
          }
          try {
-            Thread.sleep(10);
+            Thread.sleep(1);
          } catch (InterruptedException e) {
          }
 
@@ -34,8 +34,8 @@ public class MessageHandler implements Runnable {
    }
 
    private void processMessages() {
-      Message m = this.messages.remove();
-      switch (m.TYPE) {
+      Message m = (Message) this.messages.remove();
+      switch (m.getType()) {
          case DISCONNECT:
             sendToChannel(m);
             break;
@@ -54,11 +54,11 @@ public class MessageHandler implements Runnable {
    }
 
    private void sendToChannel(Message m) {
-      if (m.CHANNEL == null || m.CHANNEL.equals("")) {
+      if (m.getChannel() == null || m.getChannel().equals("")) {
          return;
       }
-      System.out.println("Sending message to channel " + m.CHANNEL);
-      Channel channel = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
+      System.out.println("Sending message to channel " + m.getChannel());
+      Channel channel = ActiveChannelController.getInstance().getChannel(m.getChannel());
       if (channel != null) {
          SortedSet<User> users = channel.getUsers();
          if (users != null) {
@@ -73,31 +73,37 @@ public class MessageHandler implements Runnable {
    }
 
    private void addUserToChannel(Message m) {
-      System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
-      String channel = m.CHANNEL;
-      UUID userID = m.SENDER;
+      Message message = new Message.MessageBuilder(MessageType.JOIN_CHANNEL)
+              .fromSender(m.getSender())
+              .toChannel(m.getChannel())
+              .nickname(ActiveUserController.getInstance().getUser(m.getSender()).getNickName())
+              .build();
+      System.out.println("Adding User " + m.getSender() + " to channel " + m.getChannel());
+      String channel = m.getChannel();
+      UUID userID = m.getSender();
       if (channel != null && userID != null) {
          User u = ActiveUserController.getInstance().getUser(userID);
          if (u != null) {
-            ActiveChannelController.getInstance().addUserToChannel(u, channel);
-//            ActiveUserController.getInstance().getUserOutbox(u).add(ActiveChannelController.getInstance().getChannel(channel));
-            sendToChannel(m);
+            ActiveChannelController.getInstance().addUserToChannel(u, channel); // Adding the user to the channel
+            Channel c = ActiveChannelController.getInstance().getChannel(channel); // Getting the channel
+            ActiveUserController.getInstance().getUserOutbox(u).add(c); // Sending the channel to the user
+            sendToChannel(message); // Sending a JOIN message to the channel
          }
       }
-      System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
+      System.out.println("Users connected to " + m.getChannel() + ": " + ActiveChannelController.getInstance().getChannel(m.getChannel()).getUsers().size());
    }
 
    private void removeUserFromChannel(Message m) {
-      if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
+      if (m.getSender() != null && m.getChannel() != null && !m.getChannel().equals("")) {
          this.sendToChannel(m);
-         System.out.println(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER + " removed from channel " : "");
-         System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
+         System.out.println(ActiveChannelController.getInstance().removeUserFromChannel(m.getSender(), m.getChannel()) == true ? m.getSender() + " removed from channel " : "");
+         System.out.println("Users connected to " + m.getChannel() + ": " + ActiveChannelController.getInstance().getChannel(m.getChannel()).getUsers().size());
       }
    }
 
    private void sendToUser(Message m) {
-      System.out.println("Sending whisper message to " + m.RECEIVER);
-      LinkedBlockingDeque<Message> outbox = ActiveUserController.getInstance().getUserOutbox(m.RECEIVER);
+      System.out.println("Sending whisper message to " + m.getReceiver());
+      LinkedBlockingDeque<Sendable> outbox = ActiveUserController.getInstance().getUserOutbox(m.getReceiver());
       outbox.add(m);
    }
 

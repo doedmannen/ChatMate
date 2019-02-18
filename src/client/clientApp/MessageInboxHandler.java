@@ -22,23 +22,22 @@ public class MessageInboxHandler {
       controller = (client.Controller) Main.primaryStage.getUserData();
    }
 
-   public void messageSwitch(Message message) {
-      MessageCreator messageCreator = new MessageCreator();
-      Platform.runLater(() -> {
-         switch (message.TYPE) {
+    public void messageSwitch(Message message) {
+        MessageCreator messageCreator = new MessageCreator();
+        Platform.runLater(() ->{
+            switch (message.getType()) {
             case CHANNEL_MESSAGE:
-//                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
-               messageCreator.channelMessage(message);
-               break;
+                Client.getInstance().getChannelMessages().get(message.getChannel()).add(message);
+                messageCreator.channelMessage(message);
+                break;
+
             case JOIN_CHANNEL:
                messageCreator.joinChannelMessage(message);
                break;
             case LEAVE_CHANNEL:
                break;
             case DISCONNECT:
-               Main.primaryStage.close();
-               Client.getInstance().kill();
-               break;
+                break;
             case NICKNAME_CHANGE:
                break;
             case WHISPER_MESSAGE:

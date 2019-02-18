@@ -28,19 +28,19 @@ public class MessageCreator{
 
     @FXML
     public void channelMessage(Message message) {
-        Label channelMessage = labelCreator(message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
+        Label channelMessage = labelCreator(message.getSender() + ": " + message.getTextContent(), Color.BLACK, "channel_message");
         controller.getChatBox().getChildren().add(channelMessage);
     }
 
     @FXML
     public void warningMessage(Message message) {
-        Label warningLabel = labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
+        Label warningLabel = labelCreator("Warning: " + message.getTextContent(), Color.RED, "warning");
         controller.getChatBox().getChildren().add(warningLabel);
     }
 
     @FXML
     public void joinChannelMessage(Message message) {
-        Label joinMessage = labelCreator(message.SENDER +" has joined the channel.", Color.GREEN, "join_channel");
+        Label joinMessage = labelCreator(message.getNickname() +" has joined the channel.", Color.GREEN, "join_channel");
         controller.getChatBox().getChildren().add(joinMessage);
     }
 

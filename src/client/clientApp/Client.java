@@ -1,6 +1,7 @@
 package client.clientApp;
 
 import models.Message;
+import models.MessageType;
 import models.User;
 
 import java.net.Socket;
@@ -28,9 +29,6 @@ public class Client {
     private Client() {
         //channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
-        //channelList.put("General", new ConcurrentSkipListSet<>());
-        //channelList.put("General2", new ConcurrentSkipListSet<>());
-        //channelList.put("General3", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test
@@ -44,7 +42,7 @@ public class Client {
 //        channelList.put("General",c);
 
         try {
-            socket = new Socket("localhost", 54322);
+            socket = new Socket("10.155.88.109", 54323);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Receiver(socket);
@@ -53,6 +51,11 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Message m = new Message.MessageBuilder(MessageType.JOIN_CHANNEL)
+                .toChannel("General")
+                .build();
+        sender.sendToServer(m);
 
     }
     public void kill() {
