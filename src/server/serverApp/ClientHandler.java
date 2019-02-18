@@ -2,6 +2,7 @@ package server.serverApp;
 
 import models.Message;
 import models.MessageType;
+import models.Sendable;
 import models.User;
 
 import java.io.IOException;
@@ -20,12 +21,13 @@ public class ClientHandler implements Runnable {
    private Socket socket;
    private ServerApp serverApp;
    private boolean isRunning = false;
-   private final int TIMEOUT_MS = 50;
+   private final int TIMEOUT_MS = 10;
    private final User user;
-   private final LinkedBlockingDeque<Message> userOutbox;
-   private final LinkedBlockingQueue<Message> messageHandlerQueue;
+   private final LinkedBlockingDeque<Sendable> userOutbox;
+   private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
+   private final int RETRY_CONNECTION = 1000;
 
-   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Message> messageHandlerQueue) {
+   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
       this.user = new User("Unknown");
@@ -38,11 +40,10 @@ public class ClientHandler implements Runnable {
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
          streamOut = new ObjectOutputStream(socket.getOutputStream());
-         //Flush?
          socket.setSoTimeout(TIMEOUT_MS);
          isRunning = true;
       } catch (IOException e) {
-         System.out.println("failed to create streams ");
+         System.out.println("Failed to create stream for client " + socket.getInetAddress());
       } catch (Exception e) {
          e.printStackTrace();
       }
@@ -56,47 +57,54 @@ public class ClientHandler implements Runnable {
    }
 
    private void readMessage() {
-      // TODO: 2019-02-14 try reconnect 
-      try {
-         Message message = (Message) streamIn.readObject();
-         message.SENDER = this.user.getID();
-          streamOut.writeObject(message);
-         // System.out.println(message);//Debug
-         messageHandlerQueue.add(message);
-      } catch (SocketTimeoutException e) {
-      } catch (IOException e) {
-         // Kolla om möjlig återanslutning till server
-         System.out.println("Error in Clientreader");
-         tryDisconnect();
-         // todo kolla om klienten är död, prova återanslutning
-      } catch (ClassNotFoundException e) {
-         System.out.println("Felaktig klass skickad");
-      } catch (Exception e) {
-         e.printStackTrace();
+      int stop = 1;
+      for (int i = 0; i < stop; i++) {
+         try {
+            Message message = (Message) streamIn.readObject();
+            message.SENDER = this.user.getID();
+            streamOut.writeObject(message);
+            // System.out.println(message);//Debug
+            messageHandlerQueue.add(message);
+            i = 0;
+            stop = 1;
+         } catch (SocketTimeoutException e) {
+         } catch (IOException e) {
+            try{
+               Thread.sleep(RETRY_CONNECTION);
+            }catch (Exception ex){}
+            stop = 10;
+
+            if(i == stop - 1) {
+               tryDisconnect();
+            }
+         } catch (ClassNotFoundException e) {
+            System.out.println("Felaktig klass skickad"); // ENDAST DEBUG, tas bort sen eller ändras
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
       }
    }
 
    private void writeMessage() {
       int stop = 1;
       for (int i = 0; i < stop; i++) {
-         if (clientHasMessages()) {
+         while (clientHasMessages() && this.isRunning) {
             Message m = this.userOutbox.getFirst();
             try {
                streamOut.writeObject(m);
                this.userOutbox.removeFirst();
-               i = 10;
+               i = 0;
+               stop = 1;
             } catch (IOException e) {
-               System.out.println("Error in clientWriter");
-               stop = 10;
                try {
-                  Thread.sleep(100);
-               } catch (Exception exception) {
+                  Thread.sleep(RETRY_CONNECTION);
+               } catch (Exception ex) {
                }
+               stop = 10;
                if (i == stop - 1) {
                   tryDisconnect();
-                  i = 10;
                }
-               // todo kolla om klienten är död, prova återanslutning
+               break;
             } catch (Exception e) {
                e.printStackTrace();
             }

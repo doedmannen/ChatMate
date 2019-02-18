@@ -3,6 +3,7 @@ package server.serverApp;
 
 import models.Channel;
 import models.Message;
+import models.Sendable;
 import models.User;
 
 import java.util.SortedSet;
@@ -12,9 +13,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MessageHandler implements Runnable {
 
-   private LinkedBlockingQueue<Message> messages;
+   private LinkedBlockingQueue<Sendable> messages;
 
-   public MessageHandler(LinkedBlockingQueue<Message> messages) {
+   public MessageHandler(LinkedBlockingQueue<Sendable> messages) {
       this.messages = messages;
    }
 
@@ -26,7 +27,7 @@ public class MessageHandler implements Runnable {
             processMessages();
          }
          try {
-            Thread.sleep(10);
+            Thread.sleep(1);
          } catch (InterruptedException e) {
          }
 
@@ -97,7 +98,7 @@ public class MessageHandler implements Runnable {
 
    private void sendToUser(Message m) {
       System.out.println("Sending whisper message to " + m.RECEIVER);
-      LinkedBlockingDeque<Message> outbox = ActiveUserController.getInstance().getUserOutbox(m.RECEIVER);
+      LinkedBlockingDeque<Sendable> outbox = ActiveUserController.getInstance().getUserOutbox(m.RECEIVER);
       outbox.add(m);
    }
 
