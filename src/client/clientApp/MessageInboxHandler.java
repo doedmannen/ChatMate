@@ -10,48 +10,49 @@ import models.MessageType;
 import models.Sendable;
 
 public class MessageInboxHandler {
-    private static MessageInboxHandler ourInstance = new MessageInboxHandler();
+   private static MessageInboxHandler ourInstance = new MessageInboxHandler();
 
-    public static MessageInboxHandler getInstance() {
-        return ourInstance;
-    }
+   public static MessageInboxHandler getInstance() {
+      return ourInstance;
+   }
 
-    Controller controller;
+   Controller controller;
 
-    private MessageInboxHandler() {
-        controller = (client.Controller) Main.primaryStage.getUserData();
-    }
+   private MessageInboxHandler() {
+      controller = (client.Controller) Main.primaryStage.getUserData();
+   }
 
-    public void messageSwitch(Message message) {
-        MessageCreator messageCreator = new MessageCreator();
-        Platform.runLater(() ->{
-            switch (message.TYPE) {
+   public void messageSwitch(Message message) {
+      MessageCreator messageCreator = new MessageCreator();
+      Platform.runLater(() -> {
+         switch (message.TYPE) {
             case CHANNEL_MESSAGE:
-                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
-                messageCreator.channelMessage(message);
-                break;
+//                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
+               messageCreator.channelMessage(message);
+               break;
             case JOIN_CHANNEL:
-                messageCreator.joinChannelMessage(message);
-                break;
+               messageCreator.joinChannelMessage(message);
+               break;
             case LEAVE_CHANNEL:
-                break;
+               break;
             case DISCONNECT:
-                Main.primaryStage.close();
-                Client.getInstance().kill();
-                break;
+               Main.primaryStage.close();
+               Client.getInstance().kill();
+               break;
             case NICKNAME_CHANGE:
-                break;
+               break;
             case WHISPER_MESSAGE:
-                break;
+               break;
             case CONNECT:
-                break;
+               break;
             case ERROR:
-                break;
+               break;
             case WARNING:
-                messageCreator.warningMessage(message);
+               messageCreator.warningMessage(message);
 //                Platform.runLater(() -> controller.warningLabel(message));
-                break;
-        }});
-    }
+               break;
+         }
+      });
+   }
 
 }
