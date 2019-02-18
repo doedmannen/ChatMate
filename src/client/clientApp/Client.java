@@ -1,6 +1,7 @@
 package client.clientApp;
 
 import models.Message;
+import models.MessageType;
 import models.User;
 
 import java.net.Socket;
@@ -53,6 +54,11 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Message m = new Message.MessageBuilder(MessageType.JOIN_CHANNEL)
+                .toChannel("General")
+                .build();
+        sender.sendToServer(m);
 
     }
     public void kill() {

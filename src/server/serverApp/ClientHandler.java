@@ -48,8 +48,9 @@ public class ClientHandler implements Runnable {
          e.printStackTrace();
       }
 
-      Message m = new Message.MessageBuilder(MessageType.CONNECT).build();
-//      m.RECIVER = this.user.getID();
+      Message m = new Message.MessageBuilder(MessageType.CONNECT)
+              .nickname(this.user.getNickName())
+              .build();
 
       this.userOutbox.add(m);
 
@@ -62,8 +63,6 @@ public class ClientHandler implements Runnable {
          try {
             Message message = (Message) streamIn.readObject();
             message.setSender(this.user.getID());
-            streamOut.writeObject(message);
-            // System.out.println(message);//Debug
             messageHandlerQueue.add(message);
             i = 0;
             stop = 1;

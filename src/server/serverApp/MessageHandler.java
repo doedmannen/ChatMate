@@ -1,10 +1,7 @@
 package server.serverApp;
 
 
-import models.Channel;
-import models.Message;
-import models.Sendable;
-import models.User;
+import models.*;
 
 import java.util.SortedSet;
 import java.util.UUID;
@@ -76,6 +73,11 @@ public class MessageHandler implements Runnable {
    }
 
    private void addUserToChannel(Message m) {
+      Message message = new Message.MessageBuilder(MessageType.JOIN_CHANNEL)
+              .fromSender(m.getSender())
+              .toChannel(m.getChannel())
+              .nickname(ActiveUserController.getInstance().getUser(m.getSender()).getNickName())
+              .build();
       System.out.println("Adding User " + m.getSender() + " to channel " + m.getChannel());
       String channel = m.getChannel();
       UUID userID = m.getSender();
@@ -84,7 +86,7 @@ public class MessageHandler implements Runnable {
          if (u != null) {
             ActiveChannelController.getInstance().addUserToChannel(u, channel);
 //            ActiveUserController.getInstance().getUserOutbox(u).add(ActiveChannelController.getInstance().getChannel(channel));
-            sendToChannel(m);
+            sendToChannel(message);
          }
       }
       System.out.println("Users connected to " + m.getChannel() + ": " + ActiveChannelController.getInstance().getChannel(m.getChannel()).getUsers().size());

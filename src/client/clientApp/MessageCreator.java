@@ -40,7 +40,7 @@ public class MessageCreator{
 
     @FXML
     public void joinChannelMessage(Message message) {
-        Label joinMessage = labelCreator(message.getSender() +" has joined the channel.", Color.GREEN, "join_channel");
+        Label joinMessage = labelCreator(message.getNickname() +" has joined the channel.", Color.GREEN, "join_channel");
         controller.getChatBox().getChildren().add(joinMessage);
     }
 
