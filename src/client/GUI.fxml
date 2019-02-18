@@ -14,7 +14,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <center>
-      <VBox alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="626.0" BorderPane.alignment="CENTER">
+      <VBox alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="577.0" BorderPane.alignment="CENTER">
          <children>
             <ScrollPane fx:id="scroll_pane" hbarPolicy="NEVER" prefHeight="565.0" prefWidth="607.0">
                <content>
@@ -23,7 +23,7 @@
             </ScrollPane>
             <HBox alignment="CENTER" prefHeight="39.0" prefWidth="698.0">
                <children>
-                  <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" />
+                  <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" HBox.hgrow="ALWAYS" />
                   <Button id="send_button" fx:id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                </children>
             </HBox>
@@ -53,15 +53,20 @@
          </children></VBox>
    </right>
    <left>
-      <VBox prefHeight="600.0" prefWidth="134.0" style="-fx-background-color: GRAY;" BorderPane.alignment="CENTER">
+      <VBox prefHeight="600.0" prefWidth="177.0" style="-fx-background-color: White;" BorderPane.alignment="CENTER">
          <children>
+            <Label alignment="CENTER" text="Channels:" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="5.0" />
+               </VBox.margin>
+            </Label>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <TextField fx:id="channel_textField" prefHeight="31.0" prefWidth="73.0" />
+                  <TextField fx:id="channel_textField" prefHeight="31.0" prefWidth="73.0" HBox.hgrow="ALWAYS" />
                   <Button fx:id="add_channel_button" mnemonicParsing="false" prefHeight="31.0" prefWidth="60.0" text="Add" />
                </children>
             </HBox>
-            <ListView fx:id="channel_list_view" prefHeight="667.0" prefWidth="134.0" VBox.vgrow="ALWAYS" />
+            <ListView fx:id="channel_list_view" prefHeight="667.0" prefWidth="123.0" VBox.vgrow="ALWAYS" />
          </children></VBox>
    </left>
 </BorderPane>

@@ -13,11 +13,13 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.util.Callback;
 import models.Channel;
 import models.Message;
 import models.MessageType;
 import models.User;
 
+import java.awt.event.ActionEvent;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.SortedSet;
@@ -47,12 +49,15 @@ public class Controller {
 
    @FXML
    private ListView channel_list_view;
+   @FXML
+   private ContextMenu listContextMenu;
 
    public VBox getChatBox() {
       return chat_box;
    }
 
    public ObservableList<Channel> channels;
+
 
     public void initialize() {
         input_text.setOnAction(e -> sendMessage());
@@ -61,6 +66,7 @@ public class Controller {
         add_channel_button.setOnAction(e -> addCannel());
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
         Createchanellist();
+        delitefromChanelList();
     }
 
    @FXML
@@ -117,4 +123,39 @@ public class Controller {
         });
     }
 
+    @FXML
+    private void delitefromChanelList(){
+        listContextMenu = new ContextMenu();
+        MenuItem deleteMenuItem = new MenuItem("Delite");
+        deleteMenuItem.setOnAction((e)->{
+            System.out.println("Ej");
+        });
+        listContextMenu.getItems().addAll(deleteMenuItem);
+        channel_list_view.setCellFactory(new Callback<ListView<Channel>, ListCell<Channel>>() {
+            @Override
+            public ListCell<Channel> call(ListView<Channel> param) {
+                ListCell<Channel> cell = new ListCell<>() {
+                    @Override
+                    protected void updateItem(Channel item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                        } else {
+                            setText(item.getName());
+                        }
+                    }
+                };
+                cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+                    if (isNowEmpty) {
+                        cell.setContextMenu(null);
+                    } else {
+                        cell.setContextMenu(listContextMenu);
+                    }
+                });
+
+                return cell;
+            }
+        });
+
+    }
 }
