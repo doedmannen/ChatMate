@@ -65,11 +65,11 @@ public class Controller {
     private void sendMessage(){
         final String status = input_text.getText();
         //// TODO: 2019-02-15 Create constructor for message
-        Message message = new Message();
-        message.CHANNEL = Client.getInstance().getCurrentChannel();
-        message.TYPE = MessageType.CHANNEL_MESSAGE;
-        message.TEXT_CONTENT = status;
-        message.NICKNAME = Client.getInstance().getNickname();
+        Message message = new Message.MessageBuilder(MessageType.CHANNEL_MESSAGE)
+                .nickname("Boris")
+                .toChannel(Client.getInstance().getCurrentChannel())
+                .withContent(status)
+                .build();
         input_text.clear();
         Client.getInstance().sender.sendToServer(message);
     }

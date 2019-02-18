@@ -48,7 +48,7 @@ public class ClientHandler implements Runnable {
          e.printStackTrace();
       }
 
-      Message m = new Message(MessageType.CONNECT);
+      Message m = new Message.MessageBuilder(MessageType.CONNECT).build();
 //      m.RECIVER = this.user.getID();
 
       this.userOutbox.add(m);
@@ -61,7 +61,7 @@ public class ClientHandler implements Runnable {
       for (int i = 0; i < stop; i++) {
          try {
             Message message = (Message) streamIn.readObject();
-            message.SENDER = this.user.getID();
+            message.setSender(this.user.getID());
             streamOut.writeObject(message);
             // System.out.println(message);//Debug
             messageHandlerQueue.add(message);
@@ -89,7 +89,7 @@ public class ClientHandler implements Runnable {
       int stop = 1;
       for (int i = 0; i < stop; i++) {
          while (clientHasMessages() && this.isRunning) {
-            Message m = this.userOutbox.getFirst();
+            Sendable m = this.userOutbox.getFirst();
             try {
                streamOut.writeObject(m);
                this.userOutbox.removeFirst();
@@ -124,12 +124,13 @@ public class ClientHandler implements Runnable {
       System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
    }
 
-   private void cleanUpAfterUser() {
+   private void cleanUpAfterUser(){
       String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(this.user);
       Stream.of(userChannels).forEach(c -> {
-         Message message = new Message(MessageType.DISCONNECT);
-         message.CHANNEL = c;
-         message.SENDER = this.user.getID();
+         Message message = new Message.MessageBuilder(MessageType.DISCONNECT)
+                 .toChannel(c)
+                 .fromSender(this.user.getID())
+                 .build();
          this.messageHandlerQueue.add(message);
       });
       ActiveUserController.getInstance().removeUser(this.user);

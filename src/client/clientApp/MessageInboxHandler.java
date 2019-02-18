@@ -25,9 +25,9 @@ public class MessageInboxHandler {
     public void messageSwitch(Message message) {
         MessageCreator messageCreator = new MessageCreator();
         Platform.runLater(() ->{
-            switch (message.TYPE) {
+            switch (message.getType()) {
             case CHANNEL_MESSAGE:
-                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
+                Client.getInstance().getChannelMessages().get(message.getChannel()).add(message);
                 messageCreator.channelMessage(message);
                 break;
             case JOIN_CHANNEL:
