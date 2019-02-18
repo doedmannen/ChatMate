@@ -29,9 +29,7 @@ public class Client {
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
-        channelList.put("General", new ConcurrentSkipListSet<>());
-        channelList.put("General2", new ConcurrentSkipListSet<>());
-        channelList.put("General3", new ConcurrentSkipListSet<>());
+        channelList.put("Generalhelvete", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
 
         //temp test
@@ -45,7 +43,7 @@ public class Client {
 //        channelList.put("General",c);
 
         try {
-            socket = new Socket("10.155.90.35", 54323);
+            socket = new Socket("10.155.88.109", 54323);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Receiver(socket);

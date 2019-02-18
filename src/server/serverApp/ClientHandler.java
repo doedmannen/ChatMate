@@ -68,6 +68,7 @@ public class ClientHandler implements Runnable {
             stop = 1;
          } catch (SocketTimeoutException e) {
          } catch (IOException e) {
+            e.printStackTrace();
             try{
                Thread.sleep(RETRY_CONNECTION);
             }catch (Exception ex){}

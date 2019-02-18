@@ -36,8 +36,6 @@ public class MessageInboxHandler {
             case LEAVE_CHANNEL:
                 break;
             case DISCONNECT:
-                Main.primaryStage.close();
-                Client.getInstance().kill();
                 break;
             case NICKNAME_CHANGE:
                 break;

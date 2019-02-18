@@ -10,6 +10,7 @@ import models.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -54,7 +55,10 @@ public class Receiver extends Thread{
                     controller.printUsers();
                 }
 //                System.out.println(message);
+            }catch (SocketException e){
+
             }catch (IOException e){
+
                 System.out.println("Read Error");
                 Client.getInstance().isRunning = false;
                 // todo kolla om server är död, prova återanslutning
