@@ -22,10 +22,10 @@ public class Message implements Serializable, Sendable{
    }
 
    public Message(MessageType type) {
+      this.TYPE = type;
       this.SENDER = null;
       this.RECEIVER = null;
       this.NICKNAME = null;
-      this.TYPE = type;
       this.TEXT_CONTENT = null;
       this.CHANNEL = null;
    }

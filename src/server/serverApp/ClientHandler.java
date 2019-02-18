@@ -2,6 +2,7 @@ package server.serverApp;
 
 import models.Message;
 import models.MessageType;
+import models.Sendable;
 import models.User;
 
 import java.io.IOException;
@@ -22,10 +23,10 @@ public class ClientHandler implements Runnable {
    private boolean isRunning = false;
    private final int TIMEOUT_MS = 50;
    private final User user;
-   private final LinkedBlockingDeque<Message> userOutbox;
-   private final LinkedBlockingQueue<Message> messageHandlerQueue;
+   private final LinkedBlockingDeque<Sendable> userOutbox;
+   private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
 
-   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Message> messageHandlerQueue) {
+   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
       this.user = new User("Unknown");
@@ -48,7 +49,8 @@ public class ClientHandler implements Runnable {
       }
 
       Message m = new Message(MessageType.CONNECT);
-//      m.RECIVER = this.user.getID();
+      m.RECEIVER = this.user.getID();
+      m.NICKNAME = user.getNickName();
 
       this.userOutbox.add(m);
 
@@ -60,8 +62,6 @@ public class ClientHandler implements Runnable {
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
-          streamOut.writeObject(message);
-         // System.out.println(message);//Debug
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
@@ -80,7 +80,7 @@ public class ClientHandler implements Runnable {
       int stop = 1;
       for (int i = 0; i < stop; i++) {
          if (clientHasMessages()) {
-            Message m = this.userOutbox.getFirst();
+            Sendable m = this.userOutbox.getFirst();
             try {
                streamOut.writeObject(m);
                this.userOutbox.removeFirst();

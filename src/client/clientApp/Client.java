@@ -1,10 +1,12 @@
 package client.clientApp;
 
 import models.Message;
+import models.MessageType;
 import models.User;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -23,6 +25,7 @@ public class Client {
     private ConcurrentHashMap<String, ArrayList<Message>> channelMessages;
     private String currentChannel;
     private String nickname;
+    private UUID my_ID;
 
 
     private Client() {
@@ -35,7 +38,7 @@ public class Client {
 
         //temp test
         channelMessages.put("General", new ArrayList<Message>());
-        setNickname("Boris");
+        setNickname("");
         currentChannel = "General";
 //        ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
 //        c.add(new User("Failip"));
@@ -54,10 +57,20 @@ public class Client {
             e.printStackTrace();
         }
 
+        requestToJoin("General");
+
     }
     public void kill() {
         isRunning=false;
+    }
 
+    public void requestToJoin(String channel){
+        if(channel != null && !channel.equals("")){
+            Message m = new Message(MessageType.JOIN_CHANNEL);
+            m.CHANNEL = channel;
+            m.NICKNAME = getNickname();
+            sender.sendToServer(m);
+        }
     }
 
     public String getNickname() {

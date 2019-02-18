@@ -35,23 +35,26 @@ public class Receiver extends Thread{
 
     @Override
     public void run() {
+        System.out.println("Receiver is running");
         while (Client.getInstance().isRunning){
             try {
                 Sendable inData = (Sendable) objectInputStream.readObject();
 
                 if (inData instanceof Message) {
                     Message message = (Message) inData;
-                    MessageInboxHandler.getInstance().messageSwitch(message);
+                    System.out.println(message.TYPE + message.NICKNAME + message.CHANNEL + message.TEXT_CONTENT + message.RECEIVER + message.SENDER);
+//                    MessageInboxHandler.getInstance().messageSwitch(message);
 //                    controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
                 } else if (inData instanceof Channel) {
                     Channel channel = (Channel) inData;
-                    if (Client.getInstance().channelList.containsKey(channel.getName())) {
-                        Client.getInstance().channelList.remove(channel.getName());
-                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
-                    } else {
-                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
-                    }
-                    controller.printUsers();
+                    System.out.println("User joined " + channel.getName() + " with " + channel.getUsers().size());
+//                    if (Client.getInstance().channelList.containsKey(channel.getName())) {
+//                        Client.getInstance().channelList.remove(channel.getName());
+//                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
+//                    } else {
+//                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
+//                    }
+//                    controller.printUsers();
                 }
 //                System.out.println(message);
             }catch (IOException e){
