@@ -60,7 +60,7 @@ public class ClientHandler implements Runnable {
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
-          streamOut.writeObject(message);
+          //streamOut.writeObject(message); Debug
          // System.out.println(message);//Debug
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
