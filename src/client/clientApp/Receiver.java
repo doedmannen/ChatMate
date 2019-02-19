@@ -1,17 +1,13 @@
 package client.clientApp;
 
 import client.Controller;
-import client.Main;
 import models.Channel;
 import models.Message;
 import models.Sendable;
-import models.User;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
-import java.util.Collections;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import static client.Main.primaryStage;
 
@@ -44,7 +40,7 @@ public class Receiver extends Thread {
             } else if (inData instanceof Channel) {
                Channel channel = (Channel) inData;
                Client.getInstance().channelList.put(channel.getName(), channel.getUsers());
-               MessageInboxHandler.getInstance().processCHANNELL(channel);
+               MessageInboxHandler.getInstance().process_CHANNELL(channel);
             }
          } catch (IOException e) {
             System.out.println("Read Error");

@@ -115,6 +115,9 @@ public class Controller {
             chat_box.getChildren().clear();
             if (newValue != null) {
                Client.getInstance().setCurrentChannel(newValue.getName());
+               Client.getInstance().getChannelMessages().get(newValue.getName()).forEach(l -> {
+                  chat_box.getChildren().add(l);
+               });
             }
          }
       });

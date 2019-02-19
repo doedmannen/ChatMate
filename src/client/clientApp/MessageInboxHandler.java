@@ -4,10 +4,8 @@ import client.Controller;
 import client.Main;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
 import models.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MessageInboxHandler {
@@ -30,7 +28,7 @@ public class MessageInboxHandler {
          switch (message.TYPE) {
             case CHANNEL_MESSAGE:
 //               Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
-               processCHANNEL_MESSAGE(message);
+               process_CHANNEL_MESSAGE(message);
                break;
             case JOIN_CHANNEL:
                Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
@@ -73,7 +71,7 @@ public class MessageInboxHandler {
       });
    }
 
-   public void processCHANNELL(Channel channel) {
+   public void process_CHANNELL(Channel channel) {
       ArrayList<Label> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
       Client.getInstance().getChannelMessages().put(channel.getName(), list);
       Platform.runLater(() -> {
@@ -81,7 +79,7 @@ public class MessageInboxHandler {
       });
    }
 
-   public void processCHANNEL_MESSAGE(Message message) {
+   public void process_CHANNEL_MESSAGE(Message message) {
       Label label = messageCreator.channelMessage(message);
       Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
       if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
