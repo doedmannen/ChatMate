@@ -19,6 +19,7 @@ public class Main extends Application {
         primaryStage.setUserData(controller);
         Client.getInstance();
 
+        primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> Client.getInstance().kill());
         primaryStage.setTitle("Chatter Matter");
         primaryStage.setScene(new Scene(root, 900, 600));
