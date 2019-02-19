@@ -33,7 +33,7 @@ public class MessageInboxHandler {
             case JOIN_CHANNEL:
                Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
                controller.refreshUserList();
-               messageCreator.joinChannelMessage(message);
+                controller.getChatBox().getChildren().add(messageCreator.joinChannelMessage(message));
                break;
             case LEAVE_CHANNEL:
                User u = Client.getInstance().channelList.get(message.CHANNEL)
@@ -42,7 +42,7 @@ public class MessageInboxHandler {
                        .toArray(User[]::new)[0];
                Client.getInstance().channelList.get(message.CHANNEL).remove(u);
                controller.refreshUserList();
-               messageCreator.leaveChannelMessage(message);
+                controller.getChatBox().getChildren().add(messageCreator.leaveChannelMessage(message));
                break;
             case DISCONNECT:
                User disconnect = Client.getInstance().channelList.get(message.CHANNEL)
@@ -51,7 +51,7 @@ public class MessageInboxHandler {
                        .toArray(User[]::new)[0];
                Client.getInstance().channelList.get(message.CHANNEL).remove(disconnect);
                controller.refreshUserList();
-               messageCreator.disconnectMessage(message);
+                controller.getChatBox().getChildren().add(messageCreator.disconnectMessage(message));
                break;
             case NICKNAME_CHANGE:
                if (message.SENDER == Client.getInstance().getThisUser().getID()) {
@@ -62,11 +62,11 @@ public class MessageInboxHandler {
                             user.setNickName(message.TEXT_CONTENT);
                         }
                     });
-                    messageCreator.nicknameMessage(message);
+                controller.getChatBox().getChildren().add(messageCreator.nicknameMessage(message));
                     controller.refreshUserList();
                     break;
             case WHISPER_MESSAGE:
-               messageCreator.whisperMessage(message);
+                controller.getChatBox().getChildren().add(messageCreator.whisperMessage(message));
                break;
             case CONNECT:
                Client.getInstance().setThisUser(new User(message.NICKNAME, message.RECEIVER));
@@ -75,7 +75,7 @@ public class MessageInboxHandler {
             case ERROR:
                break;
             case WARNING:
-               messageCreator.warningMessage(message);
+                controller.getChatBox().getChildren().add(messageCreator.warningMessage(message));
                break;
          }
       });

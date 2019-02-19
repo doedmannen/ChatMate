@@ -64,22 +64,28 @@ public class Controller {
       channel_textField.setOnAction(event -> addCannel());
       send_button.setOnAction(e -> sendMessage());
       add_channel_button.setOnAction(e -> addCannel());
+      nickname_change.setOnAction(e -> changeNickName());
       scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
       Createchanellist();
       createContextMenuForLeavingChannel();
    }
 
-   @FXML
-   public void printUsers() {
-      Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel()).stream()
-              .sorted(Comparator.comparing(User::getNickName))
-              .forEach(user -> {
-                 Label label = new Label();
-                 label.setText(user.getNickName());
-                 label.setMinHeight(20);
-                 online_list.getChildren().add(label);
-              });
-   }
+    @FXML
+    public void printUsers() {
+        Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel()).stream()
+                .sorted(Comparator.comparing(User::getNickName))
+                .forEach(user ->{
+                    Label label = new Label();
+                    if(user.getID() == Client.getInstance().getThisUser().getID()) {
+                        label.setFont(Font.font(null, FontWeight.BOLD, 12));
+                        label.setText("(you) " + user.getNickName());
+                    } else {
+                        label.setText(user.getNickName());
+                    }
+                    label.setMinHeight(20);
+                    online_list.getChildren().add(label);
+                });
+    }
 
    @FXML
    public void refreshUserList() {
@@ -116,17 +122,15 @@ public class Controller {
       channel_list_view.setItems(sortedList);
       channel_list_view.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-      channel_list_view.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Channel>() {
-         @Override
-         public void changed(ObservableValue<? extends Channel> observable, Channel oldValue, Channel newValue) {
-            chat_box.getChildren().clear();
-            if (newValue != null) {
-               Client.getInstance().setCurrentChannel(newValue.getName());
-               Client.getInstance().getChannelMessages().get(newValue.getName()).forEach(l -> {
-                  chat_box.getChildren().add(l);
-               });
-            }
+      channel_list_view.getSelectionModel().selectedItemProperty().addListener((ChangeListener<Channel>) (observable, oldValue, newValue) -> {
+         chat_box.getChildren().clear();
+         if (newValue != null) {
+            Client.getInstance().setCurrentChannel(newValue.getName());
+            Client.getInstance().getChannelMessages().get(newValue.getName()).forEach(l -> {
+               chat_box.getChildren().add(l);
+            });
          }
+         refreshUserList();
       });
    }
 

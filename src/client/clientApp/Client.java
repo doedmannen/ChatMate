@@ -35,7 +35,7 @@ public class Client {
       channelMessages = new ConcurrentHashMap<>();
 
       try {
-         socket = new Socket("localhost", 54322);
+         socket = new Socket("10.155.88.55", 54322);
          isRunning = true;
          sender = new Sender(socket);
          reciever = new Receiver(socket);

@@ -64,9 +64,9 @@ public class MessageCreator {
    }
 
     @FXML
-    public void nicknameMessage(Message message) {
-        Label nicknameMessage = labelCreator(message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
-        controller.getChatBox().getChildren().add(nicknameMessage);
+    public Label nicknameMessage(Message message) {
+        return labelCreator(message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
+//        controller.getChatBox().getChildren().add(nicknameMessage);
     }
 
 }
