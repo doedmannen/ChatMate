@@ -71,12 +71,14 @@ public class Controller {
 
     @FXML
     public void printUsers() {
-        for (User user : Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel())) {
-            Label label = new Label();
-            label.setText(user.getNickName());
-            label.setMinHeight(20);
-            online_list.getChildren().add(label);
-        }
+        Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel()).stream()
+                .sorted(Comparator.comparing(User::getNickName))
+                .forEach(user ->{
+                    Label label = new Label();
+                    label.setText(user.getNickName());
+                    label.setMinHeight(20);
+                    online_list.getChildren().add(label);
+                });
     }
 
     @FXML
