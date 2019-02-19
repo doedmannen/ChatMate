@@ -1,10 +1,7 @@
 package server.serverApp;
 
 
-import models.Channel;
-import models.Message;
-import models.Sendable;
-import models.User;
+import models.*;
 
 import javax.swing.*;
 import java.util.Arrays;
@@ -94,11 +91,16 @@ public class MessageHandler implements Runnable {
             m.TEXT_CONTENT = m.TEXT_CONTENT.substring(0,20);
          }
          User user = ActiveUserController.getInstance().getUser(m.SENDER);
-         user.setNickName(m.TEXT_CONTENT);
          String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
+         user.setNickName(m.TEXT_CONTENT);
          Arrays.stream(userChannels).forEach(channel -> {
-            m.CHANNEL = channel;
-            sendToChannel(m);
+            System.out.println("Sending to " + channel);
+            Message sendM = new Message(MessageType.NICKNAME_CHANGE);
+            sendM.TEXT_CONTENT = m.TEXT_CONTENT;
+            sendM.SENDER = m.SENDER;
+            sendM.NICKNAME = m.NICKNAME;
+            sendM.CHANNEL = channel;
+            sendToChannel(sendM);
          });
       }
    }
