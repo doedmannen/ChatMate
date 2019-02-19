@@ -8,6 +8,7 @@ import javafx.scene.paint.Color;
 import models.Message;
 import models.MessageType;
 import models.Sendable;
+import models.User;
 
 public class MessageInboxHandler {
     private static MessageInboxHandler ourInstance = new MessageInboxHandler();
@@ -31,6 +32,7 @@ public class MessageInboxHandler {
                     messageCreator.channelMessage(message);
                     break;
                 case JOIN_CHANNEL:
+                    Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
                     controller.refreshUserList();
                     messageCreator.joinChannelMessage(message);
                     break;
