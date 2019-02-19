@@ -80,6 +80,12 @@ public class Controller {
     }
 
     @FXML
+    public void refreshUserList() {
+        online_list.getChildren().clear();
+        printUsers();
+    }
+
+    @FXML
     private void sendMessage() {
         final String status = input_text.getText();
         //// TODO: 2019-02-15 Create constructor for message

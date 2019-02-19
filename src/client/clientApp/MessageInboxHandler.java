@@ -27,21 +27,23 @@ public class MessageInboxHandler {
         Platform.runLater(() -> {
             switch (message.TYPE) {
                 case CHANNEL_MESSAGE:
-//                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
+                    Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
                     messageCreator.channelMessage(message);
                     break;
                 case JOIN_CHANNEL:
+                    controller.refreshUserList();
                     messageCreator.joinChannelMessage(message);
                     break;
                 case LEAVE_CHANNEL:
+                    controller.refreshUserList();
+                    messageCreator.leaveChannelMessage(message);
                     break;
                 case DISCONNECT:
-                    Main.primaryStage.close();
-                    Client.getInstance().kill();
                     break;
                 case NICKNAME_CHANGE:
                     break;
                 case WHISPER_MESSAGE:
+                    messageCreator.whisperMessage(message);
                     break;
                 case CONNECT:
                     break;
@@ -53,6 +55,10 @@ public class MessageInboxHandler {
                     break;
             }
         });
+    }
+
+    public void printUsers() {
+        Platform.runLater(() -> controller.printUsers());
     }
 
 }

@@ -33,6 +33,12 @@ public class MessageCreator{
     }
 
     @FXML
+    public void whisperMessage(Message message) {
+        Label whisperMessage = labelCreator(message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
+        controller.getChatBox().getChildren().add(whisperMessage);
+    }
+
+    @FXML
     public void warningMessage(Message message) {
         Label warningLabel = labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
         controller.getChatBox().getChildren().add(warningLabel);
@@ -42,6 +48,12 @@ public class MessageCreator{
     public void joinChannelMessage(Message message) {
         Label joinMessage = labelCreator(message.NICKNAME +" has joined the channel.", Color.GREEN, "join_channel");
         controller.getChatBox().getChildren().add(joinMessage);
+    }
+
+    @FXML
+    public void leaveChannelMessage(Message message) {
+        Label leaveMessage = labelCreator(message.NICKNAME +" has left the channel.", Color.LAVENDER, "leave_channel");
+        controller.getChatBox().getChildren().add(leaveMessage);
     }
 
 }

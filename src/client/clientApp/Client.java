@@ -28,14 +28,14 @@ public class Client {
     private UUID my_ID;
 
     private Client() {
-        //channelList = new ConcurrentSkipListMap<>();
+        channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
         channelMessages = new ConcurrentHashMap<>();
         channelMessages.put("General", new ArrayList<Message>());
         setNickname("Boris");
 
         try {
-            socket = new Socket("localhost", 54322);
+            socket = new Socket("10.155.88.55", 54322);
             isRunning = true;
             sender = new Sender(socket);
             reciever = new Receiver(socket);
