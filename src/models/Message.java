@@ -16,16 +16,16 @@ public class Message implements Serializable, Sendable{
       this.SENDER = null;
       this.RECEIVER = null;
       this.NICKNAME = null;
-      this.TYPE = MessageType.CHANNEL_MESSAGE;
+      this.TYPE = null;
       this.TEXT_CONTENT = null;
       this.CHANNEL = null;
    }
 
    public Message(MessageType type) {
+      this.TYPE = type;
       this.SENDER = null;
       this.RECEIVER = null;
       this.NICKNAME = null;
-      this.TYPE = type;
       this.TEXT_CONTENT = null;
       this.CHANNEL = null;
    }

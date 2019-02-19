@@ -2,6 +2,7 @@ package server.serverApp;
 
 import models.Message;
 import models.MessageType;
+import models.Sendable;
 import models.User;
 
 import java.io.IOException;
@@ -22,13 +23,13 @@ public class ClientHandler implements Runnable {
    private boolean isRunning = false;
    private final int TIMEOUT_MS = 50;
    private final User user;
-   private final LinkedBlockingDeque<Message> userOutbox;
-   private final LinkedBlockingQueue<Message> messageHandlerQueue;
+   private final LinkedBlockingDeque<Sendable> userOutbox;
+   private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
 
-   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Message> messageHandlerQueue) {
+   public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
-      this.user = new User("Unknown");
+      this.user = new User(createRandomNick());
       this.userOutbox = new LinkedBlockingDeque<>();
       this.messageHandlerQueue = messageHandlerQueue;
 
@@ -38,7 +39,6 @@ public class ClientHandler implements Runnable {
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
          streamOut = new ObjectOutputStream(socket.getOutputStream());
-         //Flush?
          socket.setSoTimeout(TIMEOUT_MS);
          isRunning = true;
       } catch (IOException e) {
@@ -48,11 +48,20 @@ public class ClientHandler implements Runnable {
       }
 
       Message m = new Message(MessageType.CONNECT);
-//      m.RECIVER = this.user.getID();
-
+      m.RECEIVER = this.user.getID();
+      m.NICKNAME = user.getNickName();
       this.userOutbox.add(m);
 
       System.out.println(socket.getInetAddress().toString() + " connected");
+   }
+
+   private String createRandomNick(){
+      String[] alpha = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+      String name = "User_";
+      for (int i = 0; i < 5; i++) {
+         name = name.concat((alpha[(int)(Math.random() * alpha.length)]));
+      }
+      return name;
    }
 
    private void readMessage() {
@@ -60,8 +69,7 @@ public class ClientHandler implements Runnable {
       try {
          Message message = (Message) streamIn.readObject();
          message.SENDER = this.user.getID();
-          streamOut.writeObject(message);
-         // System.out.println(message);//Debug
+         message.NICKNAME = this.user.getNickName();
          messageHandlerQueue.add(message);
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
@@ -80,7 +88,7 @@ public class ClientHandler implements Runnable {
       int stop = 1;
       for (int i = 0; i < stop; i++) {
          if (clientHasMessages()) {
-            Message m = this.userOutbox.getFirst();
+            Sendable m = this.userOutbox.getFirst();
             try {
                streamOut.writeObject(m);
                this.userOutbox.removeFirst();
@@ -122,6 +130,7 @@ public class ClientHandler implements Runnable {
          Message message = new Message(MessageType.DISCONNECT);
          message.CHANNEL = c;
          message.SENDER = this.user.getID();
+         message.NICKNAME = this.user.getNickName();
          this.messageHandlerQueue.add(message);
       });
       ActiveUserController.getInstance().removeUser(this.user);

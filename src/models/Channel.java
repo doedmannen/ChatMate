@@ -18,14 +18,14 @@ public class Channel implements Comparable<Channel>, Sendable, Serializable {
       return name;
    }
 
-   public SortedSet<User> getUsers() {
-      return Collections.unmodifiableSortedSet(this.users);
+   public ConcurrentSkipListSet<User> getUsers() {
+      return this.users;
    }
 
 
-   public void setName(String name) {
-      this.name = name;
-   }
+//   public void setName(String name) {
+//      this.name = name;
+//   }
 
    public boolean addUser(User user) {
       return this.users.add(user);

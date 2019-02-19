@@ -8,9 +8,10 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import models.Message;
+import models.MessageType;
 
 
-public class MessageCreator{
+public class MessageCreator {
     Controller controller;
 
     public MessageCreator() {
@@ -33,6 +34,12 @@ public class MessageCreator{
     }
 
     @FXML
+    public void whisperMessage(Message message) {
+        Label whisperMessage = labelCreator(message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
+        controller.getChatBox().getChildren().add(whisperMessage);
+    }
+
+    @FXML
     public void warningMessage(Message message) {
         Label warningLabel = labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
         controller.getChatBox().getChildren().add(warningLabel);
@@ -40,8 +47,20 @@ public class MessageCreator{
 
     @FXML
     public void joinChannelMessage(Message message) {
-        Label joinMessage = labelCreator(message.SENDER +" has joined the channel.", Color.GREEN, "join_channel");
+        Label joinMessage = labelCreator(message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
         controller.getChatBox().getChildren().add(joinMessage);
+    }
+
+    @FXML
+    public void leaveChannelMessage(Message message) {
+        Label leaveMessage = labelCreator(message.NICKNAME + " has left the channel.", Color.LAVENDER, "leave_channel");
+        controller.getChatBox().getChildren().add(leaveMessage);
+    }
+
+    @FXML
+    public void disconnectMessage(Message message) {
+        Label disconnectMessage = labelCreator(message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
+        controller.getChatBox().getChildren().add(disconnectMessage);
     }
 
 }

@@ -38,22 +38,17 @@ public class Receiver extends Thread{
         while (Client.getInstance().isRunning){
             try {
                 Sendable inData = (Sendable) objectInputStream.readObject();
-
                 if (inData instanceof Message) {
                     Message message = (Message) inData;
+                    System.out.println(message.TYPE);
                     MessageInboxHandler.getInstance().messageSwitch(message);
 //                    controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
                 } else if (inData instanceof Channel) {
                     Channel channel = (Channel) inData;
-                    if (Client.getInstance().channelList.containsKey(channel.getName())) {
-                        Client.getInstance().channelList.remove(channel.getName());
-                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
-                    } else {
-                        Client.getInstance().channelList.put(channel.getName(), (ConcurrentSkipListSet<User>) channel.getUsers());
-                    }
-                    controller.printUsers();
+                    Client.getInstance().channelList.put(channel.getName(), channel.getUsers());
+
+                    MessageInboxHandler.getInstance().printUsers();
                 }
-//                System.out.println(message);
             }catch (IOException e){
                 System.out.println("Read Error");
                 Client.getInstance().isRunning = false;
