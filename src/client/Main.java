@@ -2,13 +2,10 @@ package client;
 
 import client.clientApp.Client;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import static client.Main.primaryStage;
 
 public class Main extends Application {
     public static Stage primaryStage;

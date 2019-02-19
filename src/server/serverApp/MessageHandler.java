@@ -27,7 +27,7 @@ public class MessageHandler implements Runnable {
             processMessages();
          }
          try {
-            Thread.sleep(10);
+            Thread.sleep(1);
          } catch (InterruptedException e) {
          }
 

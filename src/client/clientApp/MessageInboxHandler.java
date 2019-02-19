@@ -24,10 +24,10 @@ public class MessageInboxHandler {
 
     public void messageSwitch(Message message) {
         MessageCreator messageCreator = new MessageCreator();
-        Platform.runLater(() ->{
+        Platform.runLater(() -> {
             switch (message.TYPE) {
                 case CHANNEL_MESSAGE:
-                    Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
+//                Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
                     messageCreator.channelMessage(message);
                     break;
                 case JOIN_CHANNEL:
@@ -51,7 +51,8 @@ public class MessageInboxHandler {
                     messageCreator.warningMessage(message);
 //                Platform.runLater(() -> controller.warningLabel(message));
                     break;
-            }});
+            }
+        });
     }
 
 }

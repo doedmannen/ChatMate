@@ -27,24 +27,12 @@ public class Client {
     private String nickname;
     private UUID my_ID;
 
-
     private Client() {
-        channelList = new ConcurrentSkipListMap<>();
+        //channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
-        channelList.put("General", new ConcurrentSkipListSet<>());
-        channelList.put("General2", new ConcurrentSkipListSet<>());
-        channelList.put("General3", new ConcurrentSkipListSet<>());
         channelMessages = new ConcurrentHashMap<>();
-
-        //temp test
         channelMessages.put("General", new ArrayList<Message>());
-        setNickname("");
-        currentChannel = "General";
-//        ConcurrentSkipListSet<User> c = new ConcurrentSkipListSet<>();
-//        c.add(new User("Failip"));
-//        c.add(new User("Ted"));
-//        c.add(new User("Anton"));
-//        channelList.put("General",c);
+        setNickname("Boris");
 
         try {
             socket = new Socket("localhost", 54322);
@@ -57,20 +45,19 @@ public class Client {
             e.printStackTrace();
         }
 
-        requestToJoin("General");
+        joinChannel(currentChannel);
 
     }
+
+    private void joinChannel(String channelName){
+        Message m = new Message(MessageType.JOIN_CHANNEL);
+        m.CHANNEL = channelName;
+        sender.sendToServer(m);
+    }
+
     public void kill() {
         isRunning=false;
-    }
 
-    public void requestToJoin(String channel){
-        if(channel != null && !channel.equals("")){
-            Message m = new Message(MessageType.JOIN_CHANNEL);
-            m.CHANNEL = channel;
-            m.NICKNAME = getNickname();
-            sender.sendToServer(m);
-        }
     }
 
     public String getNickname() {
