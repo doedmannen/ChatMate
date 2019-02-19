@@ -7,6 +7,7 @@ import models.Sendable;
 import models.User;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -52,6 +53,10 @@ public class MessageHandler implements Runnable {
             break;
          case WHISPER_MESSAGE:
             sendToUser(m);
+            break;
+         case NICKNAME_CHANGE:
+            changeUserNickName(m);
+            break;
       }
    }
 
@@ -81,6 +86,15 @@ public class MessageHandler implements Runnable {
 //      });
 //   }
 
+   private void changeUserNickName(Message m){
+      User user = ActiveUserController.getInstance().getUser(m.SENDER);
+      user.setNickName(m.TEXT_CONTENT);
+      String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
+      Arrays.stream(userChannels).forEach(channel -> {
+         m.CHANNEL = channel;
+         sendToChannel(m);
+      });
+   }
    private void addUserToChannel(Message m) {
       System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;

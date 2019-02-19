@@ -48,6 +48,9 @@ public class Controller {
     private TextField channel_textField;
 
     @FXML
+    private TextField nickname_change;
+
+    @FXML
     private ListView channel_list_view;
     @FXML
     private ContextMenu listContextMenu;
@@ -64,6 +67,8 @@ public class Controller {
         channel_textField.setOnAction(event -> addCannel());
         send_button.setOnAction(e -> sendMessage());
         add_channel_button.setOnAction(e -> addCannel());
+        nickname_change.setOnAction(e-> changeNickName());
+
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
         Createchanellist();
         delitefromChanelList();
@@ -169,5 +174,13 @@ public class Controller {
             }
         });
 
+    }
+
+    @FXML
+    private void changeNickName(){
+       String nickname =  nickname_change.getText().trim();
+       Message m = new Message(MessageType.NICKNAME_CHANGE);
+       m.TEXT_CONTENT = nickname;
+       Client.getInstance().sender.sendToServer(m);
     }
 }
