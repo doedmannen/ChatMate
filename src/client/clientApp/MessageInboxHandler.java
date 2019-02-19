@@ -37,10 +37,15 @@ public class MessageInboxHandler {
                     messageCreator.joinChannelMessage(message);
                     break;
                 case LEAVE_CHANNEL:
+                    User u = Client.getInstance().channelList.get(message.CHANNEL).stream().filter(user -> user.getID() == message.SENDER).toArray(User[]::new)[0];
+                    Client.getInstance().channelList.get(message.CHANNEL).remove(u);
                     controller.refreshUserList();
                     messageCreator.leaveChannelMessage(message);
                     break;
                 case DISCONNECT:
+                    User disconnect = Client.getInstance().channelList.get(message.CHANNEL).stream().filter(user -> user.getID() == message.SENDER).toArray(User[]::new)[0];
+                    Client.getInstance().channelList.get(message.CHANNEL).remove(disconnect);
+                    controller.refreshUserList();
                     messageCreator.disconnectMessage(message);
                     break;
                 case NICKNAME_CHANGE:
