@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable {
    public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
-      this.user = new User("Unknown");
+      this.user = new User("Unknown" + Math.random()*1000);
       this.userOutbox = new LinkedBlockingDeque<>();
       this.messageHandlerQueue = messageHandlerQueue;
 
@@ -121,6 +121,7 @@ public class ClientHandler implements Runnable {
          Message message = new Message(MessageType.DISCONNECT);
          message.CHANNEL = c;
          message.SENDER = this.user.getID();
+         message.NICKNAME = this.user.getNickName();
          this.messageHandlerQueue.add(message);
       });
       ActiveUserController.getInstance().removeUser(this.user);
