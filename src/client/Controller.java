@@ -62,7 +62,7 @@ public class Controller {
     public void initialize() {
         input_text.setOnAction(e -> sendMessage());
         channel_textField.setOnAction(event -> addCannel());
-        send_button.setOnAction(e -> printUsers());
+        send_button.setOnAction(e -> sendMessage());
         add_channel_button.setOnAction(e -> addCannel());
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
         Createchanellist();
@@ -71,12 +71,14 @@ public class Controller {
 
     @FXML
     public void printUsers() {
-        for (User user : Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel())) {
-            Label label = new Label();
-            label.setText(user.getNickName());
-            label.setMinHeight(20);
-            online_list.getChildren().add(label);
-        }
+        Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel()).stream()
+                .sorted(Comparator.comparing(User::getNickName))
+                .forEach(user ->{
+                    Label label = new Label();
+                    label.setText(user.getNickName());
+                    label.setMinHeight(20);
+                    online_list.getChildren().add(label);
+                });
     }
 
     @FXML

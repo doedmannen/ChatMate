@@ -29,7 +29,7 @@ public class ClientHandler implements Runnable {
    public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
       this.serverApp = serverApp;
-      this.user = new User("Unknown");
+      this.user = new User(createRandomNick());
       this.userOutbox = new LinkedBlockingDeque<>();
       this.messageHandlerQueue = messageHandlerQueue;
 
@@ -53,6 +53,15 @@ public class ClientHandler implements Runnable {
       this.userOutbox.add(m);
 
       System.out.println(socket.getInetAddress().toString() + " connected");
+   }
+
+   private String createRandomNick(){
+      String[] alpha = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
+      String name = "User_";
+      for (int i = 0; i < 5; i++) {
+         name = name.concat((alpha[(int)(Math.random() * alpha.length)]));
+      }
+      return name;
    }
 
    private void readMessage() {
@@ -121,6 +130,7 @@ public class ClientHandler implements Runnable {
          Message message = new Message(MessageType.DISCONNECT);
          message.CHANNEL = c;
          message.SENDER = this.user.getID();
+         message.NICKNAME = this.user.getNickName();
          this.messageHandlerQueue.add(message);
       });
       ActiveUserController.getInstance().removeUser(this.user);
