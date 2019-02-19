@@ -87,13 +87,20 @@ public class MessageHandler implements Runnable {
 //   }
 
    private void changeUserNickName(Message m){
-      User user = ActiveUserController.getInstance().getUser(m.SENDER);
-      user.setNickName(m.TEXT_CONTENT);
-      String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
-      Arrays.stream(userChannels).forEach(channel -> {
-         m.CHANNEL = channel;
-         sendToChannel(m);
-      });
+      // todo regex for removing multiple whitespaces
+      m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
+      if(!m.TEXT_CONTENT.equals("")){
+         if(m.TEXT_CONTENT.length() > 20){
+            m.TEXT_CONTENT = m.TEXT_CONTENT.substring(0,20);
+         }
+         User user = ActiveUserController.getInstance().getUser(m.SENDER);
+         user.setNickName(m.TEXT_CONTENT);
+         String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
+         Arrays.stream(userChannels).forEach(channel -> {
+            m.CHANNEL = channel;
+            sendToChannel(m);
+         });
+      }
    }
    private void addUserToChannel(Message m) {
       System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);

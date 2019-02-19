@@ -189,5 +189,6 @@ public class Controller {
        Message m = new Message(MessageType.NICKNAME_CHANGE);
        m.TEXT_CONTENT = nickname;
        Client.getInstance().sender.sendToServer(m);
+       nickname_change.clear();
     }
 }
