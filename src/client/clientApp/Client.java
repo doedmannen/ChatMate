@@ -28,7 +28,7 @@ public class Client {
     private UUID my_ID;
 
     private Client() {
-        //channelList = new ConcurrentSkipListMap<>();
+        channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
         channelMessages = new ConcurrentHashMap<>();
         channelMessages.put("General", new ArrayList<Message>());
