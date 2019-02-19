@@ -6,6 +6,7 @@ import models.Message;
 import models.Sendable;
 import models.User;
 
+import javax.swing.*;
 import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -73,6 +74,13 @@ public class MessageHandler implements Runnable {
       }
    }
 
+   private void resendChannelToClients(String channel){
+      Channel c = ActiveChannelController.getInstance().getChannel(channel);
+      c.getUsers().forEach(user -> {
+         ActiveUserController.getInstance().getUserOutbox(user).add(c);
+      });
+   }
+
    private void addUserToChannel(Message m) {
       System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;
@@ -80,7 +88,7 @@ public class MessageHandler implements Runnable {
       if (channel != null && user != null) {
          m.NICKNAME = user.getNickName();
          ActiveChannelController.getInstance().addUserToChannel(user, channel);
-         ActiveUserController.getInstance().getUserOutbox(user).add(ActiveChannelController.getInstance().getChannel(channel));
+         resendChannelToClients(m.CHANNEL);
          sendToChannel(m);
       }
       System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
