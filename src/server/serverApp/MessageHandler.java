@@ -100,7 +100,6 @@ public class MessageHandler implements Runnable {
       if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
          this.sendToChannel(m);
          System.out.println(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER + " removed from channel " : "");
-         System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
       }
    }
 

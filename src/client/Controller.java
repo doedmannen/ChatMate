@@ -127,8 +127,10 @@ public class Controller {
       MenuItem deleteMenuItem = new MenuItem("Leave Channel");
       deleteMenuItem.setOnAction((e) -> {
          Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
+         Message message = new Message(MessageType.LEAVE_CHANNEL);
+         Client.getInstance().sender.sendToServer(message);
+         message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
          channels.remove(channel);
-         System.out.println("To delete: " + channel.getName());
       });
 
       listContextMenu.getItems().addAll(deleteMenuItem);
