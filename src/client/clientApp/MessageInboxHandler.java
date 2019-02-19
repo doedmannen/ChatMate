@@ -39,6 +39,7 @@ public class MessageInboxHandler {
                     messageCreator.leaveChannelMessage(message);
                     break;
                 case DISCONNECT:
+                    messageCreator.disconnectMessage(message);
                     break;
                 case NICKNAME_CHANGE:
                     break;
@@ -51,7 +52,6 @@ public class MessageInboxHandler {
                     break;
                 case WARNING:
                     messageCreator.warningMessage(message);
-//                Platform.runLater(() -> controller.warningLabel(message));
                     break;
             }
         });
