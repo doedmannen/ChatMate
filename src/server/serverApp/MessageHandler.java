@@ -88,7 +88,7 @@ public class MessageHandler implements Runnable {
       m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
       if(!m.TEXT_CONTENT.equals("")){
          if(m.TEXT_CONTENT.length() > 20){
-            m.TEXT_CONTENT = m.TEXT_CONTENT.substring(0,20);
+            m.TEXT_CONTENT = m.TEXT_CONTENT.substring(0,20).trim();
          }
          User user = ActiveUserController.getInstance().getUser(m.SENDER);
          String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
