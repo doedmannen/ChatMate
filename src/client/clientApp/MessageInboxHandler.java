@@ -31,29 +31,33 @@ public class MessageInboxHandler {
                process_CHANNEL_MESSAGE(message);
                break;
             case JOIN_CHANNEL:
+                process_JOIN_MESSAGE(message);
                Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
                controller.refreshUserList();
-                controller.getChatBox().getChildren().add(messageCreator.joinChannelMessage(message));
+//                controller.getChatBox().getChildren().add(messageCreator.joinChannelMessage(message));
                break;
             case LEAVE_CHANNEL:
+                process_LEAVE_MESSAGE(message);
                User u = Client.getInstance().channelList.get(message.CHANNEL)
                        .stream()
                        .filter(user -> user.getID() == message.SENDER)
                        .toArray(User[]::new)[0];
                Client.getInstance().channelList.get(message.CHANNEL).remove(u);
                controller.refreshUserList();
-                controller.getChatBox().getChildren().add(messageCreator.leaveChannelMessage(message));
+//                controller.getChatBox().getChildren().add(messageCreator.leaveChannelMessage(message));
                break;
             case DISCONNECT:
+                process_DISCONNECT_MESSAGE(message);
                User disconnect = Client.getInstance().channelList.get(message.CHANNEL)
                        .stream()
                        .filter(user -> user.getID() == message.SENDER)
                        .toArray(User[]::new)[0];
                Client.getInstance().channelList.get(message.CHANNEL).remove(disconnect);
                controller.refreshUserList();
-                controller.getChatBox().getChildren().add(messageCreator.disconnectMessage(message));
+//                controller.getChatBox().getChildren().add(messageCreator.disconnectMessage(message));
                break;
             case NICKNAME_CHANGE:
+                process_NICKNAME_CHANGE(message);
                if (message.SENDER == Client.getInstance().getThisUser().getID()) {
                         Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
                     }
@@ -62,7 +66,7 @@ public class MessageInboxHandler {
                             user.setNickName(message.TEXT_CONTENT);
                         }
                     });
-                controller.getChatBox().getChildren().add(messageCreator.nicknameMessage(message));
+//                controller.getChatBox().getChildren().add(messageCreator.nicknameMessage(message));
                     controller.refreshUserList();
                     break;
             case WHISPER_MESSAGE:
@@ -75,7 +79,7 @@ public class MessageInboxHandler {
             case ERROR:
                break;
             case WARNING:
-                controller.getChatBox().getChildren().add(messageCreator.warningMessage(message));
+//                controller.getChatBox().getChildren().add(messageCreator.warningMessage(message));
                break;
          }
       });
@@ -88,7 +92,13 @@ public class MessageInboxHandler {
          controller.channels.add(channel);
       });
    }
-
+    public void process_NICKNAME_CHANGE(Message message) {
+        Label label = messageCreator.nicknameMessage(message);
+        Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+        if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+            controller.getChatBox().getChildren().add(label);
+        }
+    }
    public void process_CHANNEL_MESSAGE(Message message) {
       Label label = messageCreator.channelMessage(message);
       Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
@@ -96,7 +106,27 @@ public class MessageInboxHandler {
          controller.getChatBox().getChildren().add(label);
       }
    }
-
+    public void process_JOIN_MESSAGE(Message message) {
+        Label label = messageCreator.joinChannelMessage(message);
+        Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+        if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+            controller.getChatBox().getChildren().add(label);
+        }
+    }
+    public void process_LEAVE_MESSAGE(Message message) {
+        Label label = messageCreator.leaveChannelMessage(message);
+        Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+        if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+            controller.getChatBox().getChildren().add(label);
+        }
+    }
+    public void process_DISCONNECT_MESSAGE(Message message) {
+        Label label = messageCreator.disconnectMessage(message);
+        Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+        if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+            controller.getChatBox().getChildren().add(label);
+        }
+    }
    public void printUsers() {
       Platform.runLater(() -> controller.printUsers());
    }
