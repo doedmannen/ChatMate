@@ -9,24 +9,24 @@ import models.*;
 import java.util.ArrayList;
 
 public class MessageInboxHandler {
-   private static MessageInboxHandler ourInstance = new MessageInboxHandler();
+    private static MessageInboxHandler ourInstance = new MessageInboxHandler();
 
-   public static MessageInboxHandler getInstance() {
-      return ourInstance;
-   }
+    public static MessageInboxHandler getInstance() {
+        return ourInstance;
+    }
 
-   private Controller controller;
-   private MessageCreator messageCreator;
+    private Controller controller;
+    private MessageCreator messageCreator;
 
-   private MessageInboxHandler() {
-      controller = (client.Controller) Main.primaryStage.getUserData();
-      messageCreator = new MessageCreator();
-   }
+    private MessageInboxHandler() {
+        controller = (client.Controller) Main.primaryStage.getUserData();
+        messageCreator = new MessageCreator();
+    }
 
-   public void messageSwitch(Message message) {
-      Platform.runLater(() -> {
-         switch (message.TYPE) {
-            case CHANNEL_MESSAGE:
+    public void messageSwitch(Message message) {
+        Platform.runLater(() -> {
+            switch (message.TYPE) {
+                case CHANNEL_MESSAGE:
 //               Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
                process_CHANNEL_MESSAGE(message);
                break;
@@ -60,6 +60,7 @@ public class MessageInboxHandler {
                 process_NICKNAME_CHANGE(message);
                if (message.SENDER == Client.getInstance().getThisUser().getID()) {
                         Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
+                        Client.getInstance().changeTitle();
                     }
                     Client.getInstance().channelList.get(message.CHANNEL).forEach(user -> {
                         if (user.getID() == message.SENDER) {
