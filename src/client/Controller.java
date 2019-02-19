@@ -13,6 +13,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import models.Channel;
 import models.Message;
@@ -75,7 +77,12 @@ public class Controller {
                 .sorted(Comparator.comparing(User::getNickName))
                 .forEach(user ->{
                     Label label = new Label();
-                    label.setText(user.getNickName());
+                    if(user.getID() == Client.getInstance().getThisUser().getID()) {
+                        label.setFont(Font.font(null, FontWeight.BOLD, 12));
+                        label.setText("(you) " + user.getNickName());
+                    } else {
+                        label.setText(user.getNickName());
+                    }
                     label.setMinHeight(20);
                     online_list.getChildren().add(label);
                 });
