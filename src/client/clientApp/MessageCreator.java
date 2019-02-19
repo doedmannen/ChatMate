@@ -53,7 +53,7 @@ public class MessageCreator {
 
    @FXML
    public Label leaveChannelMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has left the channel.", Color.LAVENDER, "leave_channel");
+      return labelCreator(message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
 //      controller.getChatBox().getChildren().add(leaveMessage);
    }
 
