@@ -7,6 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import models.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class MessageInboxHandler {
    private static MessageInboxHandler ourInstance = new MessageInboxHandler();
 
@@ -14,19 +17,20 @@ public class MessageInboxHandler {
       return ourInstance;
    }
 
-   Controller controller;
+   private Controller controller;
+   private MessageCreator messageCreator;
 
    private MessageInboxHandler() {
       controller = (client.Controller) Main.primaryStage.getUserData();
+      messageCreator = new MessageCreator();
    }
 
    public void messageSwitch(Message message) {
-      MessageCreator messageCreator = new MessageCreator();
       Platform.runLater(() -> {
          switch (message.TYPE) {
             case CHANNEL_MESSAGE:
 //               Client.getInstance().getChannelMessages().get(message.CHANNEL).add(message);
-               messageCreator.channelMessage(message);
+               processCHANNEL_MESSAGE(message);
                break;
             case JOIN_CHANNEL:
                Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
@@ -70,9 +74,19 @@ public class MessageInboxHandler {
    }
 
    public void processCHANNELL(Channel channel) {
+      ArrayList<Label> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
+      Client.getInstance().getChannelMessages().put(channel.getName(), list);
       Platform.runLater(() -> {
          controller.channels.add(channel);
       });
+   }
+
+   public void processCHANNEL_MESSAGE(Message message) {
+      Label label = messageCreator.channelMessage(message);
+      Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+      if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+         controller.getChatBox().getChildren().add(label);
+      }
    }
 
    public void printUsers() {
