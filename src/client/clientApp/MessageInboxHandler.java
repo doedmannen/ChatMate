@@ -55,6 +55,17 @@ public class MessageInboxHandler {
                     messageCreator.disconnectMessage(message);
                     break;
                 case NICKNAME_CHANGE:
+                    if (message.SENDER == Client.getInstance().getThisUser().getID()) {
+                        Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
+                    }
+                    Client.getInstance().channelList.get(message.CHANNEL).forEach(user -> {
+                        if (user.getID() == message.SENDER) {
+                            user.setNickName(message.TEXT_CONTENT);
+                        }
+                    });
+                    messageCreator.nicknameMessage(message);
+                    Main.primaryStage.setTitle("Chatter Matter - " + message.NICKNAME);
+                    controller.refreshUserList();
                     break;
                 case WHISPER_MESSAGE:
                     messageCreator.whisperMessage(message);
