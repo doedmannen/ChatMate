@@ -130,7 +130,8 @@ public class Controller {
                chat_box.getChildren().add(l);
             });
          }
-         refreshUserList();
+          Client.getInstance().changeTitle();
+          refreshUserList();
       });
    }
 

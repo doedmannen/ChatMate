@@ -1,5 +1,6 @@
 package client.clientApp;
 
+import client.Main;
 import javafx.scene.control.Label;
 import models.Message;
 import models.MessageType;
@@ -46,6 +47,11 @@ public class Client {
       }
 
       joinChannel(currentChannel);
+
+   }
+
+   public void changeTitle() {
+       Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
 
    }
 
