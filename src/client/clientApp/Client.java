@@ -6,6 +6,7 @@ import models.Message;
 import models.MessageType;
 import models.User;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -63,7 +64,11 @@ public class Client {
 
    public void kill() {
       isRunning = false;
-
+      try {
+         socket.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
    }
 
    public User getThisUser() {
