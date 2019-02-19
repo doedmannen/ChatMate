@@ -37,13 +37,19 @@ public class MessageInboxHandler {
                     messageCreator.joinChannelMessage(message);
                     break;
                 case LEAVE_CHANNEL:
-                    User u = Client.getInstance().channelList.get(message.CHANNEL).stream().filter(user -> user.getID() == message.SENDER).toArray(User[]::new)[0];
+                    User u = Client.getInstance().channelList.get(message.CHANNEL)
+                            .stream()
+                            .filter(user -> user.getID() == message.SENDER)
+                            .toArray(User[]::new)[0];
                     Client.getInstance().channelList.get(message.CHANNEL).remove(u);
                     controller.refreshUserList();
                     messageCreator.leaveChannelMessage(message);
                     break;
                 case DISCONNECT:
-                    User disconnect = Client.getInstance().channelList.get(message.CHANNEL).stream().filter(user -> user.getID() == message.SENDER).toArray(User[]::new)[0];
+                    User disconnect = Client.getInstance().channelList.get(message.CHANNEL)
+                            .stream()
+                            .filter(user -> user.getID() == message.SENDER)
+                            .toArray(User[]::new)[0];
                     Client.getInstance().channelList.get(message.CHANNEL).remove(disconnect);
                     controller.refreshUserList();
                     messageCreator.disconnectMessage(message);
@@ -54,6 +60,8 @@ public class MessageInboxHandler {
                     messageCreator.whisperMessage(message);
                     break;
                 case CONNECT:
+                    Client.getInstance().setThisUser(new User(message.NICKNAME, message.RECEIVER));
+                    Main.primaryStage.setTitle("Chatter Matter - " + message.NICKNAME);
                     break;
                 case ERROR:
                     break;

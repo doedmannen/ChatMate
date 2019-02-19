@@ -45,7 +45,6 @@ public class Receiver extends Thread{
 //                    controller.getOutput_text().appendText(message.TEXT_CONTENT + "\n"); //For debugging javaFX print
                 } else if (inData instanceof Channel) {
                     Channel channel = (Channel) inData;
-                    System.out.println(channel.getUsers().size());
                     Client.getInstance().channelList.put(channel.getName(), channel.getUsers());
 
                     MessageInboxHandler.getInstance().printUsers();

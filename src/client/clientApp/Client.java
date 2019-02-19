@@ -24,15 +24,13 @@ public class Client {
     public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
     private ConcurrentHashMap<String, ArrayList<Message>> channelMessages;
     private String currentChannel;
-    private String nickname;
-    private UUID my_ID;
+    private User thisUser;
 
     private Client() {
         channelList = new ConcurrentSkipListMap<>();
         currentChannel = "General";
         channelMessages = new ConcurrentHashMap<>();
         channelMessages.put("General", new ArrayList<Message>());
-        setNickname("Boris");
 
         try {
             socket = new Socket("10.155.88.55", 54322);
@@ -60,12 +58,12 @@ public class Client {
 
     }
 
-    public String getNickname() {
-        return nickname;
+    public User getThisUser() {
+        return thisUser;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setThisUser(User thisUser) {
+        this.thisUser = thisUser;
     }
 
     public ConcurrentHashMap<String, ArrayList<Message>> getChannelMessages() {

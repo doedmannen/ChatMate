@@ -93,7 +93,7 @@ public class Controller {
         message.CHANNEL = Client.getInstance().getCurrentChannel();
         message.TYPE = MessageType.CHANNEL_MESSAGE;
         message.TEXT_CONTENT = status;
-        message.NICKNAME = Client.getInstance().getNickname();
+        message.NICKNAME = Client.getInstance().getThisUser().getNickName();
         input_text.clear();
         Client.getInstance().sender.sendToServer(message);
     }
