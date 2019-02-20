@@ -1,12 +1,10 @@
 package server.serverApp;
 
 
-import models.Channel;
-import models.Message;
-import models.Sendable;
-import models.User;
+import models.*;
 
 import javax.swing.*;
+import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -52,6 +50,10 @@ public class MessageHandler implements Runnable {
             break;
          case WHISPER_MESSAGE:
             sendToUser(m);
+            break;
+         case NICKNAME_CHANGE:
+            changeUserNickName(m);
+            break;
       }
    }
 
@@ -81,6 +83,27 @@ public class MessageHandler implements Runnable {
 //      });
 //   }
 
+   private void changeUserNickName(Message m){
+      // todo regex for removing multiple whitespaces
+      m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
+      if(!m.TEXT_CONTENT.equals("")){
+         if(m.TEXT_CONTENT.length() > 20){
+            m.TEXT_CONTENT = m.TEXT_CONTENT.substring(0,20).trim();
+         }
+         User user = ActiveUserController.getInstance().getUser(m.SENDER);
+         String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
+         user.setNickName(m.TEXT_CONTENT);
+         Arrays.stream(userChannels).forEach(channel -> {
+            System.out.println("Sending to " + channel);
+            Message sendM = new Message(MessageType.NICKNAME_CHANGE);
+            sendM.TEXT_CONTENT = m.TEXT_CONTENT;
+            sendM.SENDER = m.SENDER;
+            sendM.NICKNAME = m.NICKNAME;
+            sendM.CHANNEL = channel;
+            sendToChannel(sendM);
+         });
+      }
+   }
    private void addUserToChannel(Message m) {
       System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;
@@ -100,7 +123,6 @@ public class MessageHandler implements Runnable {
       if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
          this.sendToChannel(m);
          System.out.println(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER + " removed from channel " : "");
-         System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
       }
    }
 
