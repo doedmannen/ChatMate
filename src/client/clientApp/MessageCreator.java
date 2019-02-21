@@ -26,6 +26,13 @@ public class MessageCreator {
         label.setWrapText(true);
         return label;
     }
+    public Label labelCreator(String text, String id) {
+        Label label = new Label();
+        label.setText(text);
+        label.setId(id);
+        label.setWrapText(true);
+        return label;
+    }
 
     @FXML
     public Label createLabel(Message message) {
@@ -35,7 +42,7 @@ public class MessageCreator {
                 label = labelCreator(message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
             break;
             case CHANNEL_MESSAGE:
-                label = labelCreator(message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
+                label = labelCreator(message.NICKNAME + ": " + message.TEXT_CONTENT, "channel_message");
                 break;
             case JOIN_CHANNEL:
                 label = labelCreator(message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");

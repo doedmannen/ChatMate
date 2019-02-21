@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
@@ -16,7 +17,7 @@
    <center>
       <VBox alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="577.0" BorderPane.alignment="CENTER">
          <children>
-            <ScrollPane fx:id="scroll_pane" hbarPolicy="NEVER" prefHeight="565.0" prefWidth="607.0">
+            <ScrollPane fx:id="scroll_pane" hbarPolicy="NEVER" prefHeight="566.0" prefWidth="530.0">
                <content>
                   <VBox fx:id="chat_box" maxHeight="Infinity" prefWidth="603.0">
                      <padding>
@@ -30,46 +31,55 @@
                   <Button id="send_button" fx:id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                </children>
             </HBox>
-         </children></VBox>
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </BorderPane.margin></VBox>
    </center>
    <right>
       <VBox prefHeight="600.0" prefWidth="195.0" BorderPane.alignment="CENTER">
          <children>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="216.0" prefWidth="190.0">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="87.0" prefWidth="175.0">
                <children>
-                  <Label layoutX="21.0" layoutY="14.0" prefHeight="27.0" prefWidth="168.0" text="Nickname change:" />
-                  <TextField fx:id="nickname_change" layoutX="21.0" layoutY="41.0" prefHeight="39.0" prefWidth="152.0" />
+                  <Label layoutX="14.0" layoutY="10.0" prefHeight="27.0" prefWidth="168.0" text="Nickname change:" />
+                  <TextField fx:id="nickname_change" layoutX="12.0" layoutY="37.0" prefHeight="39.0" prefWidth="152.0" />
                </children>
             </AnchorPane>
-            <ScrollPane hbarPolicy="NEVER" prefHeight="636.0" prefWidth="195.0">
+            <ScrollPane hbarPolicy="NEVER" prefHeight="456.0" prefWidth="175.0">
                <content>
-                  <FlowPane prefHeight="488.0" prefWidth="157.0">
+                  <FlowPane prefHeight="384.0" prefWidth="157.0">
                      <children>
                         <Label prefHeight="27.0" prefWidth="157.0" text="Online:" />
-                        <VBox fx:id="online_list" prefHeight="433.0" prefWidth="156.0" />
+                        <VBox fx:id="online_list" prefHeight="401.0" prefWidth="156.0" />
                      </children></FlowPane>
                </content>
                <padding>
                   <Insets left="20.0" right="20.0" top="20.0" />
                </padding>
             </ScrollPane>
-         </children></VBox>
+            <AnchorPane prefHeight="37.0" prefWidth="195.0">
+               <children>
+                  <CheckBox fx:id="darkmode_checkbox" layoutX="26.0" layoutY="10.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="123.0" text="Dark mode" />
+               </children></AnchorPane>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding></VBox>
    </right>
    <left>
-      <VBox prefHeight="600.0" prefWidth="177.0" style="-fx-background-color: White;" BorderPane.alignment="CENTER">
+      <VBox prefHeight="600.0" prefWidth="177.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" text="Channels:" VBox.vgrow="ALWAYS">
-               <VBox.margin>
-                  <Insets left="5.0" />
-               </VBox.margin>
-            </Label>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <Label text="Channels" />
+            <HBox prefHeight="0.0" prefWidth="177.0">
                <children>
-                  <TextField fx:id="channel_textField" prefHeight="31.0" prefWidth="73.0" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="channel_textField" prefHeight="31.0" prefWidth="73.0" promptText="Join channel" HBox.hgrow="ALWAYS" />
                   <Button fx:id="add_channel_button" mnemonicParsing="false" prefHeight="31.0" prefWidth="60.0" text="Add" />
                </children>
             </HBox>
             <ListView fx:id="channel_list_view" prefHeight="667.0" prefWidth="123.0" VBox.vgrow="ALWAYS" />
-         </children></VBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding></VBox>
    </left>
 </BorderPane>
