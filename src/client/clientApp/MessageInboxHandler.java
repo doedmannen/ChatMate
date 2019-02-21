@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.scene.control.Label;
 import models.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MessageInboxHandler {
@@ -24,6 +26,7 @@ public class MessageInboxHandler {
     }
 
     public void messageSwitch(Message message) {
+        message.TIMESTAMP=getTimeStamp();
         Platform.runLater(() -> {
             switch (message.TYPE) {
                 case CHANNEL_MESSAGE:
@@ -131,5 +134,11 @@ public class MessageInboxHandler {
    public void printUsers() {
       Platform.runLater(() -> controller.printUsers());
    }
+
+    public String getTimeStamp() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return "["+now.format(formatter)+"] ";
+    }
 
 }
