@@ -1,6 +1,6 @@
 package client.clientApp;
 
-import client.Controller;
+import client.clientApp.controllers.MainGUIController;
 import models.Channel;
 import models.Message;
 import models.Sendable;
@@ -14,7 +14,7 @@ import static client.Main.primaryStage;
 public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
-   private Controller controller = (client.Controller) primaryStage.getUserData();
+   private MainGUIController mainGUIController = (MainGUIController) primaryStage.getUserData();
 
    public Receiver(Socket socket) {
       this.socket = socket;

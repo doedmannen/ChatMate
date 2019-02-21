@@ -1,4 +1,4 @@
-package client;
+package client.clientApp.controllers;
 
 import client.clientApp.Client;
 import javafx.beans.value.ChangeListener;
@@ -21,7 +21,7 @@ import models.User;
 
 import java.util.Comparator;
 
-public class Controller {
+public class MainGUIController {
 
    @FXML
    private TextField input_text;

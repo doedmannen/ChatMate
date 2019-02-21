@@ -1,6 +1,7 @@
 package client;
 
 import client.clientApp.Client;
+import client.clientApp.controllers.MainGUIController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,10 +14,10 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Main.primaryStage = primaryStage;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("GUI.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("clientApp/gui/mainGUI.fxml"));
         Parent root = loader.load();
-        Controller controller = loader.getController();
-        primaryStage.setUserData(controller);
+        MainGUIController mainGUIController = loader.getController();
+        primaryStage.setUserData(mainGUIController);
         Client.getInstance();
 
         primaryStage.setResizable(false);
