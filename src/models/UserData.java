@@ -46,7 +46,7 @@ public class UserData implements Serializable {
    }
 
    public ConcurrentHashMap<String, ArrayList<ChatLabel>> getChannelMessages() {
-      return this.getChannelMessages();
+      return this.channelMessages;
    }
 
    public String getUsername() {

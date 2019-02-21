@@ -13,21 +13,23 @@
           prefHeight="400.0" prefWidth="600.0" vgap="10" hgap="10"
           alignment="TOP_CENTER">
 
-    <VBox GridPane.rowIndex="0" GridPane.columnIndex="0">
+    <Label GridPane.rowIndex="0" GridPane.columnIndex="0"
+           fx:id="errorLabel" GridPane.columnSpan="2"
+           style="-fx-text-fill: red" textAlignment="CENTER">
         <GridPane.margin>
-            <Insets top="30"/>
+            <Insets top="10"/>
         </GridPane.margin>
+    </Label>
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
         <Label text="Your nickname: "/>
-        <TextField/>
+        <TextField fx:id="nicknameTextField"/>
     </VBox>
-    <VBox GridPane.rowIndex="0" GridPane.columnIndex="1">
-        <GridPane.margin>
-            <Insets top="30"/>
-        </GridPane.margin>
+    <VBox GridPane.rowIndex="1" GridPane.columnIndex="1">
+
         <Label text="Server Adress: "/>
-        <TextField/>
+        <TextField fx:id="serverAdressTextField"/>
     </VBox>
 
-    <Button text="Connect" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+    <Button text="Connect" GridPane.columnIndex="0" GridPane.rowIndex="2" onAction="#connectBtnPressed"/>
 
 </GridPane>
