@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import models.ChatLabel;
 import models.Message;
 
 
@@ -16,8 +17,8 @@ public class MessageCreator {
       mainGUIController = (MainGUIController) Main.primaryStage.getUserData();
    }
 
-   public Label labelCreator(String text, Paint color, String id) {
-      Label label = new Label();
+   public ChatLabel labelCreator(String text, Paint color, String id) {
+      ChatLabel label = new ChatLabel();
       label.setText(text);
       label.setTextFill(color);
       label.setId(id);
@@ -26,43 +27,43 @@ public class MessageCreator {
    }
 
    @FXML
-   public Label channelMessage(Message message) {
+   public ChatLabel channelMessage(Message message) {
       return labelCreator(message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
 //        mainGUIController.getChatBox().getChildren().add(channelMessage);
    }
 
    @FXML
-   public Label whisperMessage(Message message) {
+   public ChatLabel whisperMessage(Message message) {
       return labelCreator(message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
 //      mainGUIController.getChatBox().getChildren().add(whisperMessage);
    }
 
    @FXML
-   public Label warningMessage(Message message) {
+   public ChatLabel warningMessage(Message message) {
       return labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
 //      mainGUIController.getChatBox().getChildren().add(warningLabel);
    }
 
    @FXML
-   public Label joinChannelMessage(Message message) {
+   public ChatLabel joinChannelMessage(Message message) {
       return labelCreator(message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
 //      mainGUIController.getChatBox().getChildren().add(joinMessage);
    }
 
    @FXML
-   public Label leaveChannelMessage(Message message) {
+   public ChatLabel leaveChannelMessage(Message message) {
       return labelCreator(message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
 //      mainGUIController.getChatBox().getChildren().add(leaveMessage);
    }
 
    @FXML
-   public Label disconnectMessage(Message message) {
+   public ChatLabel disconnectMessage(Message message) {
       return labelCreator(message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
 //       mainGUIController.getChatBox().getChildren().add(disconnectMessage);
    }
 
     @FXML
-    public Label nicknameMessage(Message message) {
+    public ChatLabel nicknameMessage(Message message) {
         return labelCreator(message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
 //        mainGUIController.getChatBox().getChildren().add(nicknameMessage);
     }

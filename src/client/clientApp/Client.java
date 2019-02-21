@@ -3,10 +3,9 @@ package client.clientApp;
 import client.Main;
 import client.clientApp.network.Receiver;
 import client.clientApp.network.Sender;
+import client.clientApp.util.FileManager;
 import javafx.scene.control.Label;
-import models.Message;
-import models.MessageType;
-import models.User;
+import models.*;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -28,28 +27,13 @@ public class Client {
    public Sender sender;
    public Receiver reciever;
    public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
-   private ConcurrentHashMap<String, ArrayList<Label>> channelMessages;
+   private ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages;
    private String currentChannel;
    private User thisUser;
 
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
-      currentChannel = "General";
       channelMessages = new ConcurrentHashMap<>();
-
-      try {
-         socket = new Socket("localhost", 54322);
-         isRunning = true;
-         sender = new Sender(socket);
-         reciever = new Receiver(socket);
-         sender.start();
-         reciever.start();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-
-      joinChannel(currentChannel);
-
    }
 
    public void changeTitle() {
@@ -80,11 +64,11 @@ public class Client {
       this.thisUser = thisUser;
    }
 
-   public ConcurrentHashMap<String, ArrayList<Label>> getChannelMessages() {
+   public ConcurrentHashMap<String, ArrayList<ChatLabel>> getChannelMessages() {
       return channelMessages;
    }
 
-   public void setChannelMessages(ConcurrentHashMap<String, ArrayList<Label>> channelMessages) {
+   public void setChannelMessages(ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages) {
       this.channelMessages = channelMessages;
    }
 
@@ -102,5 +86,34 @@ public class Client {
 
    public void setIsRunning(boolean isRunning) {
       this.isRunning = isRunning;
+   }
+
+   public boolean connect(String ip) {
+      try {
+         socket = new Socket(ip, 54322);
+         isRunning = true;
+         sender = new Sender(socket);
+         reciever = new Receiver(socket);
+         sender.start();
+         reciever.start();
+         return true;
+      } catch (Exception e) {
+         e.printStackTrace();
+         return false;
+      }
+   }
+
+   public void saveData() {
+      this.kill();
+      System.out.println("Saving data ");
+      UserData userData = new UserData();
+      userData.setUsername(thisUser.getNickName());
+      this.channelMessages.entrySet().forEach(e -> {
+         userData.addChannel(e.getKey(), e.getValue());
+      });
+
+      // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
+
+      FileManager.saveFile(userData, "user-data.ser");
    }
 }

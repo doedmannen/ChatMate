@@ -26,7 +26,7 @@ public class Main extends Application {
       Client.getInstance();
 
       primaryStage.setResizable(false);
-      primaryStage.setOnCloseRequest(e -> Client.getInstance().kill());
+      primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
       primaryStage.setTitle("Chatter Matter");
       primaryStage.setScene(new Scene(root, 900, 600));
       primaryStage.show();
@@ -34,6 +34,6 @@ public class Main extends Application {
 
 
    public static void main(String[] args) {
-        launch(args);
+      launch(args);
    }
 }

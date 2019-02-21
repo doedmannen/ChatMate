@@ -20,6 +20,7 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MainGUIController {
 
@@ -28,7 +29,7 @@ public class MainGUIController {
 
    @FXML
    private TextField nickname_change;
-  
+
    @FXML
    private Button send_button;
 
@@ -68,24 +69,30 @@ public class MainGUIController {
       scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
       Createchanellist();
       createContextMenuForLeavingChannel();
+      Client.getInstance().connect("localhost");
    }
 
-    @FXML
-    public void printUsers() {
-        Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel()).stream()
-                .sorted(Comparator.comparing(User::getNickName))
-                .forEach(user ->{
+   @FXML
+   public void printUsers() {
+      ConcurrentSkipListSet<User> users = Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel());
+      if (users != null) {
+         users.stream()
+                 .sorted(Comparator.comparing(User::getNickName))
+                 .forEach(user -> {
                     Label label = new Label();
-                    if(user.getID() == Client.getInstance().getThisUser().getID()) {
-                        label.setFont(Font.font(null, FontWeight.BOLD, 12));
-                        label.setText("(you) " + user.getNickName());
+                    if (user.getID() == Client.getInstance().getThisUser().getID()) {
+                       label.setFont(Font.font(null, FontWeight.BOLD, 12));
+                       label.setText("(you) " + user.getNickName());
                     } else {
-                        label.setText(user.getNickName());
+                       label.setText(user.getNickName());
                     }
                     label.setMinHeight(20);
                     online_list.getChildren().add(label);
-                });
-    }
+                 });
+      }
+
+
+   }
 
    @FXML
    public void refreshUserList() {
@@ -130,8 +137,8 @@ public class MainGUIController {
                chat_box.getChildren().add(l);
             });
          }
-          Client.getInstance().changeTitle();
-          refreshUserList();
+         Client.getInstance().changeTitle();
+         refreshUserList();
       });
    }
 
@@ -141,13 +148,13 @@ public class MainGUIController {
       listContextMenu = new ContextMenu();
       MenuItem deleteMenuItem = new MenuItem("Leave Channel");
       deleteMenuItem.setOnAction((e) -> {
-          if(channels.size() > 1){
-              Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
-              Message message = new Message(MessageType.LEAVE_CHANNEL);
-              Client.getInstance().sender.sendToServer(message);
-              message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
-              channels.remove(channel);
-          }
+         if (channels.size() > 1) {
+            Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
+            Message message = new Message(MessageType.LEAVE_CHANNEL);
+            Client.getInstance().sender.sendToServer(message);
+            message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
+            channels.remove(channel);
+         }
       });
 
       listContextMenu.getItems().addAll(deleteMenuItem);
@@ -178,13 +185,13 @@ public class MainGUIController {
       });
 
    }
-  
-  @FXML
-    private void changeNickName(){
-       String nickname =  nickname_change.getText().trim();
-       Message m = new Message(MessageType.NICKNAME_CHANGE);
-       m.TEXT_CONTENT = nickname;
-       Client.getInstance().sender.sendToServer(m);
-       nickname_change.clear();
-    }
+
+   @FXML
+   private void changeNickName() {
+      String nickname = nickname_change.getText().trim();
+      Message m = new Message(MessageType.NICKNAME_CHANGE);
+      m.TEXT_CONTENT = nickname;
+      Client.getInstance().sender.sendToServer(m);
+      nickname_change.clear();
+   }
 }

@@ -1,21 +1,25 @@
 package models;
 
+import javafx.scene.control.Label;
+
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class UserData implements Serializable {
-   private HashSet<String> channels;
+   private ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages;
+
    private String username;
    private HashSet<UUID> ignoreList;
 
    public UserData() {
-      this.channels = new HashSet<>();
+      this.channelMessages = new ConcurrentHashMap<>();
       this.username = "Unknown";
       this.ignoreList = new HashSet<>();
    }
 
-   public UserData(HashSet<String> channels, String username, HashSet<UUID> ignoreList) {
-      this.channels = channels;
+   public UserData(ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages, String username, HashSet<UUID> ignoreList) {
+      this.channelMessages = channelMessages;
       this.username = username;
       this.ignoreList = ignoreList;
    }
@@ -25,15 +29,11 @@ public class UserData implements Serializable {
       return this;
    }
 
-   public UserData addChannel(String channel) {
-      this.channels.add(channel);
+   public UserData addChannel(String channel, ArrayList<ChatLabel> messages) {
+      this.channelMessages.put(channel, messages);
       return this;
    }
 
-   public UserData addChannels(Collection<String> channels) {
-      this.channels.addAll(channels);
-      return this;
-   }
 
    public UserData addIgnore(UUID ignoreID) {
       this.ignoreList.add(ignoreID);
@@ -45,8 +45,8 @@ public class UserData implements Serializable {
       return this;
    }
 
-   public HashSet<String> getChannels() {
-      return this.channels;
+   public ConcurrentHashMap<String, ArrayList<ChatLabel>> getChannelMessages() {
+      return this.getChannelMessages();
    }
 
    public String getUsername() {
