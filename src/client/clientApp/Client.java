@@ -9,6 +9,7 @@ import models.User;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -30,11 +31,13 @@ public class Client {
    private ConcurrentHashMap<String, ArrayList<Label>> channelMessages;
    private String currentChannel;
    private User thisUser;
+   private HashSet<UUID> userIgnoreList;
 
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       currentChannel = "General";
       channelMessages = new ConcurrentHashMap<>();
+      userIgnoreList = new HashSet<>();
 
       try {
          socket = new Socket("localhost", 54322);
@@ -69,6 +72,10 @@ public class Client {
       } catch (IOException e) {
          e.printStackTrace();
       }
+   }
+
+   public HashSet<UUID> getUserIgnoreList() {
+      return userIgnoreList;
    }
 
    public User getThisUser() {

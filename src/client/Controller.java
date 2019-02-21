@@ -20,6 +20,8 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.UUID;
 
 public class Controller {
 
@@ -188,4 +190,13 @@ public class Controller {
        Client.getInstance().sender.sendToServer(m);
        nickname_change.clear();
     }
+
+   @FXML
+   private void ignoreUser(UUID uuid){
+      HashSet ignoreList = Client.getInstance().getUserIgnoreList();
+      if(ignoreList.contains(uuid))
+         ignoreList.remove(uuid);
+      else
+         ignoreList.add(uuid);
+   }
 }

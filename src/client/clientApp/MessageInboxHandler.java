@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import models.*;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MessageInboxHandler {
     private static MessageInboxHandler ourInstance = new MessageInboxHandler();
@@ -24,6 +25,8 @@ public class MessageInboxHandler {
     }
 
     public void messageSwitch(Message message) {
+        if(senderShouldBeIgnored(message.SENDER))
+            return;
         Platform.runLater(() -> {
             switch (message.TYPE) {
                 case WHISPER_MESSAGE:
@@ -107,6 +110,10 @@ public class MessageInboxHandler {
 
     public void printUsers() {
         Platform.runLater(() -> controller.printUsers());
+    }
+
+    private boolean senderShouldBeIgnored(UUID uuid){
+        return uuid != null && Client.getInstance().getUserIgnoreList().contains(uuid);
     }
 
 }
