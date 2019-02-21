@@ -1,6 +1,7 @@
 package client.clientApp.controllers;
 
 import client.clientApp.Client;
+import client.clientApp.network.Sender;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,6 +21,7 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
+import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MainGUIController {
@@ -69,7 +71,10 @@ public class MainGUIController {
       scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
       Createchanellist();
       createContextMenuForLeavingChannel();
-      Client.getInstance().connect("localhost");
+
+      // needs to happen here otherwise it wont work
+      // why? dont know
+      Client.getInstance().startSenderAndReceiver();
    }
 
    @FXML
@@ -183,7 +188,14 @@ public class MainGUIController {
             return cell;
          }
       });
+   }
 
+   private void joinChannels(Set<String>) {
+
+      Message m = new Message(MessageType.JOIN_CHANNEL);
+      m.CHANNEL = "abc";
+
+      Client.getInstance().sender.sendToServer();
    }
 
    @FXML

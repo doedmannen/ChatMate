@@ -1,5 +1,6 @@
 package client.clientApp.network;
 
+import client.Main;
 import client.clientApp.Client;
 import client.clientApp.MessageInboxHandler;
 import client.clientApp.controllers.MainGUIController;
@@ -16,9 +17,10 @@ import static client.Main.primaryStage;
 public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
-   private MainGUIController mainGUIController = (MainGUIController) primaryStage.getUserData();
+   private MainGUIController mainGUIController = (MainGUIController) Main.primaryStage.getUserData();
 
    public Receiver(Socket socket) {
+      System.out.println(mainGUIController);
       this.socket = socket;
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());

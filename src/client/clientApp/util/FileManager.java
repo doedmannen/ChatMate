@@ -60,6 +60,7 @@ public class FileManager {
    public static boolean writeToStream(Serializable object, ObjectOutputStream output) {
       boolean succes = false;
       try {
+         output.reset();
          output.writeObject(object);
          succes = true;
       } catch (IOException e) {

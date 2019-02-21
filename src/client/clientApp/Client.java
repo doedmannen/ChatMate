@@ -34,6 +34,7 @@ public class Client {
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       channelMessages = new ConcurrentHashMap<>();
+      thisUser = new User("");
    }
 
    public void changeTitle() {
@@ -92,15 +93,18 @@ public class Client {
       try {
          socket = new Socket(ip, 54322);
          isRunning = true;
-         sender = new Sender(socket);
-         reciever = new Receiver(socket);
-         sender.start();
-         reciever.start();
          return true;
       } catch (Exception e) {
          e.printStackTrace();
          return false;
       }
+   }
+
+   public void startSenderAndReceiver() {
+      sender = new Sender(socket);
+      reciever = new Receiver(socket);
+      sender.start();
+      reciever.start();
    }
 
    public void saveData() {

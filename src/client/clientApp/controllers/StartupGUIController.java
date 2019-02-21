@@ -1,8 +1,12 @@
 package client.clientApp.controllers;
 
+import client.Main;
 import client.clientApp.Client;
 import client.clientApp.util.FileManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import models.User;
@@ -43,10 +47,14 @@ public class StartupGUIController {
    }
 
    @FXML
-   private void connectBtnPressed() {
+   private void connectBtnPressed() throws Exception {
       System.out.println("Btn pressed");
       if (validateInput()) {
          if (Client.getInstance().connect(serverAdressTextField.getText())) {
+            Client.getInstance().setChannelMessages(data.getChannelMessages());
+            Client.getInstance().getThisUser().setNickName(data.getUsername());
+            // TODO: 2019-02-21 Add set ignorelist here
+            swtichWindow();
          } else {
             errorLabel.setText("Could not connect");
          }
@@ -70,5 +78,18 @@ public class StartupGUIController {
          return true;
       }
       return false;
+   }
+
+   private void swtichWindow() throws Exception {
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/mainGUI.fxml"));
+      Parent root = loader.load();
+      MainGUIController mainGUIController = loader.getController();
+      Main.primaryStage.setUserData(mainGUIController);
+      Client.getInstance();
+
+      Main.primaryStage.setResizable(false);
+      Main.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
+      Main.primaryStage.setTitle("Chatter Matter");
+      Main.primaryStage.setScene(new Scene(root, 900, 600));
    }
 }
