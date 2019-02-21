@@ -10,63 +10,69 @@ import javafx.scene.paint.Paint;
 import models.Message;
 import models.MessageType;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+
 
 public class MessageCreator {
-   Controller controller;
+    Controller controller;
 
-   public MessageCreator() {
-      controller = (client.Controller) Main.primaryStage.getUserData();
-   }
+    public MessageCreator() {
+        controller = (client.Controller) Main.primaryStage.getUserData();
+    }
 
-   public Label labelCreator(String text, Paint color, String id) {
-      Label label = new Label();
-      label.setText(text);
-      label.setTextFill(color);
-      label.setId(id);
-      label.setWrapText(true);
-      return label;
-   }
+    public Label labelCreator(String text, Paint color, String id) {
+        Label label = new Label();
+        label.setText(text);
+        label.setTextFill(color);
+        label.setId(id);
+        label.setWrapText(true);
 
-   @FXML
-   public Label channelMessage(Message message) {
-      return labelCreator(message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
+        return label;
+    }
+
+    @FXML
+    public Label channelMessage(Message message) {
+        return labelCreator(message.TIMESTAMP + message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
 //        controller.getChatBox().getChildren().add(channelMessage);
-   }
+    }
 
-   @FXML
-   public Label whisperMessage(Message message) {
-      return labelCreator(message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
+    @FXML
+    public Label whisperMessage(Message message) {
+        return labelCreator(message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
 //      controller.getChatBox().getChildren().add(whisperMessage);
-   }
+    }
 
-   @FXML
-   public Label warningMessage(Message message) {
-      return labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
+    @FXML
+    public Label warningMessage(Message message) {
+        return labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
 //      controller.getChatBox().getChildren().add(warningLabel);
-   }
+    }
 
-   @FXML
-   public Label joinChannelMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
+    @FXML
+    public Label joinChannelMessage(Message message) {
+        return labelCreator(message.TIMESTAMP+message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
 //      controller.getChatBox().getChildren().add(joinMessage);
-   }
+    }
 
-   @FXML
-   public Label leaveChannelMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
+    @FXML
+    public Label leaveChannelMessage(Message message) {
+        return labelCreator(message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
 //      controller.getChatBox().getChildren().add(leaveMessage);
-   }
+    }
 
-   @FXML
-   public Label disconnectMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
+    @FXML
+    public Label disconnectMessage(Message message) {
+        return labelCreator(message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
 //       controller.getChatBox().getChildren().add(disconnectMessage);
-   }
+    }
 
     @FXML
     public Label nicknameMessage(Message message) {
         return labelCreator(message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
 //        controller.getChatBox().getChildren().add(nicknameMessage);
     }
+
 
 }
