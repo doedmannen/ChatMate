@@ -93,7 +93,7 @@ public class MessageHandler implements Runnable {
 
    private void sendErrorInvalidUserNickName(UUID user_ID, String channel){
       Message errorMessage = new Message(MessageType.ERROR);
-      errorMessage.TEXT_CONTENT = "The username you wanted is not valid. \nPlease choose one with no whitespaces and 3-20 in length.";
+      errorMessage.TEXT_CONTENT = "The username you wanted is not valid. \nPlease choose one with no whitespaces and 3-10 in length.";
       errorMessage.RECEIVER = user_ID;
       errorMessage.CHANNEL = channel;
       sendToUser(errorMessage);
@@ -113,7 +113,7 @@ public class MessageHandler implements Runnable {
    }
 
    private boolean validUserNickName(String newName){
-      return newName.matches("^[^\\s]{3,20}$");
+      return newName.matches("^[^\\s]{3,10}$");
    }
 
    private void addUserToChannel(Message m) {
