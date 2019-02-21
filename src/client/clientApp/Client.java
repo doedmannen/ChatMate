@@ -1,6 +1,8 @@
 package client.clientApp;
 
 import client.Main;
+import client.clientApp.network.Receiver;
+import client.clientApp.network.Sender;
 import javafx.scene.control.Label;
 import models.Message;
 import models.MessageType;
@@ -9,7 +11,6 @@ import models.User;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -52,7 +53,7 @@ public class Client {
    }
 
    public void changeTitle() {
-       Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
+      Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
 
    }
 
@@ -93,5 +94,13 @@ public class Client {
 
    public void setCurrentChannel(String currentChannel) {
       this.currentChannel = currentChannel;
+   }
+
+   public boolean isRunning() {
+      return this.isRunning;
+   }
+
+   public void setIsRunning(boolean isRunning) {
+      this.isRunning = isRunning;
    }
 }

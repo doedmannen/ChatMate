@@ -1,5 +1,7 @@
-package client.clientApp;
+package client.clientApp.network;
 
+import client.clientApp.Client;
+import client.clientApp.MessageInboxHandler;
 import client.clientApp.controllers.MainGUIController;
 import models.Channel;
 import models.Message;
@@ -22,7 +24,7 @@ public class Receiver extends Thread {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());
       } catch (IOException e) {
          System.out.println("failed to create input stream");
-         Client.getInstance().isRunning = false;
+         Client.getInstance().setIsRunning(false);
          // todo kolla om server är död, prova återanslutning
       } catch (Exception e) {
          e.printStackTrace();
@@ -31,7 +33,7 @@ public class Receiver extends Thread {
 
    @Override
    public void run() {
-      while (Client.getInstance().isRunning) {
+      while (Client.getInstance().isRunning()) {
          try {
             Sendable inData = (Sendable) objectInputStream.readObject();
             if (inData instanceof Message) {
@@ -44,7 +46,7 @@ public class Receiver extends Thread {
             }
          } catch (IOException e) {
             System.out.println("Read Error");
-            Client.getInstance().isRunning = false;
+            Client.getInstance().setIsRunning(false);
             // todo kolla om server är död, prova återanslutning
          } catch (ClassNotFoundException e) {
             System.out.println("Message Error");
