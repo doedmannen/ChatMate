@@ -8,64 +8,55 @@ import javafx.scene.paint.Paint;
 import models.SerializableLabel;
 import models.Message;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class MessageCreator {
-   Controller controller;
+    Controller controller;
 
-   public MessageCreator() {
-      controller = (Controller) Main.primaryStage.getUserData();
-   }
+    public MessageCreator() {
+        controller = (client.Controller) Main.primaryStage.getUserData();
+    }
 
-   public SerializableLabel labelCreator(String text, Paint color, String id) {
-      SerializableLabel label = new SerializableLabel();
-      label.setText(text);
-      label.setTextFill(color);
-      label.setId(id);
-      label.setWrapText(true);
-      label.save();
-      return label;
-   }
+    public SerializableLabel labelCreator(String text, Paint color, String id) {
+        Label label = new SerializableLabel();
+        label.setText(text);
+        label.setTextFill(color);
+        label.setId(id);
+        label.setWrapText(true);
+        return label;
+    }
 
-   @FXML
-   public SerializableLabel channelMessage(Message message) {
-      return labelCreator(message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
-//        controller.getChatBox().getChildren().add(channelMessage);
-   }
-
-   @FXML
-   public SerializableLabel whisperMessage(Message message) {
-      return labelCreator(message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
-//      controller.getChatBox().getChildren().add(whisperMessage);
-   }
-
-   @FXML
-   public SerializableLabel warningMessage(Message message) {
-      return labelCreator("Warning: " + message.TEXT_CONTENT, Color.RED, "warning");
-//      controller.getChatBox().getChildren().add(warningLabel);
-   }
-
-   @FXML
-   public SerializableLabel joinChannelMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
-//      controller.getChatBox().getChildren().add(joinMessage);
-   }
-
-   @FXML
-   public SerializableLabel leaveChannelMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
-//      controller.getChatBox().getChildren().add(leaveMessage);
-   }
-
-   @FXML
-   public SerializableLabel disconnectMessage(Message message) {
-      return labelCreator(message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
-//       controller.getChatBox().getChildren().add(disconnectMessage);
-   }
-
-   @FXML
-   public SerializableLabel nicknameMessage(Message message) {
-      return labelCreator(message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
-//        controller.getChatBox().getChildren().add(nicknameMessage);
-   }
-
+    @FXML
+    public SerializableLabel createLabel(Message message) {
+        SerializableLabel label = null;
+        switch (message.TYPE) {
+            case DISCONNECT:
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
+                break;
+            case CHANNEL_MESSAGE:
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
+                break;
+            case JOIN_CHANNEL:
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
+                break;
+            case LEAVE_CHANNEL:
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
+                break;
+            case WHISPER_MESSAGE:
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
+                break;
+            case NICKNAME_CHANGE:
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
+                break;
+            case ERROR:
+                label = labelCreator("ERROR: " + message.TEXT_CONTENT, Color.ORANGERED, "error");
+                break;
+            case WARNING:
+                label = labelCreator("Warning: " + message.TEXT_CONTENT, Color.ORANGERED, "warning");
+                break;
+        }
+        return label;
+    }
 }

@@ -201,13 +201,14 @@ public class Controller {
       });
 
    }
-
-   @FXML
-   private void changeNickName() {
-      String nickname = nickname_change.getText().trim();
-      Message m = new Message(MessageType.NICKNAME_CHANGE);
-      m.TEXT_CONTENT = nickname;
-      Client.getInstance().sender.sendToServer(m);
-      nickname_change.clear();
-   }
+  
+  @FXML
+    private void changeNickName(){
+       String nickname =  nickname_change.getText();
+       Message m = new Message(MessageType.NICKNAME_CHANGE);
+       m.TEXT_CONTENT = nickname;
+       m.CHANNEL = Client.getInstance().getCurrentChannel();
+       Client.getInstance().sender.sendToServer(m);
+       nickname_change.clear();
+    }
 }
