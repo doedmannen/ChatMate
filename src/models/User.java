@@ -58,4 +58,9 @@ public class User implements Serializable, Comparable<User> {
    public String getNickName() {
       return nickName;
    }
+
+   @Override
+   public String toString() {
+      return this.getNickName();
+   }
 }
