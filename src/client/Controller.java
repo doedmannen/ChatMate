@@ -71,6 +71,7 @@ public class Controller {
 
 
     public void initialize() {
+        addTextLimiter(input_text, 1000);
         input_text.setOnAction(e -> sendMessage());
         channel_textField.setOnAction(event -> addCannel());
         send_button.setOnAction(e -> sendMessage());
@@ -81,6 +82,14 @@ public class Controller {
         createContextMenuForLeavingChannel();
         toggleDarkMode();
 
+    }
+    private void addTextLimiter(final TextField tf, final int maxLength) {
+        tf.textProperty().addListener((ov, oldValue, newValue) -> {
+            if (tf.getText().length() > maxLength) {
+                String s = tf.getText().substring(0, maxLength);
+                tf.setText(s);
+            }
+        });
     }
 
     private void toggleDarkMode() {
@@ -212,6 +221,7 @@ public class Controller {
         });
 
     }
+
 
     @FXML
     private void changeNickName() {

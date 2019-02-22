@@ -90,7 +90,7 @@
                <children>
                   <ImageView fitHeight="117.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@CSS/logo.png" />
+                        <Image url="@logo.png" />
                      </image>
                   </ImageView>
                </children>

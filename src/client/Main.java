@@ -21,7 +21,7 @@ public class Main extends Application {
         primaryStage.setUserData(controller);
         Client.getInstance();
 
-        primaryStage.getIcons().add(new Image("/client/CSS/logo.png"));
+        primaryStage.getIcons().add(new Image("/client/logo.png"));
         String css = this.getClass().getResource("/client/CSS/normal.css").toExternalForm();
         Platform.runLater(() ->primaryStage.getScene().getStylesheets().add(css));
         primaryStage.setResizable(false);
