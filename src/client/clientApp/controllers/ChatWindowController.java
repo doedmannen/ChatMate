@@ -138,9 +138,10 @@ public class ChatWindowController {
    @FXML
    public void createContextMenuForUser() {
       igonorelistContextMenu = new ContextMenu();
-      MenuItem ignoreMenuItem = new MenuItem("Ignore");
+      MenuItem ignoreMenuItem = new MenuItem("Toggle ignore");
       ignoreMenuItem.setOnAction((e) -> {
-         System.out.println("VA FAN!!!");
+         User user = (User) now_online_list.getSelectionModel().getSelectedItem();
+         Client.getInstance().toggleIgnoreOnUser(user.getID());
       });
       igonorelistContextMenu.getItems().addAll(ignoreMenuItem);
       now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
