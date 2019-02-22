@@ -143,7 +143,11 @@ public class ChatWindowController {
          User user = (User) now_online_list.getSelectionModel().getSelectedItem();
          Client.getInstance().toggleIgnoreOnUser(user.getID());
       });
-      igonorelistContextMenu.getItems().addAll(ignoreMenuItem);
+      MenuItem wisperMenuItem = new MenuItem("wisper");
+      wisperMenuItem.setOnAction((e) -> {
+         System.out.println("Inte så högt!!!");
+      });
+      igonorelistContextMenu.getItems().addAll(ignoreMenuItem,wisperMenuItem);
       now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
          @Override
          public ListCell<User> call(ListView<User> param) {
