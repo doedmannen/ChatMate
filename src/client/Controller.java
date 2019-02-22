@@ -2,15 +2,12 @@ package client;
 
 import client.clientApp.Client;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
@@ -20,6 +17,8 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class Controller {
 
@@ -28,7 +27,7 @@ public class Controller {
 
    @FXML
    private TextField nickname_change;
-  
+
    @FXML
    private Button send_button;
 
@@ -49,6 +48,7 @@ public class Controller {
 
    @FXML
    private ListView channel_list_view;
+
    @FXML
    private ContextMenu listContextMenu;
 
@@ -68,24 +68,34 @@ public class Controller {
       scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
       Createchanellist();
       createContextMenuForLeavingChannel();
+
+      // needs to happen here otherwise it wont work
+      // why? dont know
+      Client.getInstance().startSenderAndReceiver();
+      recreateOldSession();
    }
 
-    @FXML
-    public void printUsers() {
-        Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel()).stream()
-                .sorted(Comparator.comparing(User::getNickName))
-                .forEach(user ->{
+   @FXML
+   public void printUsers() {
+      ConcurrentSkipListSet<User> users = Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel());
+      if (users != null) {
+         users.stream()
+                 .sorted(Comparator.comparing(User::getNickName))
+                 .forEach(user -> {
                     Label label = new Label();
-                    if(user.getID() == Client.getInstance().getThisUser().getID()) {
-                        label.setFont(Font.font(null, FontWeight.BOLD, 12));
-                        label.setText("(you) " + user.getNickName());
+                    if (user.getID() == Client.getInstance().getThisUser().getID()) {
+                       label.setFont(Font.font(null, FontWeight.BOLD, 12));
+                       label.setText("(you) " + user.getNickName());
                     } else {
-                        label.setText(user.getNickName());
+                       label.setText(user.getNickName());
                     }
                     label.setMinHeight(20);
                     online_list.getChildren().add(label);
-                });
-    }
+                 });
+      }
+
+
+   }
 
    @FXML
    public void refreshUserList() {
@@ -130,8 +140,8 @@ public class Controller {
                chat_box.getChildren().add(l);
             });
          }
-          Client.getInstance().changeTitle();
-          refreshUserList();
+         Client.getInstance().changeTitle();
+         refreshUserList();
       });
    }
 
@@ -141,13 +151,11 @@ public class Controller {
       listContextMenu = new ContextMenu();
       MenuItem deleteMenuItem = new MenuItem("Leave Channel");
       deleteMenuItem.setOnAction((e) -> {
-          if(channels.size() > 1){
-              Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
-              Message message = new Message(MessageType.LEAVE_CHANNEL);
-              Client.getInstance().sender.sendToServer(message);
-              message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
-              channels.remove(channel);
-          }
+         Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
+         Message message = new Message(MessageType.LEAVE_CHANNEL);
+         Client.getInstance().sender.sendToServer(message);
+         message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
+         channels.remove(channel);
       });
 
       listContextMenu.getItems().addAll(deleteMenuItem);
@@ -160,6 +168,7 @@ public class Controller {
                   super.updateItem(item, empty);
                   if (empty) {
                      setText(null);
+                     chat_box.getChildren().clear();
                   } else {
                      setText(item.getName());
                   }
@@ -176,16 +185,29 @@ public class Controller {
             return cell;
          }
       });
-
    }
-  
-  @FXML
-    private void changeNickName(){
-       String nickname =  nickname_change.getText();
-       Message m = new Message(MessageType.NICKNAME_CHANGE);
-       m.TEXT_CONTENT = nickname;
-       m.CHANNEL = Client.getInstance().getCurrentChannel();
-       Client.getInstance().sender.sendToServer(m);
-       nickname_change.clear();
-    }
+
+   private void recreateOldSession() {
+      Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
+
+      Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
+      nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
+      Client.getInstance().sender.sendToServer(nickChangeMessage);
+
+      Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
+         Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
+         channelJoinMessage.CHANNEL = c;
+         Client.getInstance().sender.sendToServer(channelJoinMessage);
+      });
+   }
+
+   @FXML
+   private void changeNickName() {
+      String nickname = nickname_change.getText();
+      Message m = new Message(MessageType.NICKNAME_CHANGE);
+      m.TEXT_CONTENT = nickname;
+//       m.CHANNEL = Client.getInstance().getCurrentChannel();
+      Client.getInstance().sender.sendToServer(m);
+      nickname_change.clear();
+   }
 }

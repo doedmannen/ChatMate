@@ -8,26 +8,24 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-    public static Stage primaryStage;
+   public static Stage primaryStage;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Main.primaryStage = primaryStage;
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("GUI.fxml"));
-        Parent root = loader.load();
-        Controller controller = loader.getController();
-        primaryStage.setUserData(controller);
-        Client.getInstance();
+   @Override
+   public void start(Stage primaryStage) throws Exception {
+      Main.primaryStage = primaryStage;
 
-        primaryStage.setResizable(false);
-        primaryStage.setOnCloseRequest(e -> Client.getInstance().kill());
-        primaryStage.setTitle("Chatter Matter");
-        primaryStage.setScene(new Scene(root, 900, 600));
-        primaryStage.show();
-    }
+      Client.getInstance();
+
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("clientApp/views/Startup_GUI.fxml"));
+      Parent root = loader.load();
+      primaryStage.setResizable(false);
+      primaryStage.setTitle("Chatter Matter");
+      primaryStage.setScene(new Scene(root, 380, 150));
+      primaryStage.show();
+   }
 
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+   public static void main(String[] args) {
+      launch(args);
+   }
 }

@@ -76,22 +76,22 @@ public class MessageHandler implements Runnable {
       }
    }
 
-   private void changeUserNickName(Message m){
+   private void changeUserNickName(Message m) {
       // Trim the string
       m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
-      if(validUserNickName(m.TEXT_CONTENT)){
+      if (validUserNickName(m.TEXT_CONTENT)) {
          // If the username is valid, change it on the server
          User user = ActiveUserController.getInstance().getUser(m.SENDER);
          user.setNickName(m.TEXT_CONTENT);
          // Send new username to all channels the user is active in
          sendOutNewUserNickName(user, m);
-      }else {
+      } else {
          // If username was invalid, send an error to the user
          sendErrorInvalidUserNickName(m.SENDER, m.CHANNEL);
       }
    }
 
-   private void sendErrorInvalidUserNickName(UUID user_ID, String channel){
+   private void sendErrorInvalidUserNickName(UUID user_ID, String channel) {
       Message errorMessage = new Message(MessageType.ERROR);
       errorMessage.TEXT_CONTENT = "The username you wanted is not valid. \nPlease choose one with no whitespaces and 3-10 in length.";
       errorMessage.RECEIVER = user_ID;
@@ -99,20 +99,34 @@ public class MessageHandler implements Runnable {
       sendToUser(errorMessage);
    }
 
-   private void sendOutNewUserNickName(User user, Message m){
+   private void sendOutNewUserNickName(User user, Message m) {
       String[] userChannels = ActiveChannelController.getInstance().getChannelsForUser(user);
-      Arrays.stream(userChannels).forEach(channel -> {
-         System.out.println("Sending to " + channel);
+
+      if (userChannels.length > 0) {
+         Arrays.stream(userChannels).forEach(channel -> {
+            System.out.println("Sending to " + channel);
+            Message messageToBeSent = new Message(MessageType.NICKNAME_CHANGE);
+            messageToBeSent.TEXT_CONTENT = m.TEXT_CONTENT;
+            messageToBeSent.SENDER = m.SENDER;
+            messageToBeSent.NICKNAME = m.NICKNAME;
+            messageToBeSent.CHANNEL = channel;
+            sendToChannel(messageToBeSent);
+         });
+      } else {
          Message messageToBeSent = new Message(MessageType.NICKNAME_CHANGE);
          messageToBeSent.TEXT_CONTENT = m.TEXT_CONTENT;
          messageToBeSent.SENDER = m.SENDER;
          messageToBeSent.NICKNAME = m.NICKNAME;
-         messageToBeSent.CHANNEL = channel;
-         sendToChannel(messageToBeSent);
-      });
+         messageToBeSent.RECEIVER = m.SENDER;
+         sendToUser(messageToBeSent);
+      }
    }
 
-   private boolean validUserNickName(String newName){
+   private void sendNewUserNickNameToOneUser() {
+
+   }
+
+   private boolean validUserNickName(String newName) {
       return newName.matches("^[^\\s]{3,10}$");
    }
 
