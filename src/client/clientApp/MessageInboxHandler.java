@@ -80,6 +80,7 @@ public class MessageInboxHandler {
    }
 
    public void changeNickname(Message message) {
+      System.out.println("*************NICKCHANGE " + message.TEXT_CONTENT);
       if (message.SENDER == Client.getInstance().getThisUser().getID()) {
          Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
          Client.getInstance().changeTitle();

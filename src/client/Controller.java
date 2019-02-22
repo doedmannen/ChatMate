@@ -151,13 +151,11 @@ public class Controller {
       listContextMenu = new ContextMenu();
       MenuItem deleteMenuItem = new MenuItem("Leave Channel");
       deleteMenuItem.setOnAction((e) -> {
-         if (channels.size() > 1) {
-            Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
-            Message message = new Message(MessageType.LEAVE_CHANNEL);
-            Client.getInstance().sender.sendToServer(message);
-            message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
-            channels.remove(channel);
-         }
+         Channel channel = (Channel) channel_list_view.getSelectionModel().getSelectedItem();
+         Message message = new Message(MessageType.LEAVE_CHANNEL);
+         Client.getInstance().sender.sendToServer(message);
+         message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
+         channels.remove(channel);
       });
 
       listContextMenu.getItems().addAll(deleteMenuItem);
@@ -170,6 +168,7 @@ public class Controller {
                   super.updateItem(item, empty);
                   if (empty) {
                      setText(null);
+                     chat_box.getChildren().clear();
                   } else {
                      setText(item.getName());
                   }
@@ -200,16 +199,15 @@ public class Controller {
          channelJoinMessage.CHANNEL = c;
          Client.getInstance().sender.sendToServer(channelJoinMessage);
       });
-
    }
-  
-  @FXML
-    private void changeNickName(){
-       String nickname =  nickname_change.getText();
-       Message m = new Message(MessageType.NICKNAME_CHANGE);
-       m.TEXT_CONTENT = nickname;
-       m.CHANNEL = Client.getInstance().getCurrentChannel();
-       Client.getInstance().sender.sendToServer(m);
-       nickname_change.clear();
-    }
+
+   @FXML
+   private void changeNickName() {
+      String nickname = nickname_change.getText();
+      Message m = new Message(MessageType.NICKNAME_CHANGE);
+      m.TEXT_CONTENT = nickname;
+//       m.CHANNEL = Client.getInstance().getCurrentChannel();
+      Client.getInstance().sender.sendToServer(m);
+      nickname_change.clear();
+   }
 }

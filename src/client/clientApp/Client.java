@@ -130,6 +130,8 @@ public class Client {
 
       // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
 
+      System.out.println(userData.getUsername());
+
       FileManager.saveFile(userData, "user-data.ser");
    }
 }
