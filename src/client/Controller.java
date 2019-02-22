@@ -48,6 +48,7 @@ public class Controller {
 
    @FXML
    private ListView channel_list_view;
+
    @FXML
    private ContextMenu listContextMenu;
 
@@ -189,7 +190,7 @@ public class Controller {
 
    private void recreateOldSession() {
       Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
-      
+
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
       nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
       Client.getInstance().sender.sendToServer(nickChangeMessage);
@@ -201,13 +202,14 @@ public class Controller {
       });
 
    }
-
-   @FXML
-   private void changeNickName() {
-      String nickname = nickname_change.getText().trim();
-      Message m = new Message(MessageType.NICKNAME_CHANGE);
-      m.TEXT_CONTENT = nickname;
-      Client.getInstance().sender.sendToServer(m);
-      nickname_change.clear();
-   }
+  
+  @FXML
+    private void changeNickName(){
+       String nickname =  nickname_change.getText();
+       Message m = new Message(MessageType.NICKNAME_CHANGE);
+       m.TEXT_CONTENT = nickname;
+       m.CHANNEL = Client.getInstance().getCurrentChannel();
+       Client.getInstance().sender.sendToServer(m);
+       nickname_change.clear();
+    }
 }

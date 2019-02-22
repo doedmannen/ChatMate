@@ -13,17 +13,8 @@ public class Main extends Application {
    @Override
    public void start(Stage primaryStage) throws Exception {
       Main.primaryStage = primaryStage;
-//      FXMLLoader loader = new FXMLLoader(getClass().getResource("clientApp/views/GUI.fxml"));
-//      Parent root = loader.load();
-//      Controller mainGUIController = loader.getController();
-//      primaryStage.setUserData(mainGUIController);
+
       Client.getInstance();
-
-//      primaryStage.setResizable(false);
-//      primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
-//      primaryStage.setTitle("Chatter Matter");
-//      primaryStage.setScene(new Scene(root, 900, 600));
-
 
       FXMLLoader loader = new FXMLLoader(getClass().getResource("clientApp/views/Startup_GUI.fxml"));
       Parent root = loader.load();

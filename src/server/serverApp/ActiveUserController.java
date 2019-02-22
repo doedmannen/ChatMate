@@ -42,9 +42,9 @@ public class ActiveUserController {
       return connectedUsers.get(user);
    }
 
-   public LinkedBlockingDeque getUserOutbox(UUID ID) {
+   public LinkedBlockingDeque<Sendable> getUserOutbox(UUID ID) {
       for (Map.Entry e : this.connectedUsers.entrySet()) {
-         UUID entryID = ((User) e.getValue()).getID();
+         UUID entryID = ((User) e.getKey()).getID();
          if (entryID.equals(ID)) {
             return (LinkedBlockingDeque) e.getValue();
          }

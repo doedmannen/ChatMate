@@ -52,7 +52,6 @@ public class FileManager {
       try (ObjectInputStream input = new ObjectInputStream(Files.newInputStream(path))) {
          return readFromStream(input);
       } catch (IOException e) {
-         e.printStackTrace();
          return null;
       }
    }

@@ -51,6 +51,7 @@ public class StartupGUIController {
       System.out.println("Btn pressed");
       if (validateInput()) {
          if (Client.getInstance().connect(serverAdressTextField.getText())) {
+            data.setUsername(nicknameTextField.getText());
             Client.getInstance().setUserData(data);
             // TODO: 2019-02-21 Add set ignorelist here
             swtichWindow();

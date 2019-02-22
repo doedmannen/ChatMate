@@ -42,7 +42,7 @@ public class Receiver extends Thread {
             } else if (inData instanceof Channel) {
                Channel channel = (Channel) inData;
                Client.getInstance().channelList.put(channel.getName(), channel.getUsers());
-               MessageInboxHandler.getInstance().process_CHANNELL(channel);
+               MessageInboxHandler.getInstance().addChannel(channel);
             }
          } catch (IOException e) {
             System.out.println("Read Error");
