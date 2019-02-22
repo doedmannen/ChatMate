@@ -28,6 +28,7 @@ public class StartupWindowController {
    public void initialize() {
       loadUserData();
       nicknameTextField.setText(data.getUsername());
+      serverAdressTextField.setText(data.getIP());
    }
 
    private void loadUserData() {

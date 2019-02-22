@@ -47,11 +47,12 @@ public class ChatWindowController {
 
    @FXML
    private ListView channel_list_view;
+
    @FXML
    private ContextMenu listContextMenu;
 
    @FXML
-   private CheckBox darkmode_checkbox;
+   public CheckBox darkmode_checkbox;
 
    @FXML
    private ListView now_online_list;
