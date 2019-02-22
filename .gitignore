@@ -4,3 +4,5 @@
 # Idea and output
 .idea/*
 out/*
+
+user-data\.ser
