@@ -1,8 +1,7 @@
 package client.clientApp.controllers;
 
-import client.Main;
+import client.ClientMain;
 import client.clientApp.Client;
-import client.Controller;
 import client.clientApp.util.FileManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +14,7 @@ import models.UserData;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StartupGUIController {
+public class StartupWindowController {
 
    @FXML
    TextField nicknameTextField;
@@ -81,15 +80,15 @@ public class StartupGUIController {
    }
 
    private void swtichWindow() throws Exception {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("../../GUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/Chat_Window.fxml"));
       Parent root = loader.load();
-      Controller controller = loader.getController();
-      Main.primaryStage.setUserData(controller);
+      ChatWindowController chatWindowController = loader.getController();
+      ClientMain.primaryStage.setUserData(chatWindowController);
       Client.getInstance();
 
-      Main.primaryStage.setResizable(false);
-      Main.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
-      Main.primaryStage.setTitle("Chatter Matter");
-      Main.primaryStage.setScene(new Scene(root, 900, 600));
+      ClientMain.primaryStage.setResizable(false);
+      ClientMain.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
+      ClientMain.primaryStage.setTitle("Chatter Matter");
+      ClientMain.primaryStage.setScene(new Scene(root, 900, 600));
    }
 }

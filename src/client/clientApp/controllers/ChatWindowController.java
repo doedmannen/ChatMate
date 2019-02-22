@@ -1,24 +1,19 @@
-package client;
+package client.clientApp.controllers;
 
+import client.ClientMain;
 import client.clientApp.Client;
-import client.clientApp.MessageCreator;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import models.Channel;
 import models.Message;
@@ -26,12 +21,8 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
-import java.util.Set;
-import java.lang.reflect.Array;
 
-import java.util.concurrent.ConcurrentSkipListSet;
-
-public class Controller {
+public class ChatWindowController {
 
    @FXML
    private TextField input_text;
@@ -41,9 +32,6 @@ public class Controller {
 
    @FXML
    private Button send_button;
-
-   @FXML
-   private VBox online_list;
 
    @FXML
    private VBox chat_box;
@@ -81,15 +69,15 @@ public class Controller {
       loadCss();
       addTextLimiter(input_text, 1000);
       input_text.setOnAction(e -> sendMessage());
-      channel_textField.setOnAction(event -> addCannel());
+      channel_textField.setOnAction(event -> addChannel());
       send_button.setOnAction(e -> sendMessage());
-      add_channel_button.setOnAction(e -> addCannel());
+      add_channel_button.setOnAction(e -> addChannel());
       nickname_change.setOnAction(e -> changeNickName());
       scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
-      createChanellist();
+      createChannelList();
       createContextMenuForLeavingChannel();
       toggleDarkMode();
-      createChanellist();
+      createChannelList();
       createContextMenuForLeavingChannel();
       createContextMenuForUser();
 
@@ -109,23 +97,23 @@ public class Controller {
    }
 
    private void loadCss() {
-      String css = this.getClass().getResource("/client/CSS/normal.css").toExternalForm();
-      Platform.runLater(() -> Main.primaryStage.getScene().getStylesheets().add(css));
+      String css = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+      Platform.runLater(() -> ClientMain.primaryStage.getScene().getStylesheets().add(css));
    }
 
    private void toggleDarkMode() {
       darkmode_checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
          darkmode_checkbox.setSelected(newValue);
-         String darkmodeCss = this.getClass().getResource("/client/CSS/darkmode.css").toExternalForm();
-         String normalCss = this.getClass().getResource("/client/CSS/normal.css").toExternalForm();
+         String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
+         String normalCss = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
          Platform.runLater(() ->
          {
             if (darkmode_checkbox.isSelected()) {
-               Main.primaryStage.getScene().getStylesheets().remove(normalCss);
-               Main.primaryStage.getScene().getStylesheets().add(darkmodeCss);
+               ClientMain.primaryStage.getScene().getStylesheets().remove(normalCss);
+               ClientMain.primaryStage.getScene().getStylesheets().add(darkmodeCss);
             } else {
-               Main.primaryStage.getScene().getStylesheets().remove(darkmodeCss);
-               Main.primaryStage.getScene().getStylesheets().add(normalCss);
+               ClientMain.primaryStage.getScene().getStylesheets().remove(darkmodeCss);
+               ClientMain.primaryStage.getScene().getStylesheets().add(normalCss);
             }
          });
       });
@@ -199,7 +187,7 @@ public class Controller {
    }
 
    @FXML
-   private void addCannel() {
+   private void addChannel() {
       Message message = new Message();
       message.CHANNEL = channel_textField.getText();
       message.TYPE = MessageType.JOIN_CHANNEL;
@@ -208,7 +196,7 @@ public class Controller {
    }
 
    @FXML
-   private void createChanellist() {
+   private void createChannelList() {
       channels = FXCollections.observableArrayList();
       SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
       channel_list_view.setItems(sortedList);

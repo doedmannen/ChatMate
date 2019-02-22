@@ -1,16 +1,16 @@
 package client.clientApp;
 
-import client.Controller;
-import client.Main;
+import client.clientApp.controllers.ChatWindowController;
+import client.ClientMain;
 import javafx.fxml.FXML;
 import models.SerializableLabel;
 import models.Message;
 
 public class MessageCreator {
-    Controller controller;
+    ChatWindowController chatWindowController;
 
     public MessageCreator() {
-        controller = (client.Controller) Main.primaryStage.getUserData();
+        chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
     }
 
     public SerializableLabel labelCreator(String text, String id) {

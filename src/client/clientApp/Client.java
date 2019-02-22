@@ -1,7 +1,9 @@
 package client.clientApp;
 
-import client.Controller;
-import client.Main;
+import client.clientApp.controllers.ChatWindowController;
+import client.ClientMain;
+import client.clientApp.network.Receiver;
+import client.clientApp.network.Sender;
 import client.clientApp.util.FileManager;
 import models.*;
 
@@ -38,7 +40,7 @@ public class Client {
    }
 
    public void changeTitle() {
-      Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
+      ClientMain.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
 
    }
 
@@ -124,7 +126,7 @@ public class Client {
          userData.addChannel(e.getKey(), e.getValue());
       });
 
-      ((Controller) Main.primaryStage.getUserData()).channels.forEach(c -> {
+      ((ChatWindowController) ClientMain.primaryStage.getUserData()).channels.forEach(c -> {
          userData.addJoinedChannel(c.getName());
       });
 

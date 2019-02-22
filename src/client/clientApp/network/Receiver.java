@@ -1,9 +1,9 @@
-package client.clientApp;
+package client.clientApp.network;
 
-import client.Main;
+import client.ClientMain;
 import client.clientApp.Client;
 import client.clientApp.MessageInboxHandler;
-import client.Controller;
+import client.clientApp.controllers.ChatWindowController;
 import models.Channel;
 import models.Message;
 import models.Sendable;
@@ -15,10 +15,10 @@ import java.net.Socket;
 public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
-   private Controller controller = (Controller) Main.primaryStage.getUserData();
+   private ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
 
    public Receiver(Socket socket) {
-      System.out.println(controller);
+      System.out.println(chatWindowController);
       this.socket = socket;
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());
