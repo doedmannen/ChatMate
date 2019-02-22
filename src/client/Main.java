@@ -2,6 +2,7 @@ package client;
 
 import client.clientApp.Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,6 +20,8 @@ public class Main extends Application {
         primaryStage.setUserData(controller);
         Client.getInstance();
 
+        String css = this.getClass().getResource("/client/CSS/normal.css").toExternalForm();
+        Platform.runLater(() ->primaryStage.getScene().getStylesheets().add(css));
         primaryStage.setResizable(false);
         primaryStage.setOnCloseRequest(e -> Client.getInstance().kill());
         primaryStage.setTitle("Chatter Matter");
