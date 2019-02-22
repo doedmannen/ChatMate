@@ -7,6 +7,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -84,12 +86,21 @@
    <left>
       <VBox prefHeight="600.0" prefWidth="177.0" BorderPane.alignment="CENTER">
          <children>
+            <HBox alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="117.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@CSS/logo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
             <VBox minHeight="-Infinity" prefHeight="60.0">
                <children>
                   <Label prefHeight="27.0" text="Channels" />
                   <HBox prefHeight="0.0" prefWidth="177.0">
                      <children>
-                        <TextField fx:id="channel_textField" minHeight="-Infinity" prefHeight="31.0" prefWidth="73.0" promptText="Join channel" HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="channel_textField" minHeight="-Infinity" prefHeight="31.0" prefWidth="73.0" promptText="Add channel" HBox.hgrow="ALWAYS" />
                         <Button fx:id="add_channel_button" minHeight="-Infinity" mnemonicParsing="false" prefHeight="31.0" prefWidth="60.0" text="Add" />
                      </children>
                   </HBox>

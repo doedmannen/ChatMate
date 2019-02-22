@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -20,6 +21,7 @@ public class Main extends Application {
         primaryStage.setUserData(controller);
         Client.getInstance();
 
+        primaryStage.getIcons().add(new Image("/client/CSS/logo.png"));
         String css = this.getClass().getResource("/client/CSS/normal.css").toExternalForm();
         Platform.runLater(() ->primaryStage.getScene().getStylesheets().add(css));
         primaryStage.setResizable(false);
