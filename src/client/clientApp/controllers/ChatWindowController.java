@@ -258,6 +258,8 @@ public class ChatWindowController {
 
 
    private void recreateOldSession() {
+      this.darkmode_checkbox.setSelected(Client.getInstance().getUserData().isDarkMode());
+
       Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
 
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
@@ -281,6 +283,4 @@ public class ChatWindowController {
       Client.getInstance().sender.sendToServer(m);
       nickname_change.clear();
    }
-
-
 }
