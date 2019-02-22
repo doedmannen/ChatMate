@@ -48,6 +48,7 @@ public class Controller {
 
    @FXML
    private ListView channel_list_view;
+
    @FXML
    private ContextMenu listContextMenu;
 
@@ -189,7 +190,7 @@ public class Controller {
 
    private void recreateOldSession() {
       Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
-      
+
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
       nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
       Client.getInstance().sender.sendToServer(nickChangeMessage);
