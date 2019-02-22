@@ -1,15 +1,13 @@
 package client.clientApp;
 
+import client.Controller;
 import client.Main;
-import javafx.scene.control.Label;
-import models.Message;
-import models.MessageType;
-import models.User;
+import client.clientApp.util.FileManager;
+import models.*;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -27,33 +25,25 @@ public class Client {
    public Sender sender;
    public Receiver reciever;
    public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
-   private ConcurrentHashMap<String, ArrayList<Label>> channelMessages;
+   private ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages;
    private String currentChannel;
    private User thisUser;
+   private UserData userData;
 
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
-      currentChannel = "General";
       channelMessages = new ConcurrentHashMap<>();
-
-      try {
-         socket = new Socket("localhost", 54322);
-         isRunning = true;
-         sender = new Sender(socket);
-         reciever = new Receiver(socket);
-         sender.start();
-         reciever.start();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-
-      joinChannel(currentChannel);
-
+      thisUser = new User("");
+      userData = new UserData();
    }
 
    public void changeTitle() {
-       Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
+      Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
 
+   }
+
+   public void setUserData(UserData userData) {
+      this.userData = userData;
    }
 
    private void joinChannel(String channelName) {
@@ -79,11 +69,15 @@ public class Client {
       this.thisUser = thisUser;
    }
 
-   public ConcurrentHashMap<String, ArrayList<Label>> getChannelMessages() {
+   public UserData getUserData() {
+      return userData;
+   }
+
+   public ConcurrentHashMap<String, ArrayList<SerializableLabel>> getChannelMessages() {
       return channelMessages;
    }
 
-   public void setChannelMessages(ConcurrentHashMap<String, ArrayList<Label>> channelMessages) {
+   public void setChannelMessages(ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages) {
       this.channelMessages = channelMessages;
    }
 
@@ -93,5 +87,51 @@ public class Client {
 
    public void setCurrentChannel(String currentChannel) {
       this.currentChannel = currentChannel;
+   }
+
+   public boolean isRunning() {
+      return this.isRunning;
+   }
+
+   public void setIsRunning(boolean isRunning) {
+      this.isRunning = isRunning;
+   }
+
+   public boolean connect(String ip) {
+      try {
+         socket = new Socket(ip, 54322);
+         isRunning = true;
+         return true;
+      } catch (Exception e) {
+         e.printStackTrace();
+         return false;
+      }
+   }
+
+   public void startSenderAndReceiver() {
+      sender = new Sender(socket);
+      reciever = new Receiver(socket);
+      sender.start();
+      reciever.start();
+   }
+
+   public void saveData() {
+      this.kill();
+      System.out.println("Saving data ");
+      this.userData = new UserData();
+      userData.setUsername(thisUser.getNickName());
+      this.channelMessages.entrySet().forEach(e -> {
+         userData.addChannel(e.getKey(), e.getValue());
+      });
+
+      ((Controller) Main.primaryStage.getUserData()).channels.forEach(c -> {
+         userData.addJoinedChannel(c.getName());
+      });
+
+      // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
+
+      System.out.println(userData.getUsername());
+
+      FileManager.saveFile(userData, "user-data.ser");
    }
 }

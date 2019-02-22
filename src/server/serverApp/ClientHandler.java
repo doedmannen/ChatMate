@@ -21,10 +21,11 @@ public class ClientHandler implements Runnable {
    private Socket socket;
    private ServerApp serverApp;
    private boolean isRunning = false;
-   private final int TIMEOUT_MS = 50;
+   private final int TIMEOUT_MS = 1;
    private final User user;
    private final LinkedBlockingDeque<Sendable> userOutbox;
    private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
+   private final int WAIT_IN_SETUP = 500;
 
    public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
@@ -141,8 +142,15 @@ public class ClientHandler implements Runnable {
       }
    }
 
+   public void waitForClient(){
+      try{
+         Thread.sleep(WAIT_IN_SETUP);
+      }catch(Exception e){}
+   }
+
    @Override
    public void run() {
+      waitForClient();
       while (serverApp.isRunning() && this.isRunning) {
          readMessage();
          writeMessage();

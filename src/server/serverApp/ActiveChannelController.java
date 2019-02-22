@@ -67,6 +67,10 @@ public class ActiveChannelController {
       this.channels.forEach(c -> c.removeUser(user));
    }
 
+   public boolean userIsInChannel(String channel, User user){
+      return getChannel(channel) != null && getChannel(channel).getUsers().contains(user);
+   }
+
    public void addUserToChannel(User user, String name) {
       Channel channel = null;
       try {
