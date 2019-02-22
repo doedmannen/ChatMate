@@ -1,15 +1,19 @@
-package client;
+package client.clientApp.controllers;
 
+import client.ClientMain;
 import client.clientApp.Client;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
 import models.Channel;
 import models.Message;
@@ -17,10 +21,8 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 
-public class Controller {
+public class ChatWindowController {
 
    @FXML
    private TextField input_text;
@@ -30,9 +32,6 @@ public class Controller {
 
    @FXML
    private Button send_button;
-
-   @FXML
-   private VBox online_list;
 
    @FXML
    private VBox chat_box;
@@ -48,9 +47,17 @@ public class Controller {
 
    @FXML
    private ListView channel_list_view;
-
    @FXML
    private ContextMenu listContextMenu;
+
+   @FXML
+   private CheckBox darkmode_checkbox;
+
+   @FXML
+   private ListView now_online_list;
+
+   public ObservableList<User> users;
+
 
    public VBox getChatBox() {
       return chat_box;
@@ -58,16 +65,21 @@ public class Controller {
 
    public ObservableList<Channel> channels;
 
-
    public void initialize() {
+      loadCss();
+      addTextLimiter(input_text, 1000);
       input_text.setOnAction(e -> sendMessage());
-      channel_textField.setOnAction(event -> addCannel());
+      channel_textField.setOnAction(event -> addChannel());
       send_button.setOnAction(e -> sendMessage());
-      add_channel_button.setOnAction(e -> addCannel());
+      add_channel_button.setOnAction(e -> addChannel());
       nickname_change.setOnAction(e -> changeNickName());
       scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
-      Createchanellist();
+      createChannelList();
       createContextMenuForLeavingChannel();
+      toggleDarkMode();
+      createChannelList();
+      createContextMenuForLeavingChannel();
+      createContextMenuForUser();
 
       // needs to happen here otherwise it wont work
       // why? dont know
@@ -75,31 +87,89 @@ public class Controller {
       recreateOldSession();
    }
 
+   private void addTextLimiter(final TextField tf, final int maxLength) {
+      tf.textProperty().addListener((ov, oldValue, newValue) -> {
+         if (tf.getText().length() > maxLength) {
+            String s = tf.getText().substring(0, maxLength);
+            tf.setText(s);
+         }
+      });
+   }
+
+   private void loadCss() {
+      String css = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+      Platform.runLater(() -> ClientMain.primaryStage.getScene().getStylesheets().add(css));
+   }
+
+   private void toggleDarkMode() {
+      darkmode_checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+         darkmode_checkbox.setSelected(newValue);
+         String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
+         String normalCss = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+         Platform.runLater(() ->
+         {
+            if (darkmode_checkbox.isSelected()) {
+               ClientMain.primaryStage.getScene().getStylesheets().remove(normalCss);
+               ClientMain.primaryStage.getScene().getStylesheets().add(darkmodeCss);
+            } else {
+               ClientMain.primaryStage.getScene().getStylesheets().remove(darkmodeCss);
+               ClientMain.primaryStage.getScene().getStylesheets().add(normalCss);
+            }
+         });
+      });
+   }
+
+
    @FXML
    public void printUsers() {
-      ConcurrentSkipListSet<User> users = Client.getInstance().channelList.get(Client.getInstance().getCurrentChannel());
-      if (users != null) {
-         users.stream()
-                 .sorted(Comparator.comparing(User::getNickName))
-                 .forEach(user -> {
-                    Label label = new Label();
-                    if (user.getID() == Client.getInstance().getThisUser().getID()) {
-                       label.setFont(Font.font(null, FontWeight.BOLD, 12));
-                       label.setText("(you) " + user.getNickName());
-                    } else {
-                       label.setText(user.getNickName());
-                    }
-                    label.setMinHeight(20);
-                    online_list.getChildren().add(label);
-                 });
-      }
-
-
+      String channel = Client.getInstance().getCurrentChannel();
+      users = FXCollections.observableArrayList();
+      Client.getInstance().channelList.get(channel).forEach(user -> {
+         users.add(user);
+      });
+      SortedList<User> sortedList = new SortedList<>(users, Comparator.comparing(User::getNickName));
+      now_online_list.setItems(sortedList);
+      now_online_list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
    }
 
    @FXML
+   public void createContextMenuForUser() {
+      listContextMenu = new ContextMenu();
+      MenuItem ignoreMenuItem = new MenuItem("Ignore");
+      ignoreMenuItem.setOnAction((e) -> {
+         System.out.println("VA FAN!!!");
+      });
+      listContextMenu.getItems().addAll(ignoreMenuItem);
+      now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
+         @Override
+         public ListCell<User> call(ListView<User> param) {
+            ListCell<User> cell = new ListCell<>() {
+               @Override
+               protected void updateItem(User item, boolean empty) {
+                  super.updateItem(item, empty);
+                  if (empty) {
+                     setText(null);
+                  } else {
+                     setText(item.getNickName());
+                  }
+               }
+            };
+            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+               if (isNowEmpty) {
+                  cell.setContextMenu(null);
+               } else {
+                  cell.setContextMenu(listContextMenu);
+               }
+            });
+            return cell;
+         }
+      });
+   }
+
+
+   @FXML
    public void refreshUserList() {
-      online_list.getChildren().clear();
+      //online_list.getChildren().clear();
       printUsers();
    }
 
@@ -117,7 +187,7 @@ public class Controller {
    }
 
    @FXML
-   private void addCannel() {
+   private void addChannel() {
       Message message = new Message();
       message.CHANNEL = channel_textField.getText();
       message.TYPE = MessageType.JOIN_CHANNEL;
@@ -126,7 +196,7 @@ public class Controller {
    }
 
    @FXML
-   private void Createchanellist() {
+   private void createChannelList() {
       channels = FXCollections.observableArrayList();
       SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
       channel_list_view.setItems(sortedList);
@@ -168,7 +238,6 @@ public class Controller {
                   super.updateItem(item, empty);
                   if (empty) {
                      setText(null);
-                     chat_box.getChildren().clear();
                   } else {
                      setText(item.getName());
                   }
@@ -181,11 +250,11 @@ public class Controller {
                   cell.setContextMenu(listContextMenu);
                }
             });
-
             return cell;
          }
       });
    }
+
 
    private void recreateOldSession() {
       Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
@@ -206,8 +275,11 @@ public class Controller {
       String nickname = nickname_change.getText();
       Message m = new Message(MessageType.NICKNAME_CHANGE);
       m.TEXT_CONTENT = nickname;
-//       m.CHANNEL = Client.getInstance().getCurrentChannel();
+      m.CHANNEL = Client.getInstance().getCurrentChannel();
+
       Client.getInstance().sender.sendToServer(m);
       nickname_change.clear();
    }
+
+
 }

@@ -1,7 +1,7 @@
 package client.clientApp;
 
-import client.Controller;
-import client.Main;
+import client.clientApp.controllers.ChatWindowController;
+import client.ClientMain;
 import javafx.application.Platform;
 import models.*;
 
@@ -16,11 +16,11 @@ public class MessageInboxHandler {
       return ourInstance;
    }
 
-   private Controller controller;
+   private ChatWindowController chatWindowController;
    private MessageCreator messageCreator;
 
    private MessageInboxHandler() {
-      controller = (Controller) Main.primaryStage.getUserData();
+      chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
       messageCreator = new MessageCreator();
    }
 
@@ -39,20 +39,20 @@ public class MessageInboxHandler {
                addMessageToList(message);
                addUserToList(message);
                printLabelOnClient(message);
-               controller.refreshUserList();
+               chatWindowController.refreshUserList();
                break;
             case LEAVE_CHANNEL:
             case DISCONNECT:
                removeUserFromList(message);
                addMessageToList(message);
                printLabelOnClient(message);
-               controller.refreshUserList();
+               chatWindowController.refreshUserList();
                break;
             case NICKNAME_CHANGE:
                changeNickname(message);
                printLabelOnClient(message);
                addMessageToList(message);
-               controller.refreshUserList();
+               chatWindowController.refreshUserList();
                break;
             case CONNECT:
                connect(message);
@@ -61,10 +61,11 @@ public class MessageInboxHandler {
       });
    }
 
+
    public void printLabelOnClient(Message message) {
       SerializableLabel label = new MessageCreator().createLabel(message);
       if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
-         controller.getChatBox().getChildren().add(label);
+         chatWindowController.getChatBox().getChildren().add(label);
       }
    }
 
@@ -74,9 +75,11 @@ public class MessageInboxHandler {
    }
 
    public void addChannel(Channel channel) {
+      //// TODO: 2019-02-22 update chatbox with text on join
       ArrayList<SerializableLabel> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
       Client.getInstance().getChannelMessages().put(channel.getName(), list);
-      Platform.runLater(() -> controller.channels.add(channel));
+      Client.getInstance().setCurrentChannel(channel.getName());
+      Platform.runLater(() -> chatWindowController.channels.add(channel));
    }
 
    public void changeNickname(Message message) {
@@ -110,7 +113,7 @@ public class MessageInboxHandler {
    }
 
    public void printUsers() {
-      Platform.runLater(() -> controller.printUsers());
+      Platform.runLater(() -> chatWindowController.printUsers());
    }
 
    public String getTimeStamp() {
@@ -118,4 +121,5 @@ public class MessageInboxHandler {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
       return "[" + now.format(formatter) + "] ";
    }
+
 }
