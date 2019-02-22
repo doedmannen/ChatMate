@@ -61,6 +61,7 @@ public class MessageInboxHandler {
       });
    }
 
+
    public void printLabelOnClient(Message message) {
       SerializableLabel label = new MessageCreator().createLabel(message);
       if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
@@ -120,4 +121,5 @@ public class MessageInboxHandler {
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
       return "[" + now.format(formatter) + "] ";
    }
+
 }

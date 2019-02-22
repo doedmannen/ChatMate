@@ -10,11 +10,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.Controller">
    <center>
       <VBox id="chat_box" alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="577.0" BorderPane.alignment="CENTER">
          <children>
@@ -58,18 +57,7 @@
                   <Insets />
                </VBox.margin>
             </VBox>
-            <ScrollPane hbarPolicy="NEVER" minHeight="-Infinity" prefHeight="470.0" prefWidth="175.0">
-               <content>
-                  <FlowPane minHeight="-Infinity" prefHeight="401.0" prefWidth="157.0">
-                     <children>
-                        <Label prefHeight="27.0" prefWidth="157.0" text="Online:" />
-                        <VBox fx:id="online_list" prefHeight="401.0" prefWidth="156.0" />
-                     </children></FlowPane>
-               </content>
-               <padding>
-                  <Insets left="20.0" right="20.0" top="20.0" />
-               </padding>
-            </ScrollPane>
+                  <ListView fx:id="now_online_list" prefHeight="635.0" prefWidth="195.0" VBox.vgrow="ALWAYS" />
             <VBox prefHeight="39.0" prefWidth="175.0">
                <children>
                   <CheckBox fx:id="darkmode_checkbox" minHeight="-Infinity" mnemonicParsing="false" prefHeight="27.0" prefWidth="123.0" text="Dark mode" />
