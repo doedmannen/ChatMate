@@ -1,6 +1,7 @@
 package client;
 
 import client.clientApp.Client;
+import client.clientApp.MessageCreator;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -75,14 +76,13 @@ public class Controller {
         send_button.setOnAction(e -> sendMessage());
         add_channel_button.setOnAction(e -> addCannel());
         nickname_change.setOnAction(e -> changeNickName());
-//      darkmode_checkbox.setOnAction(eh);
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
         Createchanellist();
         createContextMenuForLeavingChannel();
-        darkmode();
+        toggleDarkMode();
     }
 
-    private void darkmode() {
+    private void toggleDarkMode() {
         darkmode_checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             darkmode_checkbox.setSelected(newValue);
             String css = this.getClass().getResource("/client/CSS/darkmode.css").toExternalForm();
@@ -121,17 +121,6 @@ public class Controller {
         printUsers();
     }
 
-    @FXML
-    private void changeToDarkmode() {
-        darkmode_checkbox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                darkmode_checkbox.setSelected(!newValue);
-                Main.primaryStage.getScene().getStylesheets().add("/client/CSS/darkmode.css");
-            }
-        });
-
-    }
 
     @FXML
     private void sendMessage() {
@@ -144,6 +133,39 @@ public class Controller {
         message.NICKNAME = Client.getInstance().getThisUser().getNickName();
         input_text.clear();
         Client.getInstance().sender.sendToServer(message);
+        test();
+    }
+
+    @FXML
+    private void test() {
+
+        Platform.runLater(() -> {
+            for (int i = 0; i < 7; i++) {
+                MessageType type = null;
+                switch (i) {
+                    case 0:
+                        type = MessageType.CHANNEL_MESSAGE;
+                        break;
+                    case 1:
+                        type = MessageType.DISCONNECT;
+                        break;
+                    case 2:
+                        type = MessageType.WHISPER_MESSAGE;
+                        break;
+                    case 3:
+                        type = MessageType.ERROR;
+                        break;
+                    case 4:
+                        type = MessageType.LEAVE_CHANNEL;
+                        break;
+                }
+                Message message = new Message();
+                message.TYPE = type;
+                message.TEXT_CONTENT = "TESTINGABCDEFGHIJKLMNOPQRSUVWXYZÅÄÖ";
+                Label label = new MessageCreator().createLabel(message);
+                getChatBox().getChildren().add(label);
+            }
+        });
     }
 
     @FXML
