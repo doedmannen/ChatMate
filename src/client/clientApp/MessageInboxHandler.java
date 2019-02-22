@@ -91,6 +91,7 @@ public class MessageInboxHandler {
       Client.getInstance().getChannelMessages().put(channel.getName(), list);
       Platform.runLater(() -> {
          controller.channels.add(channel);
+          controller.printUsers();
       });
    }
     public void process_NICKNAME_CHANGE(Message message) {
