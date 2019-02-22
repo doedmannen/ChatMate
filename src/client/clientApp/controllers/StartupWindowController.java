@@ -3,12 +3,14 @@ package client.clientApp.controllers;
 import client.ClientMain;
 import client.clientApp.Client;
 import client.clientApp.util.FileManager;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import models.UserData;
 
 import java.util.regex.Matcher;
@@ -91,5 +93,19 @@ public class StartupWindowController {
       ClientMain.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
       ClientMain.primaryStage.setTitle("Chatter Matter");
       ClientMain.primaryStage.setScene(new Scene(root, 900, 600));
+   }
+
+   @FXML
+   private void KeyReleasedOnNameField(KeyEvent e) throws Exception {
+      if (e.getCode().toString().equals("ENTER")) {
+         connectBtnPressed();
+      }
+   }
+
+   @FXML
+   private void KeyReleasedOnIPField(KeyEvent e) throws Exception {
+      if (e.getCode().toString().equals("ENTER")) {
+         connectBtnPressed();
+      }
    }
 }

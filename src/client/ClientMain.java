@@ -25,7 +25,7 @@ public class ClientMain extends Application {
 
       UserData data = (UserData) FileManager.loadFile("user-data.ser");
 
-      if (data.isDarkMode()) {
+      if (data != null && data.isDarkMode()) {
          String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
          primaryStage.getScene().getStylesheets().add(darkmodeCss);
       } else {

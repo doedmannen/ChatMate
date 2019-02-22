@@ -21,15 +21,24 @@
         </GridPane.margin>
     </Label>
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <GridPane.margin>
+            <Insets left="20"/>
+        </GridPane.margin>
         <Label text="Your nickname: "/>
-        <TextField fx:id="nicknameTextField"/>
+        <TextField fx:id="nicknameTextField" onKeyReleased="#KeyReleasedOnIPField" />
     </VBox>
     <VBox GridPane.rowIndex="1" GridPane.columnIndex="1">
-
+        <GridPane.margin>
+            <Insets right="20"/>
+        </GridPane.margin>
         <Label text="Server Adress: "/>
-        <TextField fx:id="serverAdressTextField"/>
+        <TextField fx:id="serverAdressTextField" onKeyReleased="#KeyReleasedOnNameField"/>
     </VBox>
 
-    <Button text="Connect" GridPane.columnIndex="0" GridPane.rowIndex="2" onAction="#connectBtnPressed"/>
+    <Button text="Connect" GridPane.columnIndex="0" GridPane.rowIndex="2" onAction="#connectBtnPressed">
+        <GridPane.margin>
+            <Insets left="20"/>
+        </GridPane.margin>
+    </Button>
 
 </GridPane>

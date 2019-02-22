@@ -134,7 +134,7 @@ public class Client {
          userData.addJoinedChannel(c.getName());
       });
 
-      userData.setDarkMode(!controller.darkmode_checkbox.isSelected());
+      userData.setDarkMode(controller.darkmode_checkbox.isSelected());
       userData.setIP(this.IP);
 
       // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
