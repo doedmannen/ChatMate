@@ -129,8 +129,9 @@ public class MessageInboxHandler {
             controller.getChatBox().getChildren().add(label);
         }
     }
+    /*
    public void printUsers() {
       Platform.runLater(() -> controller.printUsers());
    }
-
+    */
 }

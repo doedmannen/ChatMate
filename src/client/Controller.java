@@ -71,9 +71,9 @@ public class Controller {
         add_channel_button.setOnAction(e -> addCannel());
         nickname_change.setOnAction(e -> changeNickName());
         scroll_pane.vvalueProperty().bind(chat_box.heightProperty());
-        Createchanellist();
+        createChanellist();
         createContextMenuForLeavingChannel();
-
+        createContextMenuForUser();
     }
 
     @FXML
@@ -89,8 +89,42 @@ public class Controller {
     }
 
     @FXML
+    public void createContextMenuForUser(){
+        listContextMenu = new ContextMenu();
+        MenuItem ignoreMenuItem = new MenuItem("Ignore");
+        ignoreMenuItem.setOnAction((e) -> {
+            System.out.println("VA FAN!!!");
+        });
+        listContextMenu.getItems().addAll(ignoreMenuItem);
+        now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
+            @Override
+            public ListCell<User> call(ListView<User> param) {
+                ListCell<User> cell = new ListCell<>() {
+                    @Override
+                    protected void updateItem(User item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setText(null);
+                        } else {
+                            setText(item.getNickName());
+                        }
+                    }
+                };
+                cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+                    if (isNowEmpty) {
+                        cell.setContextMenu(null);
+                    } else {
+                        cell.setContextMenu(listContextMenu);
+                    }
+                });
+                return cell;
+            }
+        });
+    }
+
+
+    @FXML
     public void refreshUserList() {
-        //online_list.getChildren().clear();
         printUsers();
     }
 
@@ -117,7 +151,7 @@ public class Controller {
     }
 
     @FXML
-    private void Createchanellist() {
+    private void createChanellist() {
         channels = FXCollections.observableArrayList();
         SortedList<Channel> sortedList = new SortedList<>(channels, Comparator.comparing(Channel::getName));
         channel_list_view.setItems(sortedList);
@@ -138,7 +172,7 @@ public class Controller {
 
     @FXML
     private void createContextMenuForLeavingChannel() {
-
+ ///TODO    Här sKA Ändras
         listContextMenu = new ContextMenu();
         MenuItem deleteMenuItem = new MenuItem("Leave Channel");
         deleteMenuItem.setOnAction((e) -> {
@@ -152,7 +186,7 @@ public class Controller {
         });
 
         listContextMenu.getItems().addAll(deleteMenuItem);
-        channel_list_view.setCellFactory(new Callback<ListView<Channel>, ListCell<Channel>>() {
+        now_online_list.setCellFactory(new Callback<ListView<Channel>, ListCell<Channel>>() {
             @Override
             public ListCell<Channel> call(ListView<Channel> param) {
                 ListCell<Channel> cell = new ListCell<>() {
@@ -173,11 +207,9 @@ public class Controller {
                         cell.setContextMenu(listContextMenu);
                     }
                 });
-
                 return cell;
             }
         });
-
     }
 
     @FXML
