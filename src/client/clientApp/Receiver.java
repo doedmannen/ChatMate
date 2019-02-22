@@ -1,9 +1,9 @@
-package client.clientApp.network;
+package client.clientApp;
 
 import client.Main;
 import client.clientApp.Client;
 import client.clientApp.MessageInboxHandler;
-import client.clientApp.controllers.MainGUIController;
+import client.Controller;
 import models.Channel;
 import models.Message;
 import models.Sendable;
@@ -12,15 +12,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-import static client.Main.primaryStage;
-
 public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
-   private MainGUIController mainGUIController = (MainGUIController) Main.primaryStage.getUserData();
+   private Controller controller = (Controller) Main.primaryStage.getUserData();
 
    public Receiver(Socket socket) {
-      System.out.println(mainGUIController);
+      System.out.println(controller);
       this.socket = socket;
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());

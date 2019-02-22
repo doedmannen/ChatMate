@@ -1,17 +1,13 @@
-package client.clientApp.controllers;
+package client;
 
 import client.clientApp.Client;
-import client.clientApp.network.Sender;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Callback;
@@ -24,7 +20,7 @@ import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class MainGUIController {
+public class Controller {
 
    @FXML
    private TextField input_text;
@@ -75,6 +71,7 @@ public class MainGUIController {
       // needs to happen here otherwise it wont work
       // why? dont know
       Client.getInstance().startSenderAndReceiver();
+      recreateOldSession();
    }
 
    @FXML
@@ -190,12 +187,19 @@ public class MainGUIController {
       });
    }
 
-   private void joinChannels(Set<String>) {
+   private void recreateOldSession() {
+      Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
+      
+      Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
+      nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
+      Client.getInstance().sender.sendToServer(nickChangeMessage);
 
-      Message m = new Message(MessageType.JOIN_CHANNEL);
-      m.CHANNEL = "abc";
+      Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
+         Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
+         channelJoinMessage.CHANNEL = c;
+         Client.getInstance().sender.sendToServer(channelJoinMessage);
+      });
 
-      Client.getInstance().sender.sendToServer();
    }
 
    @FXML

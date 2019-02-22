@@ -1,4 +1,4 @@
-package client.clientApp.network;
+package client.clientApp;
 
 import client.clientApp.Client;
 import models.Message;

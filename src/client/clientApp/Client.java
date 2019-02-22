@@ -1,10 +1,8 @@
 package client.clientApp;
 
+import client.Controller;
 import client.Main;
-import client.clientApp.network.Receiver;
-import client.clientApp.network.Sender;
 import client.clientApp.util.FileManager;
-import javafx.scene.control.Label;
 import models.*;
 
 import java.io.IOException;
@@ -27,19 +25,25 @@ public class Client {
    public Sender sender;
    public Receiver reciever;
    public ConcurrentSkipListMap<String, ConcurrentSkipListSet<User>> channelList;
-   private ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages;
+   private ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages;
    private String currentChannel;
    private User thisUser;
+   private UserData userData;
 
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       channelMessages = new ConcurrentHashMap<>();
       thisUser = new User("");
+      userData = new UserData();
    }
 
    public void changeTitle() {
       Main.primaryStage.setTitle("Chatter Matter - Channel: " + Client.getInstance().getCurrentChannel() + " | Username: " + Client.getInstance().getThisUser().getNickName());
 
+   }
+
+   public void setUserData(UserData userData) {
+      this.userData = userData;
    }
 
    private void joinChannel(String channelName) {
@@ -65,11 +69,15 @@ public class Client {
       this.thisUser = thisUser;
    }
 
-   public ConcurrentHashMap<String, ArrayList<ChatLabel>> getChannelMessages() {
+   public UserData getUserData() {
+      return userData;
+   }
+
+   public ConcurrentHashMap<String, ArrayList<SerializableLabel>> getChannelMessages() {
       return channelMessages;
    }
 
-   public void setChannelMessages(ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages) {
+   public void setChannelMessages(ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages) {
       this.channelMessages = channelMessages;
    }
 
@@ -110,10 +118,14 @@ public class Client {
    public void saveData() {
       this.kill();
       System.out.println("Saving data ");
-      UserData userData = new UserData();
+      this.userData = new UserData();
       userData.setUsername(thisUser.getNickName());
       this.channelMessages.entrySet().forEach(e -> {
          userData.addChannel(e.getKey(), e.getValue());
+      });
+
+      ((Controller) Main.primaryStage.getUserData()).channels.forEach(c -> {
+         userData.addJoinedChannel(c.getName());
       });
 
       // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();

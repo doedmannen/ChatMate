@@ -1,27 +1,28 @@
 package models;
 
-import javafx.scene.control.Label;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserData implements Serializable {
-   private ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages;
 
+   private ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages;
    private String username;
    private HashSet<UUID> ignoreList;
+   private HashSet<String> joinedChannels;
 
    public UserData() {
       this.channelMessages = new ConcurrentHashMap<>();
       this.username = "Unknown";
       this.ignoreList = new HashSet<>();
+      this.joinedChannels = new HashSet<>();
    }
 
-   public UserData(ConcurrentHashMap<String, ArrayList<ChatLabel>> channelMessages, String username, HashSet<UUID> ignoreList) {
+   public UserData(ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages, String username, HashSet<UUID> ignoreList) {
       this.channelMessages = channelMessages;
       this.username = username;
       this.ignoreList = ignoreList;
+      this.joinedChannels = new HashSet<>();
    }
 
    public UserData setUsername(String username) {
@@ -29,7 +30,7 @@ public class UserData implements Serializable {
       return this;
    }
 
-   public UserData addChannel(String channel, ArrayList<ChatLabel> messages) {
+   public UserData addChannel(String channel, ArrayList<SerializableLabel> messages) {
       this.channelMessages.put(channel, messages);
       return this;
    }
@@ -45,7 +46,7 @@ public class UserData implements Serializable {
       return this;
    }
 
-   public ConcurrentHashMap<String, ArrayList<ChatLabel>> getChannelMessages() {
+   public ConcurrentHashMap<String, ArrayList<SerializableLabel>> getChannelMessages() {
       return this.channelMessages;
    }
 
@@ -56,4 +57,17 @@ public class UserData implements Serializable {
    public HashSet<UUID> getIgnoreList() {
       return ignoreList;
    }
+
+   public boolean addJoinedChannel(String channel) {
+      return this.joinedChannels.add(channel);
+   }
+
+   public HashSet<String> getJoinedChannels() {
+      return joinedChannels;
+   }
+
+   public void initialize() {
+      this.channelMessages.values().forEach(v -> v.forEach(SerializableLabel::initialize));
+   }
+
 }

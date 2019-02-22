@@ -2,6 +2,7 @@ package client.clientApp.controllers;
 
 import client.Main;
 import client.clientApp.Client;
+import client.Controller;
 import client.clientApp.util.FileManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,9 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import models.User;
 import models.UserData;
-import org.w3c.dom.Text;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +38,7 @@ public class StartupGUIController {
             this.data = new UserData();
          } else {
             this.data = data;
+            data.initialize();
          }
       } catch (Exception e) {
          e.printStackTrace();
@@ -51,8 +51,7 @@ public class StartupGUIController {
       System.out.println("Btn pressed");
       if (validateInput()) {
          if (Client.getInstance().connect(serverAdressTextField.getText())) {
-            Client.getInstance().setChannelMessages(data.getChannelMessages());
-            Client.getInstance().getThisUser().setNickName(data.getUsername());
+            Client.getInstance().setUserData(data);
             // TODO: 2019-02-21 Add set ignorelist here
             swtichWindow();
          } else {
@@ -81,10 +80,10 @@ public class StartupGUIController {
    }
 
    private void swtichWindow() throws Exception {
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/mainGUI.fxml"));
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("../../GUI.fxml"));
       Parent root = loader.load();
-      MainGUIController mainGUIController = loader.getController();
-      Main.primaryStage.setUserData(mainGUIController);
+      Controller controller = loader.getController();
+      Main.primaryStage.setUserData(controller);
       Client.getInstance();
 
       Main.primaryStage.setResizable(false);
