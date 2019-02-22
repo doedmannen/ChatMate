@@ -44,10 +44,12 @@ public class Client {
    }
 
    public void toggleIgnoreOnUser(UUID user_ID){
-      if(userIsIgnored(user_ID)){
-         ignoreList.remove(user_ID);
-      } else {
-         ignoreList.add(user_ID);
+      if(!thisUser.equals(user_ID)){
+         if(userIsIgnored(user_ID)){
+            ignoreList.remove(user_ID);
+         } else {
+            ignoreList.add(user_ID);
+         }
       }
    }
 

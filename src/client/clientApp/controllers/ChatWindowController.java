@@ -143,7 +143,7 @@ public class ChatWindowController {
          User user = (User) now_online_list.getSelectionModel().getSelectedItem();
          Client.getInstance().toggleIgnoreOnUser(user.getID());
       });
-      MenuItem wisperMenuItem = new MenuItem("wisper");
+      MenuItem wisperMenuItem = new MenuItem("Whisper");
       wisperMenuItem.setOnAction((e) -> {
          System.out.println("Inte så högt!!!");
       });
