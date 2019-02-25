@@ -84,6 +84,7 @@ public class MessageHandler implements Runnable {
          User user = ActiveUserController.getInstance().getUser(m.SENDER);
          user.setNickName(m.TEXT_CONTENT);
          // Send new username to all channels the user is active in
+
          sendOutNewUserNickName(user, m);
       } else {
          // If username was invalid, send an error to the user

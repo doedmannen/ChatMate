@@ -8,6 +8,7 @@ import models.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MessageInboxHandler {
    private static MessageInboxHandler ourInstance = new MessageInboxHandler();
@@ -25,7 +26,7 @@ public class MessageInboxHandler {
    }
 
    public void messageSwitch(Message message) {
-      if(Client.getInstance().userIsIgnored(message.SENDER))
+      if (Client.getInstance().userIsIgnored(message.SENDER))
          return; // Don't proceed with ignored users
       message.TIMESTAMP = getTimeStamp();
       Platform.runLater(() -> {
@@ -66,14 +67,16 @@ public class MessageInboxHandler {
 
    public void printLabelOnClient(Message message) {
       SerializableLabel label = new MessageCreator().createLabel(message);
-      if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+      if (message.CHANNEL != null && message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
          chatWindowController.getChatBox().getChildren().add(label);
       }
    }
 
    public void addMessageToList(Message message) {
       SerializableLabel label = new MessageCreator().createLabel(message);
-      Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+      if (message.CHANNEL != null) {
+         Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+      }
    }
 
    public void addChannel(Channel channel) {
@@ -85,16 +88,23 @@ public class MessageInboxHandler {
    }
 
    public void changeNickname(Message message) {
-      System.out.println("*************NICKCHANGE " + message.TEXT_CONTENT);
       if (message.SENDER == Client.getInstance().getThisUser().getID()) {
          Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
          Client.getInstance().changeTitle();
       }
-      Client.getInstance().channelList.get(message.CHANNEL).forEach(user -> {
-         if (user.getID() == message.SENDER) {
-            user.setNickName(message.TEXT_CONTENT);
+
+      if (message.CHANNEL != null) {
+         ConcurrentSkipListSet<User> channel = Client.getInstance().channelList.get(message.CHANNEL);
+
+         if (channel != null) {
+            channel.forEach(user -> {
+               if (user.getID() == message.SENDER) {
+                  user.setNickName(message.TEXT_CONTENT);
+               }
+            });
          }
-      });
+      }
+
    }
 
    public void connect(Message message) {
