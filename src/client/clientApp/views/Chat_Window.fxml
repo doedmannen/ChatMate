@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.clientApp.controllers.ChatWindowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.clientApp.controllers.ChatWindowController">
    <center>
       <VBox id="chat_box" alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="577.0" BorderPane.alignment="CENTER">
          <children>
@@ -76,11 +76,15 @@
          <children>
             <HBox alignment="CENTER">
                <children>
-                  <ImageView fitHeight="117.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/logo.png" />
-                     </image>
-                  </ImageView>
+                  <VBox fx:id="image_icon">
+                     <children>
+                        <ImageView fitHeight="117.0" fitWidth="115.0" onMouseClicked="#lurig" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/logo.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </VBox>
                </children>
             </HBox>
             <VBox minHeight="-Infinity" prefHeight="60.0">

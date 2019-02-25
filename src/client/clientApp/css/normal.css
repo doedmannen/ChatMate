@@ -1,8 +1,8 @@
 
 .root {
     -fx-font-family: "Segoe UI", Arial, Calibri;
-    -fx-base: rgb(230, 230, 230);
-    -fx-background: rgb(230, 230, 230);
+    -fx-base: rgb(220,220,220);
+    -fx-background: rgb(240,240,240);
     -fx-font-size: 14;
 }
 
