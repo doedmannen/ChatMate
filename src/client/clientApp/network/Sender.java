@@ -49,9 +49,9 @@ public class Sender extends Thread {
         while (Client.getInstance().isRunning()) {
             while (hasMessagesTosend()) {
                 Sendable m = outbox.getFirst();
-                SealedObject encryptedObject = encrypt.encryptObject(m);
+//                SealedObject encryptedObject = encrypt.encryptObject(m);
                 try {
-                    objectOutputStream.writeObject(encryptedObject);  // Try to send first sendable
+                    objectOutputStream.writeObject(m);  // Try to send first sendable
                     outbox.removeFirst();               // Remove if sent
                 } catch (Exception e) {
 
