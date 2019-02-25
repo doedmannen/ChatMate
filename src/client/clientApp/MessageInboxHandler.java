@@ -26,7 +26,8 @@ public class MessageInboxHandler {
    }
 
    public void messageSwitch(Message message) {
-      if (Client.getInstance().userIsIgnored(message.SENDER))
+      if (Client.getInstance().userIsIgnored(message.SENDER) &&
+              (message.TYPE == MessageType.CHANNEL_MESSAGE || message.TYPE == MessageType.WHISPER_MESSAGE))
          return; // Don't proceed with ignored users
       message.TIMESTAMP = getTimeStamp();
       Platform.runLater(() -> {

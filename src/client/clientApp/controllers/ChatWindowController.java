@@ -21,6 +21,7 @@ import models.MessageType;
 import models.User;
 
 import java.util.Comparator;
+import java.util.UUID;
 
 public class ChatWindowController {
 
@@ -147,7 +148,11 @@ public class ChatWindowController {
       });
       MenuItem wisperMenuItem = new MenuItem("Whisper");
       wisperMenuItem.setOnAction((e) -> {
-         System.out.println("Inte så högt!!!");
+         User user = (User) now_online_list.getSelectionModel().getSelectedItem();
+         input_text.clear();
+         input_text.setText("/w " + user.getID() + " ");
+         input_text.requestFocus();
+         input_text.forward();
       });
       igonorelistContextMenu.getItems().addAll(ignoreMenuItem, wisperMenuItem);
       now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
@@ -185,15 +190,29 @@ public class ChatWindowController {
 
    @FXML
    private void sendMessage() {
-      final String status = input_text.getText();
-      //// TODO: 2019-02-15 Create constructor for message
+      boolean msgIsOk = false;
+      String textToBeSent = input_text.getText();
       Message message = new Message();
       message.CHANNEL = Client.getInstance().getCurrentChannel();
-      message.TYPE = MessageType.CHANNEL_MESSAGE;
-      message.TEXT_CONTENT = status;
-      message.NICKNAME = Client.getInstance().getThisUser().getNickName();
       input_text.clear();
-      Client.getInstance().sender.sendToServer(message);
+      if(textToBeSent.trim().toLowerCase().startsWith("/w")){
+         message.TYPE = MessageType.WHISPER_MESSAGE;
+         try{
+            message.RECEIVER = UUID.fromString(textToBeSent.substring(3,39));
+            input_text.appendText(textToBeSent.substring(0,39).concat(" "));
+            textToBeSent = textToBeSent.substring(39);
+            msgIsOk = true;
+         }catch (Exception e){}
+      } else {
+         message.TYPE = MessageType.CHANNEL_MESSAGE;
+         msgIsOk = true;
+      }
+      message.TEXT_CONTENT = textToBeSent;
+      input_text.requestFocus();
+      input_text.forward();
+      if(msgIsOk){
+         Client.getInstance().sender.sendToServer(message);
+      }
    }
 
    @FXML

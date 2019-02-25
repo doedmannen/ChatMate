@@ -46,7 +46,7 @@ public class MessageHandler implements Runnable {
             sendToChannel(m);
             break;
          case CHANNEL_MESSAGE:
-            sendToChannel(m);
+            sendToChannelFromUser(m);
             break;
          case JOIN_CHANNEL:
             addUserToChannel(m);
@@ -55,7 +55,7 @@ public class MessageHandler implements Runnable {
             removeUserFromChannel(m);
             break;
          case WHISPER_MESSAGE:
-            sendToUser(m);
+            sendWhisperToUser(m);
             break;
          case NICKNAME_CHANGE:
             changeUserNickName(m);
@@ -67,9 +67,9 @@ public class MessageHandler implements Runnable {
       // Only apply is there is text-content and the message is sent to a channel or user
       if(m.TEXT_CONTENT != null && m.TYPE == MessageType.CHANNEL_MESSAGE || m.TYPE == MessageType.WHISPER_MESSAGE){
          // remove multiple whitespaces and trim
-         m.TEXT_CONTENT = m.TEXT_CONTENT.replaceAll("[ ]{2,}", " ").trim();
+         m.TEXT_CONTENT = m.TEXT_CONTENT.replaceAll("[ ]{2,}", " ");
          // Limit length if client sent us to much text
-         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 1000 ? m.TEXT_CONTENT.substring(0,1000) : m.TEXT_CONTENT;
+         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 1000 ? m.TEXT_CONTENT.substring(0,1000).trim() : m.TEXT_CONTENT.trim();
          applyWordFilter(m);
       }
    }
@@ -83,6 +83,13 @@ public class MessageHandler implements Runnable {
    private boolean checkIfChannelIsValid(String channel){
       return channel.matches("^[^\\s]{3,10}$");
    }
+
+   private void sendToChannelFromUser(Message m){
+      if(m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")){
+         sendToChannel(m);
+      }
+   }
+
    private void sendToChannel(Message m) {
       if (m.CHANNEL == null || m.CHANNEL.equals("")) {
          return;
@@ -177,9 +184,23 @@ public class MessageHandler implements Runnable {
       }
    }
 
+   private void sendWhisperToUser(Message m){
+      User user = ActiveUserController.getInstance().getUser(m.RECEIVER);
+      if(user != null && ActiveChannelController.getInstance().userIsInChannel(m.CHANNEL, user) &&
+              m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")){
+            sendToUser(m);
+      }else{
+         sendErrorToUser(m.SENDER, m.CHANNEL, "The user does not exist in this channel anymore");
+      }
+   }
+
    private void sendToUser(Message m) {
       System.out.println("Sending whisper message to " + m.RECEIVER);
-      ActiveUserController.getInstance().getUserOutbox(m.RECEIVER).add(m);
+      try{
+         ActiveUserController.getInstance().getUserOutbox(m.RECEIVER).add(m);
+      }catch (Exception e){
+         System.out.println("A message was sent to a user that doesn't exist on the server");
+      }
    }
 
 
