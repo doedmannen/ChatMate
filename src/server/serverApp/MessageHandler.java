@@ -13,9 +13,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MessageHandler implements Runnable {
 
    private LinkedBlockingQueue<Sendable> messages;
-
+   private String[] badWordList;
+   private String[] betterWordList;
    public MessageHandler(LinkedBlockingQueue<Sendable> messages) {
       this.messages = messages;
+      badWordList = new String[]
+              {"fuck", "pussy", "cunt", "whore", "nigger", "ass", "bitch", "cock", "poop", "shit", "fag", "dick", "slut"};
+      betterWordList = new String[]
+              {"flower", "potato", "tomato", "love", "kitten"};
    }
 
    @Override
@@ -35,6 +40,7 @@ public class MessageHandler implements Runnable {
 
    private void processMessages() {
       Message m = (Message) this.messages.remove();
+      fixMessageContent(m);
       switch (m.TYPE) {
          case DISCONNECT:
             sendToChannel(m);
@@ -57,6 +63,26 @@ public class MessageHandler implements Runnable {
       }
    }
 
+   private void fixMessageContent(Message m){
+      // Only apply is there is text-content and the message is sent to a channel or user
+      if(m.TEXT_CONTENT != null && m.TYPE == MessageType.CHANNEL_MESSAGE || m.TYPE == MessageType.WHISPER_MESSAGE){
+         // remove multiple whitespaces and trim
+         m.TEXT_CONTENT = m.TEXT_CONTENT.replaceAll("[ ]{2,}", " ").trim();
+         // Limit length if client sent us to much text
+         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 1000 ? m.TEXT_CONTENT.substring(0,1000) : m.TEXT_CONTENT;
+         applyWordFilter(m);
+      }
+   }
+
+   private void applyWordFilter(Message m){
+      m.TEXT_CONTENT = m.TEXT_CONTENT
+              .replaceAll("(("+String.join("|", badWordList)+")\\w*\\b)",
+                      betterWordList[(int) (Math.random() * betterWordList.length)]);
+   }
+
+   private boolean checkIfChannelIsValid(String channel){
+      return channel.matches("^[^\\s]{3,10}$");
+   }
    private void sendToChannel(Message m) {
       if (m.CHANNEL == null || m.CHANNEL.equals("")) {
          return;
@@ -87,16 +113,19 @@ public class MessageHandler implements Runnable {
          sendOutNewUserNickName(user, m);
       } else {
          // If username was invalid, send an error to the user
-         sendErrorInvalidUserNickName(m.SENDER, m.CHANNEL);
+         sendErrorToUser(m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
+                 "\nPlease choose one with no whitespaces and 3-10 characters in length.");
       }
    }
 
-   private void sendErrorInvalidUserNickName(UUID user_ID, String channel) {
-      Message errorMessage = new Message(MessageType.ERROR);
-      errorMessage.TEXT_CONTENT = "The username you wanted is not valid. \nPlease choose one with no whitespaces and 3-10 in length.";
-      errorMessage.RECEIVER = user_ID;
-      errorMessage.CHANNEL = channel;
-      sendToUser(errorMessage);
+   private void sendErrorToUser(UUID user_ID, String channel, String errorText) {
+      if(user_ID != null && channel != null){
+         Message errorMessage = new Message(MessageType.ERROR);
+         errorMessage.TEXT_CONTENT = errorText;
+         errorMessage.RECEIVER = user_ID;
+         errorMessage.CHANNEL = channel;
+         sendToUser(errorMessage);
+      }
    }
 
    private void sendOutNewUserNickName(User user, Message m) {
@@ -122,28 +151,22 @@ public class MessageHandler implements Runnable {
       }
    }
 
-   private void sendNewUserNickNameToOneUser() {
-
-   }
 
    private boolean validUserNickName(String newName) {
       return newName.matches("^[^\\s]{3,10}$");
    }
 
    private void addUserToChannel(Message m) {
-      System.out.println("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;
       User user = ActiveUserController.getInstance().getUser(m.SENDER);
       boolean userIsInChannel = ActiveChannelController.getInstance().userIsInChannel(channel, user);
-      if (channel != null && user != null && !userIsInChannel) {
-         m.NICKNAME = user.getNickName();
-         ActiveChannelController.getInstance().addUserToChannel(user, channel);
-         Channel c = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
-         ActiveUserController.getInstance().getUserOutbox(user).add(c);
-//         resendChannelToClients(m.CHANNEL);
-         sendToChannel(m);
+      if (channel != null && user != null && !userIsInChannel && checkIfChannelIsValid(m.CHANNEL)) {
+            m.NICKNAME = user.getNickName();
+            ActiveChannelController.getInstance().addUserToChannel(user, channel);
+            Channel c = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
+            ActiveUserController.getInstance().getUserOutbox(user).add(c);
+            sendToChannel(m);
       }
-      System.out.println("Users connected to " + m.CHANNEL + ": " + ActiveChannelController.getInstance().getChannel(m.CHANNEL).getUsers().size());
    }
 
    private void removeUserFromChannel(Message m) {
