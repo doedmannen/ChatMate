@@ -10,12 +10,15 @@ public class UserData implements Serializable {
    private String username;
    private HashSet<UUID> ignoreList;
    private HashSet<String> joinedChannels;
+   private boolean darkMode;
+   private String IP;
 
    public UserData() {
       this.channelMessages = new ConcurrentHashMap<>();
       this.username = "Unknown";
       this.ignoreList = new HashSet<>();
       this.joinedChannels = new HashSet<>();
+      darkMode = false;
    }
 
    public UserData(ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages, String username, HashSet<UUID> ignoreList) {
@@ -23,6 +26,7 @@ public class UserData implements Serializable {
       this.username = username;
       this.ignoreList = ignoreList;
       this.joinedChannels = new HashSet<>();
+      darkMode = false;
    }
 
    public UserData setUsername(String username) {
@@ -70,4 +74,19 @@ public class UserData implements Serializable {
       this.channelMessages.values().forEach(v -> v.forEach(SerializableLabel::initialize));
    }
 
+   public boolean isDarkMode() {
+      return darkMode;
+   }
+
+   public void setDarkMode(boolean darkMode) {
+      this.darkMode = darkMode;
+   }
+
+   public String getIP() {
+      return IP;
+   }
+
+   public void setIP(String IP) {
+      this.IP = IP;
+   }
 }
