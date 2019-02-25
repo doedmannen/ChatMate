@@ -124,7 +124,7 @@ public class MessageInboxHandler {
    public void removeUserFromList(Message message) {
       User user = Client.getInstance().channelList.get(message.CHANNEL)
               .stream()
-              .filter(u -> u.getID() == message.SENDER)
+              .filter(u -> u.getID().equals(message.SENDER))
               .toArray(User[]::new)[0];
       Client.getInstance().channelList.get(message.CHANNEL).remove(user);
    }
