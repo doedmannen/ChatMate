@@ -298,4 +298,8 @@ public class ChatWindowController {
    public ListView getChannel_list_view() {
       return channel_list_view;
    }
+
+   public TextField getInput_text() {
+      return input_text;
+   }
 }
