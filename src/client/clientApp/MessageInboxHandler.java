@@ -77,14 +77,14 @@ public class MessageInboxHandler {
 
 
    public void printLabelOnClient(Message message) {
-      SerializableLabel label = new MessageCreator().createLabel(message);
+      SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null && message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
          chatWindowController.getChatBox().getChildren().add(label);
       }
    }
 
    public void addMessageToList(Message message) {
-      SerializableLabel label = new MessageCreator().createLabel(message);
+      SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null) {
          Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
          if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
@@ -101,6 +101,10 @@ public class MessageInboxHandler {
       Client.getInstance().setCurrentChannel(channel.getName());
       Platform.runLater(() -> {
          chatWindowController.channels.add(channel);
+         chatWindowController.getChannel_list_view().requestFocus();
+         chatWindowController.getChannel_list_view().getSelectionModel().select(channel);
+         chatWindowController.getChannel_list_view().getFocusModel().getFocusedItem();
+         chatWindowController.getInput_text().requestFocus();
          if (chatWindowController.channels.size() == 1) {
             chatWindowController.getChannel_list_view().getSelectionModel().selectFirst();
          }

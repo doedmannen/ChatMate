@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
@@ -16,12 +17,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
 import javafx.util.Callback;
 import models.Channel;
 import models.Message;
 import models.MessageType;
 import models.User;
 
+import javax.swing.text.html.ImageView;
 import java.util.Comparator;
 
 public class ChatWindowController {
@@ -125,56 +128,28 @@ public class ChatWindowController {
                ClientMain.primaryStage.getScene().getStylesheets().remove(darkmodeCss);
                ClientMain.primaryStage.getScene().getStylesheets().add(normalCss);
             }
-         });
-      });
-   }
+        });
+    }
 
+    private void loadCss() {
+        String css = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+        Platform.runLater(() -> ClientMain.primaryStage.getScene().getStylesheets().add(css));
+    }
 
-   @FXML
-   public void printUsers() {
-      String channel = Client.getInstance().getCurrentChannel();
-      users = FXCollections.observableArrayList();
-      if (channel != null) {
-         users.addAll(Client.getInstance().channelList.get(channel));
-      }
-      SortedList<User> sortedList = new SortedList<>(users, Comparator.comparing(User::getNickName));
-      now_online_list.setItems(sortedList);
-      now_online_list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-   }
-
-   @FXML
-   public void createContextMenuForUser() {
-      igonorelistContextMenu = new ContextMenu();
-      MenuItem ignoreMenuItem = new MenuItem("Toggle ignore");
-      ignoreMenuItem.setOnAction((e) -> {
-         User user = (User) now_online_list.getSelectionModel().getSelectedItem();
-         Client.getInstance().toggleIgnoreOnUser(user.getID());
-      });
-      MenuItem wisperMenuItem = new MenuItem("Whisper");
-      wisperMenuItem.setOnAction((e) -> {
-         System.out.println("Inte så högt!!!");
-      });
-      igonorelistContextMenu.getItems().addAll(ignoreMenuItem, wisperMenuItem);
-      now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
-         @Override
-         public ListCell<User> call(ListView<User> param) {
-            ListCell<User> cell = new ListCell<>() {
-               @Override
-               protected void updateItem(User item, boolean empty) {
-                  super.updateItem(item, empty);
-                  if (empty) {
-                     setText(null);
-                  } else {
-                     setText(item.getNickName());
-                  }
-               }
-            };
-            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
-               if (isNowEmpty) {
-                  cell.setContextMenu(null);
-               } else {
-                  cell.setContextMenu(igonorelistContextMenu);
-               }
+    private void toggleDarkMode() {
+        darkmode_checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            darkmode_checkbox.setSelected(newValue);
+            String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
+            String normalCss = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+            Platform.runLater(() ->
+            {
+                if (darkmode_checkbox.isSelected()) {
+                    ClientMain.primaryStage.getScene().getStylesheets().remove(normalCss);
+                    ClientMain.primaryStage.getScene().getStylesheets().add(darkmodeCss);
+                } else {
+                    ClientMain.primaryStage.getScene().getStylesheets().remove(darkmodeCss);
+                    ClientMain.primaryStage.getScene().getStylesheets().add(normalCss);
+                }
             });
             return cell;
          }
@@ -282,40 +257,7 @@ public class ChatWindowController {
                   cell.setContextMenu(listContextMenu);
                }
             });
-            return cell;
-         }
-      });
-   }
-
-
-   private void recreateOldSession() {
-      this.darkmode_checkbox.setSelected(Client.getInstance().getUserData().isDarkMode());
-
-      Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
-
-      Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
-      nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
-      Client.getInstance().sender.sendToServer(nickChangeMessage);
-
-      Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
-         Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
-         channelJoinMessage.CHANNEL = c;
-         Client.getInstance().sender.sendToServer(channelJoinMessage);
-      });
-   }
-
-   @FXML
-   private void changeNickName() {
-      String nickname = nickname_change.getText();
-      Message m = new Message(MessageType.NICKNAME_CHANGE);
-      m.TEXT_CONTENT = nickname;
-      m.CHANNEL = Client.getInstance().getCurrentChannel();
-
-      Client.getInstance().sender.sendToServer(m);
-      nickname_change.clear();
-   }
-
-   public ListView getChannel_list_view() {
-      return channel_list_view;
-   }
+        }
+    }
 }
+
