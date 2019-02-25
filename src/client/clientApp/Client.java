@@ -10,6 +10,8 @@ import models.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -31,12 +33,29 @@ public class Client {
    private String currentChannel;
    private User thisUser;
    private UserData userData;
-
+   private String IP;
+   private HashSet<UUID> ignoreList;
+  
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       channelMessages = new ConcurrentHashMap<>();
       thisUser = new User("");
       userData = new UserData();
+      ignoreList = new HashSet<>();
+   }
+
+   public void toggleIgnoreOnUser(UUID user_ID){
+      if(!thisUser.equals(user_ID)){
+         if(userIsIgnored(user_ID)){
+            ignoreList.remove(user_ID);
+         } else {
+            ignoreList.add(user_ID);
+         }
+      }
+   }
+
+   public boolean userIsIgnored(UUID user_ID){
+      return ignoreList.contains(user_ID);
    }
 
    public void changeTitle() {
@@ -103,6 +122,7 @@ public class Client {
       try {
          socket = new Socket(ip, 54322);
          isRunning = true;
+         this.IP = ip;
          return true;
       } catch (Exception e) {
          e.printStackTrace();
@@ -126,13 +146,16 @@ public class Client {
          userData.addChannel(e.getKey(), e.getValue());
       });
 
-      ((ChatWindowController) ClientMain.primaryStage.getUserData()).channels.forEach(c -> {
+      ChatWindowController controller = (ChatWindowController) ClientMain.primaryStage.getUserData();
+
+      controller.channels.forEach(c -> {
          userData.addJoinedChannel(c.getName());
       });
 
-      // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
+      userData.setDarkMode(controller.darkmode_checkbox.isSelected());
+      userData.setIP(this.IP);
 
-      System.out.println(userData.getUsername());
+      // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
 
       FileManager.saveFile(userData, "user-data.ser");
    }
