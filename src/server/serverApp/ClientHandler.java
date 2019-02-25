@@ -73,8 +73,8 @@ public class ClientHandler implements Runnable {
       // TODO: 2019-02-14 try reconnect
 
       try {
-//         SealedObject encryptedObject = (SealedObject) streamIn.readObject();
-         Message message = (Message) streamIn.readObject();
+         SealedObject encryptedObject = (SealedObject) streamIn.readObject();
+         Message message = (Message) encryption.decryptObject(encryptedObject);
          message.SENDER = this.user.getID();
          message.NICKNAME = this.user.getNickName();
          messageHandlerQueue.add(message);
@@ -96,9 +96,10 @@ public class ClientHandler implements Runnable {
       for (int i = 0; i < stop; i++) {
          if (clientHasMessages()) {
             Sendable m = this.userOutbox.getFirst();
-//            SealedObject encryptedObject = encryption.encryptObject(m);
+            SealedObject encryptedObject = encryption.encryptObject(m);
             try {
-               streamOut.writeObject(m);
+               streamOut.reset();
+               streamOut.writeObject(encryptedObject);
                this.userOutbox.removeFirst();
                i = 10;
             } catch (IOException e) {

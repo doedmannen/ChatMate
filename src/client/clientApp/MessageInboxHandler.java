@@ -67,14 +67,14 @@ public class MessageInboxHandler {
 
 
    public void printLabelOnClient(Message message) {
-      SerializableLabel label = new MessageCreator().createLabel(message);
+      SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null && message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
          chatWindowController.getChatBox().getChildren().add(label);
       }
    }
 
    public void addMessageToList(Message message) {
-      SerializableLabel label = new MessageCreator().createLabel(message);
+      SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null) {
          Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
       }
@@ -87,6 +87,10 @@ public class MessageInboxHandler {
       Client.getInstance().setCurrentChannel(channel.getName());
       Platform.runLater(() -> {
          chatWindowController.channels.add(channel);
+         chatWindowController.getChannel_list_view().requestFocus();
+         chatWindowController.getChannel_list_view().getSelectionModel().select(channel);
+         chatWindowController.getChannel_list_view().getFocusModel().getFocusedItem();
+         chatWindowController.getInput_text().requestFocus();
          if (chatWindowController.channels.size() == 1) {
             chatWindowController.getChannel_list_view().getSelectionModel().selectFirst();
          }
@@ -94,7 +98,7 @@ public class MessageInboxHandler {
    }
 
    public void changeNickname(Message message) {
-      if (message.SENDER == Client.getInstance().getThisUser().getID()) {
+      if (message.SENDER.equals(Client.getInstance().getThisUser().getID())) {
          Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
          Client.getInstance().changeTitle();
       }
@@ -104,7 +108,7 @@ public class MessageInboxHandler {
 
          if (channel != null) {
             channel.forEach(user -> {
-               if (user.getID() == message.SENDER) {
+               if (user.getID().equals(message.SENDER)) {
                   user.setNickName(message.TEXT_CONTENT);
                }
             });
@@ -125,7 +129,7 @@ public class MessageInboxHandler {
    public void removeUserFromList(Message message) {
       User user = Client.getInstance().channelList.get(message.CHANNEL)
               .stream()
-              .filter(u -> u.getID() == message.SENDER)
+              .filter(u -> u.getID().equals(message.SENDER))
               .toArray(User[]::new)[0];
       Client.getInstance().channelList.get(message.CHANNEL).remove(user);
    }

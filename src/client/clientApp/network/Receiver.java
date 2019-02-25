@@ -39,8 +39,8 @@ public class Receiver extends Thread {
    public void run() {
       while (Client.getInstance().isRunning()) {
          try {
-//            SealedObject encryptedObject = (SealedObject) objectInputStream.readObject();
-            Sendable inData = (Sendable) objectInputStream.readObject();
+            SealedObject encryptedObject = (SealedObject) objectInputStream.readObject();
+            Sendable inData = (Sendable) decrypt.decryptObject(encryptedObject);
             if (inData instanceof Message) {
                Message message = (Message) inData;
                MessageInboxHandler.getInstance().messageSwitch(message);
