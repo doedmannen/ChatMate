@@ -1,5 +1,6 @@
 package client;
 
+import client.clientApp.Client;
 import client.clientApp.util.FileManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -14,6 +15,13 @@ public class ClientMain extends Application {
 
    @Override
    public void start(Stage primaryStage) throws Exception {
+      UserData data = (UserData) FileManager.loadFile("user-data.ser");
+      if (data == null) {
+         data = new UserData();
+      }
+
+      Client.getInstance().setUserData(data);
+
       ClientMain.primaryStage = primaryStage;
       FXMLLoader loader = new FXMLLoader(getClass().getResource("clientApp/views/Startup_Window.fxml"));
       Parent root = loader.load();
@@ -23,9 +31,8 @@ public class ClientMain extends Application {
       primaryStage.setTitle("Chatter Matter");
       primaryStage.setScene(new Scene(root, 380, 270));
 
-      UserData data = (UserData) FileManager.loadFile("user-data.ser");
 
-      if (data != null && data.isDarkMode()) {
+      if (data.isDarkMode()) {
          String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
          primaryStage.getScene().getStylesheets().add(darkmodeCss);
       } else {

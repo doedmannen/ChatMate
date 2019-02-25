@@ -28,29 +28,14 @@ public class StartupWindowController {
    private UserData data;
 
    public void initialize() {
-      loadUserData();
+      data = Client.getInstance().getUserData();;
+      data.initialize();
       nicknameTextField.setText(data.getUsername());
       serverAdressTextField.setText(data.getIP());
    }
 
-   private void loadUserData() {
-      try {
-         UserData data = (UserData) FileManager.loadFile("user-data.ser");
-         if (data == null) {
-            this.data = new UserData();
-         } else {
-            this.data = data;
-            data.initialize();
-         }
-      } catch (Exception e) {
-         e.printStackTrace();
-         this.data = new UserData();
-      }
-   }
-
    @FXML
    private void connectBtnPressed() throws Exception {
-      System.out.println("Btn pressed");
       if (validateInput()) {
          if (Client.getInstance().connect(serverAdressTextField.getText())) {
             data.setUsername(nicknameTextField.getText());
@@ -60,8 +45,6 @@ public class StartupWindowController {
          } else {
             errorLabel.setText("Could not connect");
          }
-      } else {
-         errorLabel.setText("Name should be 3-10 characters long and contain only letter and/or numbers");
       }
    }
 
@@ -76,10 +59,18 @@ public class StartupWindowController {
       Pattern pattern = Pattern.compile(nicknameRegex);
       Matcher nicknameMatcher = pattern.matcher(nickname);
 
-      if (nicknameMatcher.matches() && !serverAddress.equals("")) {
+      if (!nicknameMatcher.matches()) {
+         errorLabel.setText("Name should be 3-10 characters long containing only letter and/or numbers");
+         nicknameTextField.selectAll();
+         return false;
+      }
+
+      if (serverAddress.equals("")) {
+         serverAdressTextField.selectAll();
+         return false;
+      } else {
          return true;
       }
-      return false;
    }
 
    private void swtichWindow() throws Exception {

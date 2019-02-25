@@ -18,6 +18,7 @@ public class UserData implements Serializable {
       this.username = "Unknown";
       this.ignoreList = new HashSet<>();
       this.joinedChannels = new HashSet<>();
+      darkMode = false;
    }
 
    public UserData(ConcurrentHashMap<String, ArrayList<SerializableLabel>> channelMessages, String username, HashSet<UUID> ignoreList) {
@@ -25,6 +26,7 @@ public class UserData implements Serializable {
       this.username = username;
       this.ignoreList = ignoreList;
       this.joinedChannels = new HashSet<>();
+      darkMode = false;
    }
 
    public UserData setUsername(String username) {
