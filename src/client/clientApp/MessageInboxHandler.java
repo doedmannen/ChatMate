@@ -93,7 +93,7 @@ public class MessageInboxHandler {
    }
 
    public void changeNickname(Message message) {
-      if (message.SENDER == Client.getInstance().getThisUser().getID()) {
+      if (message.SENDER.equals(Client.getInstance().getThisUser().getID())) {
          Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
          Client.getInstance().changeTitle();
       }
@@ -103,7 +103,7 @@ public class MessageInboxHandler {
 
          if (channel != null) {
             channel.forEach(user -> {
-               if (user.getID() == message.SENDER) {
+               if (user.getID().equals(message.SENDER)) {
                   user.setNickName(message.TEXT_CONTENT);
                }
             });

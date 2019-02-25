@@ -128,9 +128,7 @@ public class ChatWindowController {
       String channel = Client.getInstance().getCurrentChannel();
       users = FXCollections.observableArrayList();
       if (channel != null) {
-         Client.getInstance().channelList.get(channel).forEach(user -> {
-            users.add(user);
-         });
+         users.addAll(Client.getInstance().channelList.get(channel));
       }
       SortedList<User> sortedList = new SortedList<>(users, Comparator.comparing(User::getNickName));
       now_online_list.setItems(sortedList);
