@@ -13,6 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 import models.Channel;
@@ -23,6 +25,8 @@ import models.User;
 import java.util.Comparator;
 
 public class ChatWindowController {
+
+   private Image notification = new Image("file:/home/bartosz/Desktop/GIT/ChatMateGroup/src/client/clientApp/images/notification.png");
 
    @FXML
    private TextField input_text;
@@ -252,11 +256,17 @@ public class ChatWindowController {
                   super.updateItem(item, empty);
                   if (empty) {
                      setText(null);
+                     setGraphic(null);
                   } else {
                      if (Client.getInstance().getUncheckedChannels().contains(item.getName())) {
-                        setText(item.getName() + " **");
+                        ImageView imageView = new ImageView();
+                        imageView.setImage(notification);
+                        setText(item.getName());
+                        setGraphic(null);
+                        setGraphic(imageView);
                      } else {
                         setText(item.getName());
+                        setGraphic(null);
 
                      }
                   }

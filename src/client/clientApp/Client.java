@@ -44,7 +44,6 @@ public class Client {
       userData = new UserData();
       ignoreList = new HashSet<>();
       uncheckedChannels = new HashSet<>();
-      uncheckedChannels.add("Global");
    }
 
    public void toggleIgnoreOnUser(UUID user_ID) {

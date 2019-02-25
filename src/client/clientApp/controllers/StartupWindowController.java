@@ -55,7 +55,7 @@ public class StartupWindowController {
       String serverAddress = serverAdressTextField.getText().trim();
       serverAdressTextField.setText(serverAddress);
 
-      String nicknameRegex = "^[a-zA-z0-9-_]{3,15}$";
+      String nicknameRegex = "^[a-zA-z0-9-_]{3,10}$";
       Pattern pattern = Pattern.compile(nicknameRegex);
       Matcher nicknameMatcher = pattern.matcher(nickname);
 
