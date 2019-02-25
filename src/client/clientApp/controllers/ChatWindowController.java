@@ -53,6 +53,8 @@ public class ChatWindowController {
 
    @FXML
    public CheckBox darkmode_checkbox;
+  
+   private ContextMenu igonorelistContextMenu;
 
    @FXML
    private ListView now_online_list;
@@ -135,12 +137,17 @@ public class ChatWindowController {
 
    @FXML
    public void createContextMenuForUser() {
-      listContextMenu = new ContextMenu();
-      MenuItem ignoreMenuItem = new MenuItem("Ignore");
+      igonorelistContextMenu = new ContextMenu();
+      MenuItem ignoreMenuItem = new MenuItem("Toggle ignore");
       ignoreMenuItem.setOnAction((e) -> {
-         System.out.println("VA FAN!!!");
+         User user = (User) now_online_list.getSelectionModel().getSelectedItem();
+         Client.getInstance().toggleIgnoreOnUser(user.getID());
       });
-      listContextMenu.getItems().addAll(ignoreMenuItem);
+      MenuItem wisperMenuItem = new MenuItem("Whisper");
+      wisperMenuItem.setOnAction((e) -> {
+         System.out.println("Inte så högt!!!");
+      });
+      igonorelistContextMenu.getItems().addAll(ignoreMenuItem,wisperMenuItem);
       now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
          @Override
          public ListCell<User> call(ListView<User> param) {
@@ -159,7 +166,7 @@ public class ChatWindowController {
                if (isNowEmpty) {
                   cell.setContextMenu(null);
                } else {
-                  cell.setContextMenu(listContextMenu);
+                  cell.setContextMenu(igonorelistContextMenu);
                }
             });
             return cell;

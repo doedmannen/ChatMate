@@ -10,6 +10,8 @@ import models.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -32,12 +34,28 @@ public class Client {
    private User thisUser;
    private UserData userData;
    private String IP;
-
+   private HashSet<UUID> ignoreList;
+  
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       channelMessages = new ConcurrentHashMap<>();
       thisUser = new User("");
       userData = new UserData();
+      ignoreList = new HashSet<>();
+   }
+
+   public void toggleIgnoreOnUser(UUID user_ID){
+      if(!thisUser.equals(user_ID)){
+         if(userIsIgnored(user_ID)){
+            ignoreList.remove(user_ID);
+         } else {
+            ignoreList.add(user_ID);
+         }
+      }
+   }
+
+   public boolean userIsIgnored(UUID user_ID){
+      return ignoreList.contains(user_ID);
    }
 
    public void changeTitle() {
