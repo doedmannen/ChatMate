@@ -84,7 +84,12 @@ public class MessageInboxHandler {
       ArrayList<SerializableLabel> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
       Client.getInstance().getChannelMessages().put(channel.getName(), list);
       Client.getInstance().setCurrentChannel(channel.getName());
-      Platform.runLater(() -> chatWindowController.channels.add(channel));
+      Platform.runLater(() -> {
+         chatWindowController.channels.add(channel);
+         if (chatWindowController.channels.size() == 1) {
+            chatWindowController.getChannel_list_view().getSelectionModel().selectFirst();
+         }
+      });
    }
 
    public void changeNickname(Message message) {

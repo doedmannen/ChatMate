@@ -46,7 +46,7 @@ public class ChatWindowController {
    private TextField channel_textField;
 
    @FXML
-   private ListView channel_list_view;
+   public ListView channel_list_view;
 
    @FXML
    private ContextMenu listContextMenu;
@@ -289,5 +289,9 @@ public class ChatWindowController {
 
       Client.getInstance().sender.sendToServer(m);
       nickname_change.clear();
+   }
+
+   public ListView getChannel_list_view() {
+      return channel_list_view;
    }
 }
