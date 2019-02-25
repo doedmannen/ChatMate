@@ -58,6 +58,9 @@ public class ChatWindowController {
    @FXML
    public CheckBox darkmode_checkbox;
 
+   @FXML
+   public CheckBox mute_checkbox;
+
    private ContextMenu igonorelistContextMenu;
 
    @FXML
