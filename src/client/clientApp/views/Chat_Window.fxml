@@ -43,7 +43,7 @@
          </padding></VBox>
    </center>
    <right>
-      <VBox prefHeight="600.0" prefWidth="230.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="600.0" prefWidth="195.0" BorderPane.alignment="CENTER">
          <children>
             <VBox minHeight="-Infinity" prefHeight="70.0">
                <children>
@@ -57,18 +57,15 @@
                   <Insets />
                </VBox.margin>
             </VBox>
-                  <ListView fx:id="now_online_list" prefHeight="635.0" prefWidth="230.0" VBox.vgrow="ALWAYS" />
-            <HBox prefHeight="39.0" prefWidth="175.0">
+                  <ListView fx:id="now_online_list" prefHeight="635.0" prefWidth="195.0" VBox.vgrow="ALWAYS" />
+            <VBox prefHeight="39.0" prefWidth="175.0">
                <children>
                   <CheckBox fx:id="darkmode_checkbox" minHeight="-Infinity" mnemonicParsing="false" prefHeight="27.0" prefWidth="123.0" text="Dark mode" />
-               </children>
-               <children>
-                  <CheckBox fx:id="mute_checkbox" minHeight="-Infinity" mnemonicParsing="false" prefHeight="27.0" prefWidth="123.0" text="Mute" />
                </children>
                <padding>
                   <Insets top="10.0" />
                </padding>
-            </HBox>
+            </VBox>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

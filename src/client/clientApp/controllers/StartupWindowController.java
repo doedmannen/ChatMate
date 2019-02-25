@@ -55,7 +55,7 @@ public class StartupWindowController {
       String serverAddress = serverAdressTextField.getText().trim();
       serverAdressTextField.setText(serverAddress);
 
-      String nicknameRegex = "^[a-zA-z0-9-_]{3,10}$";
+      String nicknameRegex = "^[a-zA-z0-9-_]{3,15}$";
       Pattern pattern = Pattern.compile(nicknameRegex);
       Matcher nicknameMatcher = pattern.matcher(nickname);
 
@@ -83,7 +83,7 @@ public class StartupWindowController {
       ClientMain.primaryStage.setResizable(false);
       ClientMain.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
       ClientMain.primaryStage.setTitle("Chatter Matter");
-      ClientMain.primaryStage.setScene(new Scene(root, 950, 600));
+      ClientMain.primaryStage.setScene(new Scene(root, 900, 600));
    }
 
    @FXML

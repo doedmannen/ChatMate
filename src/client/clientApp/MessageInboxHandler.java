@@ -3,12 +3,8 @@ package client.clientApp;
 import client.clientApp.controllers.ChatWindowController;
 import client.ClientMain;
 import javafx.application.Platform;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import models.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,16 +19,10 @@ public class MessageInboxHandler {
 
    private ChatWindowController chatWindowController;
    private MessageCreator messageCreator;
-   private MediaPlayer mediaPlayer;
-   private Media sound;
 
    private MessageInboxHandler() {
       chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
       messageCreator = new MessageCreator();
-
-      String musicFile = "src/client/clientApp/sound/Message.mp3";
-      sound = new Media(new File(musicFile).toURI().toString());
-      mediaPlayer = new MediaPlayer(sound);
    }
 
    public void messageSwitch(Message message) {
@@ -47,7 +37,6 @@ public class MessageInboxHandler {
             case WARNING:
                printLabelOnClient(message);
                addMessageToList(message);
-               playSound(message);
                break;
             case JOIN_CHANNEL:
                addMessageToList(message);
@@ -87,10 +76,6 @@ public class MessageInboxHandler {
       SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null) {
          Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
-         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
-            Client.getInstance().getUncheckedChannels().add(message.CHANNEL);
-            chatWindowController.channel_list_view.refresh();
-         }
       }
    }
 
@@ -156,17 +141,6 @@ public class MessageInboxHandler {
       LocalDateTime now = LocalDateTime.now();
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
       return "[" + now.format(formatter) + "] ";
-   }
-
-   private void playSound(Message message) {
-      if (!chatWindowController.mute_checkbox.isSelected()) {
-         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
-            mediaPlayer.play();
-            mediaPlayer.stop();
-         } else {
-            //Something to do here?
-         }
-      }
    }
 
 }
