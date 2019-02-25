@@ -21,7 +21,7 @@ public class ClientMain extends Application {
       primaryStage.getIcons().add(new Image("/client/clientApp/images/logo.png"));
       primaryStage.setResizable(false);
       primaryStage.setTitle("Chatter Matter");
-      primaryStage.setScene(new Scene(root, 380, 150));
+      primaryStage.setScene(new Scene(root, 380, 270));
 
       UserData data = (UserData) FileManager.loadFile("user-data.ser");
 

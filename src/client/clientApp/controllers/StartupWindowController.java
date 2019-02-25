@@ -61,7 +61,7 @@ public class StartupWindowController {
             errorLabel.setText("Could not connect");
          }
       } else {
-         errorLabel.setText("Wrong data");
+         errorLabel.setText("Name should be 3-10 characters long and contain only letter and/or numbers");
       }
    }
 
