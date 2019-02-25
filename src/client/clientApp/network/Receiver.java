@@ -7,7 +7,9 @@ import client.clientApp.controllers.ChatWindowController;
 import models.Channel;
 import models.Message;
 import models.Sendable;
+import models.Encryption;
 
+import javax.crypto.SealedObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -16,10 +18,12 @@ public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
    private ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+   private Encryption decrypt;
 
    public Receiver(Socket socket) {
       System.out.println(chatWindowController);
       this.socket = socket;
+      this.decrypt = new Encryption();
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());
       } catch (IOException e) {
@@ -35,7 +39,8 @@ public class Receiver extends Thread {
    public void run() {
       while (Client.getInstance().isRunning()) {
          try {
-            Sendable inData = (Sendable) objectInputStream.readObject();
+            SealedObject encryptedObject = (SealedObject) objectInputStream.readObject();
+            Sendable inData = (Sendable) decrypt.decryptObject(encryptedObject);
             if (inData instanceof Message) {
                Message message = (Message) inData;
                MessageInboxHandler.getInstance().messageSwitch(message);

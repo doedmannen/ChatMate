@@ -4,7 +4,9 @@ import models.Message;
 import models.MessageType;
 import models.Sendable;
 import models.User;
+import models.Encryption;
 
+import javax.crypto.SealedObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +28,7 @@ public class ClientHandler implements Runnable {
    private final LinkedBlockingDeque<Sendable> userOutbox;
    private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
    private final int WAIT_IN_SETUP = 500;
+   private Encryption encryption;
 
    public ClientHandler(Socket socket, ServerApp serverApp, LinkedBlockingQueue<Sendable> messageHandlerQueue) {
       this.socket = socket;
@@ -33,6 +36,7 @@ public class ClientHandler implements Runnable {
       this.user = new User(createRandomNick());
       this.userOutbox = new LinkedBlockingDeque<>();
       this.messageHandlerQueue = messageHandlerQueue;
+      this.encryption = new Encryption();
 
       ActiveUserController.getInstance().addUser(this.user, this.userOutbox);
       System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
@@ -66,9 +70,11 @@ public class ClientHandler implements Runnable {
    }
 
    private void readMessage() {
-      // TODO: 2019-02-14 try reconnect 
+      // TODO: 2019-02-14 try reconnect
+
       try {
-         Message message = (Message) streamIn.readObject();
+         SealedObject encryptedObject = (SealedObject) streamIn.readObject();
+         Message message = (Message) encryption.decryptObject(encryptedObject);
          message.SENDER = this.user.getID();
          message.NICKNAME = this.user.getNickName();
          messageHandlerQueue.add(message);
@@ -90,8 +96,9 @@ public class ClientHandler implements Runnable {
       for (int i = 0; i < stop; i++) {
          if (clientHasMessages()) {
             Sendable m = this.userOutbox.getFirst();
+            SealedObject encryptedObject = encryption.encryptObject(m);
             try {
-               streamOut.writeObject(m);
+               streamOut.writeObject(encryptedObject);
                this.userOutbox.removeFirst();
                i = 10;
             } catch (IOException e) {
