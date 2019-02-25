@@ -47,14 +47,14 @@ public class ChatWindowController {
 
    @FXML
    private ListView channel_list_view;
+
    @FXML
    private ContextMenu listContextMenu;
 
    @FXML
+   public CheckBox darkmode_checkbox;
+  
    private ContextMenu igonorelistContextMenu;
-
-   @FXML
-   private CheckBox darkmode_checkbox;
 
    @FXML
    private ListView now_online_list;
@@ -265,6 +265,8 @@ public class ChatWindowController {
 
 
    private void recreateOldSession() {
+      this.darkmode_checkbox.setSelected(Client.getInstance().getUserData().isDarkMode());
+
       Client.getInstance().setChannelMessages(Client.getInstance().getUserData().getChannelMessages());
 
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
@@ -288,6 +290,4 @@ public class ChatWindowController {
       Client.getInstance().sender.sendToServer(m);
       nickname_change.clear();
    }
-
-
 }

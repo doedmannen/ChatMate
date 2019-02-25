@@ -33,8 +33,9 @@ public class Client {
    private String currentChannel;
    private User thisUser;
    private UserData userData;
+   private String IP;
    private HashSet<UUID> ignoreList;
-
+  
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       channelMessages = new ConcurrentHashMap<>();
@@ -121,6 +122,7 @@ public class Client {
       try {
          socket = new Socket(ip, 54322);
          isRunning = true;
+         this.IP = ip;
          return true;
       } catch (Exception e) {
          e.printStackTrace();
@@ -144,13 +146,16 @@ public class Client {
          userData.addChannel(e.getKey(), e.getValue());
       });
 
-      ((ChatWindowController) ClientMain.primaryStage.getUserData()).channels.forEach(c -> {
+      ChatWindowController controller = (ChatWindowController) ClientMain.primaryStage.getUserData();
+
+      controller.channels.forEach(c -> {
          userData.addJoinedChannel(c.getName());
       });
 
-      // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
+      userData.setDarkMode(controller.darkmode_checkbox.isSelected());
+      userData.setIP(this.IP);
 
-      System.out.println(userData.getUsername());
+      // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
 
       FileManager.saveFile(userData, "user-data.ser");
    }
