@@ -86,6 +86,10 @@ public class MessageInboxHandler {
       SerializableLabel label = new MessageCreator().createLabel(message);
       if (message.CHANNEL != null) {
          Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+            Client.getInstance().getUncheckedChannels().add(message.CHANNEL);
+            chatWindowController.channel_list_view.refresh();
+         }
       }
    }
 

@@ -216,6 +216,8 @@ public class ChatWindowController {
             Client.getInstance().setCurrentChannel(newValue.getName());
             Client.getInstance().getChannelMessages().get(newValue.getName()).forEach(l -> {
                chat_box.getChildren().add(l);
+               Client.getInstance().getUncheckedChannels().remove(newValue.getName());
+               channel_list_view.refresh();
             });
          }
          Client.getInstance().changeTitle();
@@ -251,7 +253,12 @@ public class ChatWindowController {
                   if (empty) {
                      setText(null);
                   } else {
-                     setText(item.getName());
+                     if (Client.getInstance().getUncheckedChannels().contains(item.getName())) {
+                        setText(item.getName() + " **");
+                     } else {
+                        setText(item.getName());
+
+                     }
                   }
                }
             };
