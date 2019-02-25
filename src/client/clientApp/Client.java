@@ -35,18 +35,20 @@ public class Client {
    private UserData userData;
    private String IP;
    private HashSet<UUID> ignoreList;
-  
+   private HashSet<String> uncheckedChannels;
+
    private Client() {
       channelList = new ConcurrentSkipListMap<>();
       channelMessages = new ConcurrentHashMap<>();
       thisUser = new User("");
       userData = new UserData();
       ignoreList = new HashSet<>();
+      uncheckedChannels = new HashSet<>();
    }
 
-   public void toggleIgnoreOnUser(UUID user_ID){
-      if(!thisUser.equals(user_ID)){
-         if(userIsIgnored(user_ID)){
+   public void toggleIgnoreOnUser(UUID user_ID) {
+      if (!thisUser.equals(user_ID)) {
+         if (userIsIgnored(user_ID)) {
             ignoreList.remove(user_ID);
          } else {
             ignoreList.add(user_ID);
@@ -54,7 +56,7 @@ public class Client {
       }
    }
 
-   public boolean userIsIgnored(UUID user_ID){
+   public boolean userIsIgnored(UUID user_ID) {
       return ignoreList.contains(user_ID);
    }
 
@@ -158,5 +160,9 @@ public class Client {
       // TODO: 2019-02-21 When ignorelist is ready userData.addIgnore();
 
       FileManager.saveFile(userData, "user-data.ser");
+   }
+
+   public HashSet<String> getUncheckedChannels() {
+      return uncheckedChannels;
    }
 }
