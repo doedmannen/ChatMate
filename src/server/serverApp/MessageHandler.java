@@ -83,7 +83,6 @@ public class MessageHandler implements Runnable {
    private boolean checkIfChannelIsValid(String channel){
       return channel.matches("^[^\\s]{3,10}$");
    }
-
    private void sendToChannel(Message m) {
       if (m.CHANNEL == null || m.CHANNEL.equals("")) {
          return;
