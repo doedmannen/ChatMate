@@ -46,14 +46,14 @@ public class ChatWindowController {
    private TextField channel_textField;
 
    @FXML
-   private ListView channel_list_view;
+   public ListView channel_list_view;
 
    @FXML
    private ContextMenu listContextMenu;
 
    @FXML
    public CheckBox darkmode_checkbox;
-  
+
    private ContextMenu igonorelistContextMenu;
 
    @FXML
@@ -127,9 +127,11 @@ public class ChatWindowController {
    public void printUsers() {
       String channel = Client.getInstance().getCurrentChannel();
       users = FXCollections.observableArrayList();
-      Client.getInstance().channelList.get(channel).forEach(user -> {
-         users.add(user);
-      });
+      if (channel != null) {
+         Client.getInstance().channelList.get(channel).forEach(user -> {
+            users.add(user);
+         });
+      }
       SortedList<User> sortedList = new SortedList<>(users, Comparator.comparing(User::getNickName));
       now_online_list.setItems(sortedList);
       now_online_list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -147,7 +149,7 @@ public class ChatWindowController {
       wisperMenuItem.setOnAction((e) -> {
          System.out.println("Inte så högt!!!");
       });
-      igonorelistContextMenu.getItems().addAll(ignoreMenuItem,wisperMenuItem);
+      igonorelistContextMenu.getItems().addAll(ignoreMenuItem, wisperMenuItem);
       now_online_list.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
          @Override
          public ListCell<User> call(ListView<User> param) {
@@ -234,6 +236,10 @@ public class ChatWindowController {
          Client.getInstance().sender.sendToServer(message);
          message.CHANNEL = ((Channel) channel_list_view.getSelectionModel().getSelectedItem()).getName();
          channels.remove(channel);
+         if (channels.size() == 0) {
+            chat_box.getChildren().clear();
+            Client.getInstance().setCurrentChannel(null);
+         }
       });
 
       listContextMenu.getItems().addAll(deleteMenuItem);
@@ -289,5 +295,9 @@ public class ChatWindowController {
 
       Client.getInstance().sender.sendToServer(m);
       nickname_change.clear();
+   }
+
+   public ListView getChannel_list_view() {
+      return channel_list_view;
    }
 }
