@@ -8,6 +8,7 @@ import javafx.scene.media.MediaPlayer;
 import models.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class MessageInboxHandler {
       chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
       messageCreator = new MessageCreator();
 
-      String musicFile = "/home/bartosz/Desktop/GIT/ChatMateGroup/src/client/clientApp/sound/Message.mp3";     // For example
+      String musicFile = "src/client/clientApp/sound/Message.mp3";
       sound = new Media(new File(musicFile).toURI().toString());
       mediaPlayer = new MediaPlayer(sound);
    }

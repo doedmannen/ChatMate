@@ -26,7 +26,7 @@ import java.util.Comparator;
 
 public class ChatWindowController {
 
-   private Image notification = new Image("file:/home/bartosz/Desktop/GIT/ChatMateGroup/src/client/clientApp/images/notification.png");
+   private Image notification = new Image("file:src/client/clientApp/images/notification.png");
 
    @FXML
    private TextField input_text;
