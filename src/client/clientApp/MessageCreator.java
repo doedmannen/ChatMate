@@ -39,7 +39,11 @@ public class MessageCreator {
                 label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has left the channel.", "leave_channel");
                 break;
             case WHISPER_MESSAGE:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " whispers: " + message.TEXT_CONTENT, "whisper_message");
+                if(Client.getInstance().getThisUser().getID().equals(message.SENDER)){
+                    label = labelCreator(message.TIMESTAMP + "You whispered " + message.NICKNAME + ": " + message.TEXT_CONTENT, "whisper_message");
+                }else {
+                    label = labelCreator(message.TIMESTAMP + message.NICKNAME + " whispers: " + message.TEXT_CONTENT, "whisper_message");
+                }
                 break;
             case NICKNAME_CHANGE:
                 label = labelCreator(message.TIMESTAMP + message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", "nickname_message");

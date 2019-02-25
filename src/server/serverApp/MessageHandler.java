@@ -186,9 +186,13 @@ public class MessageHandler implements Runnable {
 
    private void sendWhisperToUser(Message m){
       User user = ActiveUserController.getInstance().getUser(m.RECEIVER);
-      if(user != null && ActiveChannelController.getInstance().userIsInChannel(m.CHANNEL, user) &&
-              m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")){
+      if (user.equals(m.SENDER)){
+         sendErrorToUser(m.SENDER, m.CHANNEL, "Only loosers chat with themselves");
+      }else if(user != null && ActiveChannelController.getInstance().userIsInChannel(m.CHANNEL, user)){
+         if(m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")){
+            sendWhisperToSender(m);
             sendToUser(m);
+         }
       }else{
          sendErrorToUser(m.SENDER, m.CHANNEL, "The user does not exist in this channel anymore");
       }
@@ -203,5 +207,16 @@ public class MessageHandler implements Runnable {
       }
    }
 
+   private void sendWhisperToSender(Message m){
+      User receiver = ActiveUserController.getInstance().getUser(m.RECEIVER);
+      Message replay = new Message(m.TYPE);
+      replay.RECEIVER = m.SENDER;
+      replay.SENDER = m.SENDER;
+      replay.TEXT_CONTENT = m.TEXT_CONTENT;
+      replay.CHANNEL = m.CHANNEL;
+      replay.CHANNEL = m.CHANNEL;
+      replay.NICKNAME = receiver.getNickName();
+      sendToUser(replay);
+   }
 
 }
