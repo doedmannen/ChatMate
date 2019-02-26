@@ -147,14 +147,14 @@ public class AdminSystemMonitoring implements Runnable {
 
     private void helpCommands() {
         String[] array = new String[8];
-        array[0] = "'connectedusers': Display the total amount of users on the server";
-        array[1] = "'usersinchannel': Display the total amount of users in the specified channel";
-        array[2] = "'channelamount': Display the total amount of channels on the server";
-        array[3] = "'channellist': Display a list of all channels";
-        array[4] = "'userlist': Display ALL users nickname and unique id";
-        array[5] = "'uptime': Display the servers uptime";
-        array[6] = "kill : Shutdown server";
-        array[7] = "printlog : Prints server log";
+        array[0] = "connectedusers: Display the total amount of users on the server";
+        array[1] = "usersinchannel: Display the total amount of users in the specified channel";
+        array[2] = "channelamount: Display the total amount of channels on the server";
+        array[3] = "channellist: Display a list of all channels";
+        array[4] = "userlist: Display ALL users nickname and unique id";
+        array[5] = "uptime: Display the servers uptime";
+        array[6] = "kill: Shutdown server";
+        array[7] = "printlog: Prints server log";
         Arrays.stream(array).forEach(System.out::println);
     }
 }
