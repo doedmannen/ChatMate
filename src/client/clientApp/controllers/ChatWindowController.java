@@ -329,12 +329,17 @@ public class ChatWindowController {
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
       nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
       Client.getInstance().sender.sendToServer(nickChangeMessage);
-
-      Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
-         Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
-         channelJoinMessage.CHANNEL = c;
-         Client.getInstance().sender.sendToServer(channelJoinMessage);
-      });
+      if(Client.getInstance().getUserData().getJoinedChannels().size() > 0){
+          Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
+              Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
+              channelJoinMessage.CHANNEL = c;
+              Client.getInstance().sender.sendToServer(channelJoinMessage);
+          });
+      } else {
+          Message joinGeneral = new Message(MessageType.JOIN_CHANNEL);
+          joinGeneral.CHANNEL = "General";
+          Client.getInstance().sender.sendToServer(joinGeneral);
+      }
    }
 
    @FXML
