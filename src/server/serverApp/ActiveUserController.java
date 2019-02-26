@@ -5,10 +5,7 @@ import models.Sendable;
 import models.User;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -54,6 +51,13 @@ public class ActiveUserController {
 
    public Map getUsers() {
       return Collections.unmodifiableMap(this.connectedUsers);
+   }
+
+   public void printUsers(){
+      this.connectedUsers.keySet().stream().sorted(Comparator.comparing(User::getNickName)).forEach(user -> {
+        System.out.println(user.getNickName() + user.getID());
+      });
+
    }
 
    public User getUser(UUID ID) {

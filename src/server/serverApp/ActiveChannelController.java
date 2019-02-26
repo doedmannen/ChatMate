@@ -3,6 +3,7 @@ package server.serverApp;
 import models.Channel;
 import models.User;
 
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
@@ -30,6 +31,11 @@ public class ActiveChannelController {
          }
       }
       return null;
+   }
+
+   public int getAmountOfChannels() {
+      return this.channels.size();
+
    }
 
    public boolean removeUserFromChannel(UUID userID, String channel) {
@@ -76,7 +82,6 @@ public class ActiveChannelController {
       } catch (ArrayIndexOutOfBoundsException e) {
       }
 
-      System.out.println(channel);
       if (channel == null) {
          this.addChannel(name);
          this.addUserToChannel(user, name);
@@ -92,5 +97,11 @@ public class ActiveChannelController {
               .map(c -> c.getName())
               .toArray(String[]::new);
    }
+
+   public String[] getChannelList(){
+      return this.channels.stream().map(channel -> channel.getName()).sorted(Comparator.comparing(String::toLowerCase)).toArray(String[]::new);
+   }
+
+
 
 }

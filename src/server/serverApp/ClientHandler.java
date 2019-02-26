@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable {
       this.messageHandlerQueue = messageHandlerQueue;
 
       ActiveUserController.getInstance().addUser(this.user, this.userOutbox);
-      System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
+
 
       try {
          streamIn = new ObjectInputStream(socket.getInputStream());
@@ -42,9 +42,9 @@ public class ClientHandler implements Runnable {
          socket.setSoTimeout(TIMEOUT_MS);
          isRunning = true;
       } catch (IOException e) {
-         System.out.println("failed to create streams ");
+         serverApp.adminSystemMonitoring.addToLog("Failed to create streams with "+socket.getInetAddress());
       } catch (Exception e) {
-         e.printStackTrace();
+         serverApp.adminSystemMonitoring.addToLog(e.getMessage()+socket.getInetAddress());
       }
 
       Message m = new Message(MessageType.CONNECT);
@@ -52,7 +52,7 @@ public class ClientHandler implements Runnable {
       m.NICKNAME = user.getNickName();
       this.userOutbox.add(m);
 
-      System.out.println(socket.getInetAddress().toString() + " connected");
+      serverApp.adminSystemMonitoring.addToLog(socket.getInetAddress().toString() + " connected");
    }
 
    private String createRandomNick(){
@@ -74,13 +74,13 @@ public class ClientHandler implements Runnable {
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
          // Kolla om möjlig återanslutning till server
-         System.out.println("Error in Clientreader");
+         serverApp.adminSystemMonitoring.addToLog("Error in Clientreader" +socket.getInetAddress());
          tryDisconnect();
          // todo kolla om klienten är död, prova återanslutning
       } catch (ClassNotFoundException e) {
-         System.out.println("Felaktig klass skickad");
+         serverApp.adminSystemMonitoring.addToLog("Faulty class sent from" +socket.getInetAddress());
       } catch (Exception e) {
-         e.printStackTrace();
+         serverApp.adminSystemMonitoring.addToLog(e.getMessage());
       }
    }
 
@@ -94,7 +94,7 @@ public class ClientHandler implements Runnable {
                this.userOutbox.removeFirst();
                i = 10;
             } catch (IOException e) {
-               System.out.println("Error in clientWriter");
+               serverApp.adminSystemMonitoring.addToLog("Error in Clientwriter" +socket.getInetAddress());
                stop = 10;
                try {
                   Thread.sleep(100);
@@ -106,7 +106,7 @@ public class ClientHandler implements Runnable {
                }
                // todo kolla om klienten är död, prova återanslutning
             } catch (Exception e) {
-               e.printStackTrace();
+               serverApp.adminSystemMonitoring.addToLog(e.getMessage());
             }
          }
 
@@ -120,8 +120,8 @@ public class ClientHandler implements Runnable {
    private void tryDisconnect() {
       cleanUpAfterUser();
       this.isRunning = false;
-      System.out.println("Connection to " + socket.getInetAddress() + " lost");
-      System.out.println("All connected users: " + ActiveUserController.getInstance().getUsers().size());
+      serverApp.adminSystemMonitoring.addToLog("Connection to " + socket.getInetAddress() + " lost");
+
    }
 
    private void cleanUpAfterUser() {
