@@ -101,7 +101,6 @@ public class MessageHandler implements Runnable {
       if (m.CHANNEL == null || m.CHANNEL.equals("")) {
          return;
       }
-      System.out.println("Sending message to channel " + m.CHANNEL);
       Channel channel = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
       if (channel != null) {
          SortedSet<User> users = channel.getUsers();
@@ -148,7 +147,6 @@ public class MessageHandler implements Runnable {
 
       if (userChannels.length > 0) {
          Arrays.stream(userChannels).forEach(channel -> {
-            System.out.println("Sending to " + channel);
             Message messageToBeSent = new Message(MessageType.NICKNAME_CHANGE);
             messageToBeSent.TEXT_CONTENT = m.TEXT_CONTENT;
             messageToBeSent.SENDER = m.SENDER;
@@ -172,6 +170,7 @@ public class MessageHandler implements Runnable {
    }
 
    private void addUserToChannel(Message m) {
+       adminSystemMonitoring.addToLog("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;
       User user = ActiveUserController.getInstance().getUser(m.SENDER);
       boolean userIsInChannel = ActiveChannelController.getInstance().userIsInChannel(channel, user);
@@ -184,16 +183,11 @@ public class MessageHandler implements Runnable {
       }
    }
 
-    private void addUserToChannel(Message m) {
-        adminSystemMonitoring.addToLog("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
-        String channel = m.CHANNEL;
-        User user = ActiveUserController.getInstance().getUser(m.SENDER);
-        if (channel != null && user != null) {
-            m.NICKNAME = user.getNickName();
-            ActiveChannelController.getInstance().addUserToChannel(user, channel);
-            Channel c = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
-            ActiveUserController.getInstance().getUserOutbox(user).add(c);
-            sendToChannel(m);
+    private void removeUserFromChannel(Message m) {
+        if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
+            this.sendToChannel(m);
+            adminSystemMonitoring.addToLog(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER +
+                    " removed from channel " : "");
         }
     }
 
@@ -212,11 +206,10 @@ public class MessageHandler implements Runnable {
    }
 
    private void sendToUser(Message m) {
-      System.out.println("Sending whisper message to " + m.RECEIVER);
       try{
          ActiveUserController.getInstance().getUserOutbox(m.RECEIVER).add(m);
       }catch (Exception e){
-         System.out.println("A message was sent to a user that doesn't exist on the server");
+         adminSystemMonitoring.addToLog("A message was sent to a user that doesn't exist on the server");
       }
    }
 
