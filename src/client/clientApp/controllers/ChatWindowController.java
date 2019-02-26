@@ -24,12 +24,13 @@ import models.Message;
 import models.MessageType;
 import models.User;
 
+import java.io.File;
 import java.util.Comparator;
 import java.util.UUID;
 
 public class ChatWindowController {
 
-   private Image notification = new Image("file:src/client/clientApp/images/notification.png");
+   private Image notification = new Image("file:src" + File.separator + "client" + File.separator + "clientApp" + File.separator + "images" + File.separator + "notification.png");
 
    @FXML
    private TextField input_text;

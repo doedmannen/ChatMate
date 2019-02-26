@@ -3,6 +3,7 @@ package client.clientApp;
 import client.clientApp.controllers.ChatWindowController;
 import client.ClientMain;
 import javafx.application.Platform;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import models.*;
@@ -22,15 +23,16 @@ public class MessageInboxHandler {
 
    private ChatWindowController chatWindowController;
    private MessageCreator messageCreator;
-   private MediaPlayer mediaPlayer;
+   private AudioClip mediaPlayer;
    private Media sound;
 
    private MessageInboxHandler() {
       chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
       messageCreator = new MessageCreator();
-      String musicFile = "src/client/clientApp/sound/Message.mp3";
+      String musicFile = "src" + File.separator + "client" + File.separator + "clientApp" + File.separator + "sound" + File.separator + "Message.mp3";
       sound = new Media(new File(musicFile).toURI().toString());
-      mediaPlayer = new MediaPlayer(sound);
+      mediaPlayer = new AudioClip(sound.getSource());
+//      mediaPlayer.setOnError(() -> System.out.println("media error " + mediaPlayer.getError().toString()));
    }
 
    public void messageSwitch(Message message) {
@@ -162,13 +164,14 @@ public class MessageInboxHandler {
       if (chatWindowController.mute_checkbox.isSelected()) {
 
       } else {
-         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
-            System.out.println("should play music");
-            mediaPlayer.stop();
-            mediaPlayer.play();
-         } else {
-            //Something to do here?
-         }
+//         mediaPlayer.stop();
+         mediaPlayer.play();
+//         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+//            mediaPlayer.stop();
+//            mediaPlayer.play();
+//         } else {
+//            //Something to do here?
+//         }
       }
 
    }
