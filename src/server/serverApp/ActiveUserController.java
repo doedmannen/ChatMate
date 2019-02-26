@@ -55,7 +55,7 @@ public class ActiveUserController {
 
    public void printUsers(){
       this.connectedUsers.keySet().stream().sorted(Comparator.comparing(User::getNickName)).forEach(user -> {
-        System.out.println(user.getNickName() + user.getID());
+        System.out.println(user.getNickName() +" "+ user.getID());
       });
 
    }
