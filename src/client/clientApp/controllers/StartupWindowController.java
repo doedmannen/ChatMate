@@ -83,7 +83,7 @@ public class StartupWindowController {
       ClientMain.primaryStage.setResizable(false);
       ClientMain.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
       ClientMain.primaryStage.setTitle("Chatter Matter");
-      ClientMain.primaryStage.setScene(new Scene(root, 950, 600));
+      ClientMain.primaryStage.setScene(new Scene(root, 1000, 600));
    }
 
    @FXML
