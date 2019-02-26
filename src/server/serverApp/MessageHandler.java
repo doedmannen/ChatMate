@@ -86,13 +86,13 @@ public class MessageHandler implements Runnable {
 
     private void applyWordFilter(Message m) {
         m.TEXT_CONTENT = m.TEXT_CONTENT
-                .replaceAll("((" + String.join("|", badWordList) + ")\\w*\\b)",
+                .replaceAll("(?i)((" + String.join("|", badWordList) + ")\\w*\\b)",
                         betterWordList[(int)(ThreadLocalRandom.current().nextDouble() * betterWordList.length)]);
     }
 
     private boolean checkIfChannelIsValid(String channel) {
         return channel.matches("^[\\w]{3,10}$") &&
-                !channel.matches(".*("+ String.join("|",badWordList) +").*");
+                !channel.matches("(?i).*("+ String.join("|",badWordList) +").*");
     }
 
     private void sendToChannelFromUser(Message m) {
@@ -172,7 +172,7 @@ public class MessageHandler implements Runnable {
 
     private boolean validUserNickName(String newName) {
         return newName.matches("^[\\w]{3,10}$") &&
-                !newName.matches(".*("+ String.join("|",badWordList) +").*");
+                !newName.matches("(?i).*("+ String.join("|",badWordList) +").*");
     }
 
     private void addUserToChannel(Message m) {
