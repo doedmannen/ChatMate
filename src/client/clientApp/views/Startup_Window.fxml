@@ -42,7 +42,7 @@
             <Insets right="20"/>
         </GridPane.margin>
         <Label text="Server Adress: "/>
-        <TextField fx:id="serverAdressTextField" onKeyReleased="#KeyReleasedOnNameField"/>
+        <TextField fx:id="serverAddressTextField" onKeyReleased="#KeyReleasedOnNameField"/>
     </VBox>
 
     <Button text="Connect" GridPane.columnIndex="0" GridPane.rowIndex="3" onAction="#connectBtnPressed"

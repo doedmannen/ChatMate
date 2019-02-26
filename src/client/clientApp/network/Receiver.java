@@ -1,9 +1,7 @@
 package client.clientApp.network;
 
-import client.ClientMain;
 import client.clientApp.Client;
 import client.clientApp.MessageInboxHandler;
-import client.clientApp.controllers.ChatWindowController;
 import models.Channel;
 import models.Message;
 import models.Sendable;
@@ -17,17 +15,15 @@ import java.net.Socket;
 public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
-   private ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
    private Encryption decrypt;
 
    public Receiver(Socket socket) {
-      System.out.println(chatWindowController);
       this.socket = socket;
       this.decrypt = new Encryption();
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());
       } catch (IOException e) {
-         System.out.println("failed to create input stream");
+         System.out.println("Failed to create input stream");
          Client.getInstance().setIsRunning(false);
          // todo kolla om server är död, prova återanslutning
       } catch (Exception e) {
@@ -50,7 +46,6 @@ public class Receiver extends Thread {
                MessageInboxHandler.getInstance().addChannel(channel);
             }
          } catch (IOException e) {
-            System.out.println("Read Error");
             Client.getInstance().setIsRunning(false);
             // todo kolla om server är död, prova återanslutning
          } catch (ClassNotFoundException e) {
