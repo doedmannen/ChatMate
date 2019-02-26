@@ -161,18 +161,8 @@ public class MessageInboxHandler {
    }
 
    private void playSound(Message message) {
-      if (chatWindowController.mute_checkbox.isSelected()) {
-
-      } else {
-//         mediaPlayer.stop();
+      if (!chatWindowController.mute_checkbox.isSelected() && !message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
          mediaPlayer.play();
-//         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
-//            mediaPlayer.stop();
-//            mediaPlayer.play();
-//         } else {
-//            //Something to do here?
-//         }
       }
-
    }
 }
