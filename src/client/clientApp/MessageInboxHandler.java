@@ -5,7 +5,6 @@ import client.ClientMain;
 import javafx.application.Platform;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import models.*;
 
 import java.io.File;
@@ -32,7 +31,6 @@ public class MessageInboxHandler {
       String musicFile = "src" + File.separator + "client" + File.separator + "clientApp" + File.separator + "sound" + File.separator + "Message.mp3";
       sound = new Media(new File(musicFile).toURI().toString());
       mediaPlayer = new AudioClip(sound.getSource());
-//      mediaPlayer.setOnError(() -> System.out.println("media error " + mediaPlayer.getError().toString()));
    }
 
    public void messageSwitch(Message message) {
@@ -77,14 +75,14 @@ public class MessageInboxHandler {
    }
 
 
-   public void printLabelOnClient(Message message) {
+   private void printLabelOnClient(Message message) {
       SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null && message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
          chatWindowController.getChatBox().getChildren().add(label);
       }
    }
 
-   public void addMessageToList(Message message) {
+   private void addMessageToList(Message message) {
       SerializableLabel label = messageCreator.createLabel(message);
       if (message.CHANNEL != null) {
          Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
@@ -114,7 +112,7 @@ public class MessageInboxHandler {
       });
    }
 
-   public void changeNickname(Message message) {
+   private void changeNickname(Message message) {
       if (message.SENDER.equals(Client.getInstance().getThisUser().getID())) {
          Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
          Client.getInstance().changeTitle();
@@ -134,16 +132,16 @@ public class MessageInboxHandler {
 
    }
 
-   public void connect(Message message) {
+   private void connect(Message message) {
       Client.getInstance().setThisUser(new User(message.NICKNAME, message.RECEIVER));
       Client.getInstance().changeTitle();
    }
 
-   public void addUserToList(Message message) {
+   private void addUserToList(Message message) {
       Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
    }
 
-   public void removeUserFromList(Message message) {
+   private void removeUserFromList(Message message) {
       User user = Client.getInstance().channelList.get(message.CHANNEL)
               .stream()
               .filter(u -> u.getID().equals(message.SENDER))
@@ -151,11 +149,8 @@ public class MessageInboxHandler {
       Client.getInstance().channelList.get(message.CHANNEL).remove(user);
    }
 
-   public void printUsers() {
-      Platform.runLater(() -> chatWindowController.printUsers());
-   }
 
-   public String getTimeStamp() {
+   private String getTimeStamp() {
       LocalDateTime now = LocalDateTime.now();
       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
       return "[" + now.format(formatter) + "] ";

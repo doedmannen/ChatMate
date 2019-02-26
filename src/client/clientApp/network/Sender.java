@@ -25,7 +25,7 @@ public class Sender extends Thread {
         try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
-            System.out.println("failed to create stream");
+            System.out.println("Failed to create stream");
             Client.getInstance().setIsRunning(false);
             // todo kolla om server är död, prova återanslutning
         } catch (Exception e) {
@@ -39,13 +39,12 @@ public class Sender extends Thread {
         }
     }
 
-    public boolean hasMessagesTosend() {
+    private boolean hasMessagesTosend() {
         return outbox.size() > 0;
     }
 
     @Override
     public void run() {
-        System.out.println("Sender is running");
         while (Client.getInstance().isRunning()) {
             while (hasMessagesTosend()) {
                 Sendable m = outbox.getFirst();
@@ -55,13 +54,13 @@ public class Sender extends Thread {
                     objectOutputStream.writeObject(encryptedObject);  // Try to send first sendable
                     outbox.removeFirst();               // Remove if sent
                 } catch (Exception e) {
-
+                  e.printStackTrace();
                 }
             }
             try {
                 Thread.sleep(1);
             } catch (Exception e) {
-
+                e.printStackTrace();
             }
         }
 

@@ -73,7 +73,7 @@ public class ChatWindowController {
    @FXML
    private ListView now_online_list;
 
-   public ObservableList<User> users;
+   private ObservableList<User> users;
 
 
    public VBox getChatBox() {
@@ -178,6 +178,7 @@ public class ChatWindowController {
             textToBeSent = textToBeSent.substring(39);
             msgIsOk = true;
          } catch (Exception e) {
+            e.printStackTrace();
          }
       } else {
          message.TYPE = MessageType.CHANNEL_MESSAGE;
@@ -225,7 +226,6 @@ public class ChatWindowController {
 
    @FXML
    public void refreshUserList() {
-      //online_list.getChildren().clear();
       printUsers();
    }
 
