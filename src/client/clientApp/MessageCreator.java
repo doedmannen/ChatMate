@@ -1,63 +1,58 @@
 package client.clientApp;
 
-import client.Controller;
-import client.Main;
-import javafx.application.Platform;
+import client.clientApp.controllers.ChatWindowController;
+import client.ClientMain;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
+import models.SerializableLabel;
 import models.Message;
-import models.MessageType;
-
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-
 
 public class MessageCreator {
-    Controller controller;
+    ChatWindowController chatWindowController;
 
     public MessageCreator() {
-        controller = (client.Controller) Main.primaryStage.getUserData();
+        chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
     }
 
-    public Label labelCreator(String text, Paint color, String id) {
-        Label label = new Label();
+    public SerializableLabel labelCreator(String text, String id) {
+        SerializableLabel label = new SerializableLabel();
         label.setText(text);
-        label.setTextFill(color);
         label.setId(id);
         label.setWrapText(true);
+        label.save();
         return label;
     }
 
     @FXML
-    public Label createLabel(Message message) {
-        Label label = null;
+    public SerializableLabel createLabel(Message message) {
+        SerializableLabel label = null;
         switch (message.TYPE) {
             case DISCONNECT:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has disconnected.", Color.DARKSLATEGRAY, "leave_channel");
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has disconnected.", "disconnect_message");
                 break;
             case CHANNEL_MESSAGE:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + ": " + message.TEXT_CONTENT, Color.BLACK, "channel_message");
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + ": " + message.TEXT_CONTENT, "channel_message");
                 break;
             case JOIN_CHANNEL:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has joined the channel.", Color.GREEN, "join_channel");
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has joined the channel.", "join_message");
                 break;
             case LEAVE_CHANNEL:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has left the channel.", Color.RED, "leave_channel");
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has left the channel.", "leave_channel");
                 break;
             case WHISPER_MESSAGE:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " whispers: " + message.TEXT_CONTENT, Color.PURPLE, "channel_message");
+                if(Client.getInstance().getThisUser().getID().equals(message.SENDER)){
+                    label = labelCreator(message.TIMESTAMP + "You whispered " + message.NICKNAME + ": " + message.TEXT_CONTENT, "whisper_message");
+                }else {
+                    label = labelCreator(message.TIMESTAMP + message.NICKNAME + " whispers: " + message.TEXT_CONTENT, "whisper_message");
+                }
                 break;
             case NICKNAME_CHANGE:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", Color.DARKMAGENTA, "leave_channel");
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " is now " + message.TEXT_CONTENT + ".", "nickname_message");
                 break;
             case ERROR:
-                label = labelCreator("ERROR: " + message.TEXT_CONTENT, Color.ORANGERED, "error");
+                label = labelCreator("ERROR: " + message.TEXT_CONTENT, "error");
                 break;
             case WARNING:
-                label = labelCreator("Warning: " + message.TEXT_CONTENT, Color.ORANGERED, "warning");
+                label = labelCreator("Warning: " + message.TEXT_CONTENT, "warning");
                 break;
         }
         return label;

@@ -1,121 +1,164 @@
 package client.clientApp;
 
-import client.Controller;
-import client.Main;
+import client.clientApp.controllers.ChatWindowController;
+import client.ClientMain;
 import javafx.application.Platform;
-import javafx.scene.control.Label;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
 import models.*;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MessageInboxHandler {
-    private static MessageInboxHandler ourInstance = new MessageInboxHandler();
+   private static MessageInboxHandler ourInstance = new MessageInboxHandler();
 
-    public static MessageInboxHandler getInstance() {
-        return ourInstance;
-    }
+   public static MessageInboxHandler getInstance() {
+      return ourInstance;
+   }
 
-    private Controller controller;
-    private MessageCreator messageCreator;
+   private ChatWindowController chatWindowController;
+   private MessageCreator messageCreator;
+   private AudioClip mediaPlayer;
+   private Media sound;
 
-    private MessageInboxHandler() {
-        controller = (client.Controller) Main.primaryStage.getUserData();
-        messageCreator = new MessageCreator();
-    }
+   private MessageInboxHandler() {
+      chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+      messageCreator = new MessageCreator();
+      String musicFile = "src" + File.separator + "client" + File.separator + "clientApp" + File.separator + "sound" + File.separator + "Message.mp3";
+      sound = new Media(new File(musicFile).toURI().toString());
+      mediaPlayer = new AudioClip(sound.getSource());
+   }
 
-    public void messageSwitch(Message message) {
-        message.TIMESTAMP=getTimeStamp();
-        Platform.runLater(() -> {
-            switch (message.TYPE) {
-                case WHISPER_MESSAGE:
-                case CHANNEL_MESSAGE:
-                case ERROR:
-                case WARNING:
-                    printLabelOnClient(message);
-                    addMessageToList(message);
-                    break;
-                case JOIN_CHANNEL:
-                    addMessageToList(message);
-                    addUserToList(message);
-                    printLabelOnClient(message);
-                    controller.refreshUserList();
-                    break;
-                case LEAVE_CHANNEL:
-                case DISCONNECT:
-                    removeUserFromList(message);
-                    addMessageToList(message);
-                    printLabelOnClient(message);
-                    controller.refreshUserList();
-                    break;
-                case NICKNAME_CHANGE:
-                    changeNickname(message);
-                    printLabelOnClient(message);
-                    addMessageToList(message);
-                    controller.refreshUserList();
-                    break;
-                case CONNECT:
-                    connect(message);
-                    break;
-            }
-        });
-    }
+   public void messageSwitch(Message message) {
+      if (Client.getInstance().userIsIgnored(message.SENDER) &&
+              (message.TYPE == MessageType.CHANNEL_MESSAGE || message.TYPE == MessageType.WHISPER_MESSAGE))
+         return; // Don't proceed with ignored users
+      message.TIMESTAMP = getTimeStamp();
+      Platform.runLater(() -> {
+         switch (message.TYPE) {
+            case WHISPER_MESSAGE:
+            case CHANNEL_MESSAGE:
+            case ERROR:
+            case WARNING:
+               printLabelOnClient(message);
+               addMessageToList(message);
+               playSound(message);
+               break;
+            case JOIN_CHANNEL:
+               addMessageToList(message);
+               addUserToList(message);
+               printLabelOnClient(message);
+               chatWindowController.refreshUserList();
+               break;
+            case LEAVE_CHANNEL:
+            case DISCONNECT:
+               removeUserFromList(message);
+               addMessageToList(message);
+               printLabelOnClient(message);
+               chatWindowController.refreshUserList();
+               break;
+            case NICKNAME_CHANGE:
+               changeNickname(message);
+               printLabelOnClient(message);
+               addMessageToList(message);
+               chatWindowController.refreshUserList();
+               break;
+            case CONNECT:
+               connect(message);
+               break;
+         }
+      });
+   }
 
-    public void printLabelOnClient(Message message) {
-        Label label = new MessageCreator().createLabel(message);
-        if (message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
-            controller.getChatBox().getChildren().add(label);
-        }
-    }
-    public void addMessageToList(Message message) {
-        Label label = new MessageCreator().createLabel(message);
-        Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
-    }
 
-    public void addChannel(Channel channel) {
-        ArrayList<Label> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
-        Client.getInstance().getChannelMessages().put(channel.getName(), list);
-        Platform.runLater(() -> controller.channels.add(channel));
-    }
+   private void printLabelOnClient(Message message) {
+      SerializableLabel label = messageCreator.createLabel(message);
+      if (message.CHANNEL != null && message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+         chatWindowController.getChatBox().getChildren().add(label);
+      }
+   }
 
-    public void changeNickname(Message message) {
-        if (message.SENDER == Client.getInstance().getThisUser().getID()) {
-            Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
-            Client.getInstance().changeTitle();
-        }
-        Client.getInstance().channelList.get(message.CHANNEL).forEach(user -> {
-            if (user.getID() == message.SENDER) {
-                user.setNickName(message.TEXT_CONTENT);
-            }
-        });
-    }
+   private void addMessageToList(Message message) {
+      SerializableLabel label = messageCreator.createLabel(message);
+      if (message.CHANNEL != null) {
+         Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
+         if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+            Client.getInstance().getUncheckedChannels().add(message.CHANNEL);
+            chatWindowController.channel_list_view.refresh();
+         }
+      }
 
-    public void connect(Message message){
-        Client.getInstance().setThisUser(new User(message.NICKNAME, message.RECEIVER));
-        Client.getInstance().changeTitle();
-    }
+   }
 
-    public void addUserToList(Message message) {
-        Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
-    }
+   public void addChannel(Channel channel) {
+      //// TODO: 2019-02-22 update chatbox with text on join
+      ArrayList<SerializableLabel> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
+      Client.getInstance().getChannelMessages().put(channel.getName(), list);
+      Client.getInstance().setCurrentChannel(channel.getName());
+      Platform.runLater(() -> {
+         chatWindowController.channels.add(channel);
+         chatWindowController.getChannel_list_view().requestFocus();
+         chatWindowController.getChannel_list_view().getSelectionModel().select(channel);
+         chatWindowController.getChannel_list_view().getFocusModel().getFocusedItem();
+         chatWindowController.getInput_text().requestFocus();
+         chatWindowController.getInput_text().clear();
+         if (chatWindowController.channels.size() == 1) {
+            chatWindowController.getChannel_list_view().getSelectionModel().selectFirst();
+         }
+      });
+   }
 
-    public void removeUserFromList(Message message) {
-        User user = Client.getInstance().channelList.get(message.CHANNEL)
-                .stream()
-                .filter(u -> u.getID() == message.SENDER)
-                .toArray(User[]::new)[0];
-        Client.getInstance().channelList.get(message.CHANNEL).remove(user);
-    }
+   private void changeNickname(Message message) {
+      if (message.SENDER.equals(Client.getInstance().getThisUser().getID())) {
+         Client.getInstance().getThisUser().setNickName(message.TEXT_CONTENT);
+         Client.getInstance().changeTitle();
+      }
 
-    public void printUsers() {
-        Platform.runLater(() -> controller.printUsers());
-    }
+      if (message.CHANNEL != null) {
+         ConcurrentSkipListSet<User> channel = Client.getInstance().channelList.get(message.CHANNEL);
 
-    public String getTimeStamp() {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return "["+now.format(formatter)+"] ";
-    }
+         if (channel != null) {
+            channel.forEach(user -> {
+               if (user.getID().equals(message.SENDER)) {
+                  user.setNickName(message.TEXT_CONTENT);
+               }
+            });
+         }
+      }
 
+   }
+
+   private void connect(Message message) {
+      Client.getInstance().setThisUser(new User(message.NICKNAME, message.RECEIVER));
+      Client.getInstance().changeTitle();
+   }
+
+   private void addUserToList(Message message) {
+      Client.getInstance().channelList.get(message.CHANNEL).add(new User(message.NICKNAME, message.SENDER));
+   }
+
+   private void removeUserFromList(Message message) {
+      User user = Client.getInstance().channelList.get(message.CHANNEL)
+              .stream()
+              .filter(u -> u.getID().equals(message.SENDER))
+              .toArray(User[]::new)[0];
+      Client.getInstance().channelList.get(message.CHANNEL).remove(user);
+   }
+
+
+   private String getTimeStamp() {
+      LocalDateTime now = LocalDateTime.now();
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+      return "[" + now.format(formatter) + "] ";
+   }
+
+   private void playSound(Message message) {
+      if (!chatWindowController.mute_checkbox.isSelected() && !message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
+         mediaPlayer.play();
+      }
+   }
 }

@@ -1,28 +1,30 @@
-package client.clientApp;
+package client.clientApp.network;
 
-import client.Controller;
+import client.clientApp.Client;
+import client.clientApp.MessageInboxHandler;
 import models.Channel;
 import models.Message;
 import models.Sendable;
+import models.Encryption;
 
+import javax.crypto.SealedObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-import static client.Main.primaryStage;
-
 public class Receiver extends Thread {
    private Socket socket;
    private ObjectInputStream objectInputStream;
-   private Controller controller = (client.Controller) primaryStage.getUserData();
+   private Encryption decrypt;
 
    public Receiver(Socket socket) {
       this.socket = socket;
+      this.decrypt = new Encryption();
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());
       } catch (IOException e) {
-         System.out.println("failed to create input stream");
-         Client.getInstance().isRunning = false;
+         System.out.println("Failed to create input stream");
+         Client.getInstance().setIsRunning(false);
          // todo kolla om server är död, prova återanslutning
       } catch (Exception e) {
          e.printStackTrace();
@@ -31,9 +33,10 @@ public class Receiver extends Thread {
 
    @Override
    public void run() {
-      while (Client.getInstance().isRunning) {
+      while (Client.getInstance().isRunning()) {
          try {
-            Sendable inData = (Sendable) objectInputStream.readObject();
+            SealedObject encryptedObject = (SealedObject) objectInputStream.readObject();
+            Sendable inData = (Sendable) decrypt.decryptObject(encryptedObject);
             if (inData instanceof Message) {
                Message message = (Message) inData;
                MessageInboxHandler.getInstance().messageSwitch(message);
@@ -43,8 +46,7 @@ public class Receiver extends Thread {
                MessageInboxHandler.getInstance().addChannel(channel);
             }
          } catch (IOException e) {
-            System.out.println("Read Error");
-            Client.getInstance().isRunning = false;
+            Client.getInstance().setIsRunning(false);
             // todo kolla om server är död, prova återanslutning
          } catch (ClassNotFoundException e) {
             System.out.println("Message Error");
