@@ -351,7 +351,7 @@ public class ChatWindowController {
    }
 
    public void lurig() {
-      if (input_text.getText().equals("pavarotti") && Client.getInstance().getThisUser().getNickName().equals("goat")) {
+      if (input_text.getText().equals("man") && Client.getInstance().getThisUser().getNickName().equals("spider")) {
          Platform.runLater(() -> {
             WebView webview = new WebView();
             webview.getEngine().load(
