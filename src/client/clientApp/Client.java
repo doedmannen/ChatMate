@@ -141,7 +141,6 @@ public class Client {
 
    public void saveData() {
       this.kill();
-      System.out.println("Saving data ");
       this.userData = new UserData();
       userData.setUsername(thisUser.getNickName());
       this.channelMessages.entrySet().forEach(e -> {

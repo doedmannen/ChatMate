@@ -2,8 +2,6 @@ package client.clientApp.controllers;
 
 import client.ClientMain;
 import client.clientApp.Client;
-import client.clientApp.util.FileManager;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,26 +19,25 @@ public class StartupWindowController {
    @FXML
    TextField nicknameTextField;
    @FXML
-   TextField serverAdressTextField;
+   TextField serverAddressTextField;
    @FXML
    Label errorLabel;
 
    private UserData data;
 
    public void initialize() {
-      data = Client.getInstance().getUserData();;
+      data = Client.getInstance().getUserData();
       data.initialize();
       nicknameTextField.setText(data.getUsername());
-      serverAdressTextField.setText(data.getIP());
+      serverAddressTextField.setText(data.getIP());
    }
 
    @FXML
    private void connectBtnPressed() throws Exception {
       if (validateInput()) {
-         if (Client.getInstance().connect(serverAdressTextField.getText())) {
+         if (Client.getInstance().connect(serverAddressTextField.getText())) {
             data.setUsername(nicknameTextField.getText());
             Client.getInstance().setUserData(data);
-            // TODO: 2019-02-21 Add set ignorelist here
             swtichWindow();
          } else {
             errorLabel.setText("Could not connect");
@@ -52,10 +49,10 @@ public class StartupWindowController {
       String nickname = nicknameTextField.getText().trim();
       nicknameTextField.setText(nickname);
 
-      String serverAddress = serverAdressTextField.getText().trim();
-      serverAdressTextField.setText(serverAddress);
+      String serverAddress = serverAddressTextField.getText().trim();
+      serverAddressTextField.setText(serverAddress);
 
-      String nicknameRegex = "^[a-zA-z0-9-_]{3,15}$";
+      String nicknameRegex = "^[a-zA-z0-9\\-_]{3,10}$";
       Pattern pattern = Pattern.compile(nicknameRegex);
       Matcher nicknameMatcher = pattern.matcher(nickname);
 
@@ -66,7 +63,7 @@ public class StartupWindowController {
       }
 
       if (serverAddress.equals("")) {
-         serverAdressTextField.selectAll();
+         serverAddressTextField.selectAll();
          return false;
       } else {
          return true;
@@ -78,7 +75,6 @@ public class StartupWindowController {
       Parent root = loader.load();
       ChatWindowController chatWindowController = loader.getController();
       ClientMain.primaryStage.setUserData(chatWindowController);
-      Client.getInstance();
 
       ClientMain.primaryStage.setResizable(false);
       ClientMain.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
