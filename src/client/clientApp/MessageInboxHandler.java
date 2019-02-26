@@ -107,6 +107,7 @@ public class MessageInboxHandler {
          chatWindowController.getChannel_list_view().getSelectionModel().select(channel);
          chatWindowController.getChannel_list_view().getFocusModel().getFocusedItem();
          chatWindowController.getInput_text().requestFocus();
+         chatWindowController.getInput_text().clear();
          if (chatWindowController.channels.size() == 1) {
             chatWindowController.getChannel_list_view().getSelectionModel().selectFirst();
          }

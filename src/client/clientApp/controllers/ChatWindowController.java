@@ -355,7 +355,9 @@ public class ChatWindowController {
          Platform.runLater(() -> {
             WebView webview = new WebView();
             webview.getEngine().load(
-                    "https://www.youtube.com/embed/hj1Uc-vCoJM?autoplay=1"
+                    "https://www.youtube.com/embed/PaFnO5LKTSs?autoplay=1"
+//                    PaFnO5LKTSs
+//                    hj1Uc-vCoJM
             );
             webview.setPrefSize(640, 390);
             ClientMain.primaryStage.setScene(new Scene(webview));
