@@ -24,7 +24,14 @@
         <MenuBar>
             <Menu text="File">
                 <items>
-                    <MenuItem text="Delete history" onAction="#deleteHistory"/>
+                    <MenuItem text="Delete History" onAction="#deleteHistory"/>
+                </items>
+            </Menu>
+            <Menu text="Connection">
+                <items>
+                    <MenuItem text="Log Out" onAction="#logOut"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem text="Try Refresh" onAction="#tryReconnect"/>
                 </items>
             </Menu>
         </MenuBar>

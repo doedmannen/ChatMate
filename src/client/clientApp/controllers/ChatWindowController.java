@@ -147,15 +147,15 @@ public class ChatWindowController {
                   if (empty) {
                      setText(null);
                   } else {
-                      setOpacity(1);
-                      if(Client.getInstance().getThisUser().getID().equals(item.getID())){
-                          setText("[me] " + item.getNickName());
-                      }else if(Client.getInstance().userIsIgnored(item.getID())){
-                          setText("[i] " + item.getNickName());
-                          setOpacity(0.3);
+                     setOpacity(1);
+                     if (Client.getInstance().getThisUser().getID().equals(item.getID())) {
+                        setText("[me] " + item.getNickName());
+                     } else if (Client.getInstance().userIsIgnored(item.getID())) {
+                        setText("[i] " + item.getNickName());
+                        setOpacity(0.3);
                      } else {
-                          setText(item.getNickName());
-                      }
+                        setText(item.getNickName());
+                     }
                   }
                }
             };
@@ -186,7 +186,8 @@ public class ChatWindowController {
             input_text.appendText(textToBeSent.substring(0, 39).concat(" "));
             textToBeSent = textToBeSent.substring(39);
             msgIsOk = true;
-         } catch (Exception e) { }
+         } catch (Exception e) {
+         }
       } else {
          message.TYPE = MessageType.CHANNEL_MESSAGE;
          msgIsOk = true;
@@ -330,16 +331,16 @@ public class ChatWindowController {
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
       nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
       Client.getInstance().sender.sendToServer(nickChangeMessage);
-      if(Client.getInstance().getUserData().getJoinedChannels().size() > 0){
-          Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
-              Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
-              channelJoinMessage.CHANNEL = c;
-              Client.getInstance().sender.sendToServer(channelJoinMessage);
-          });
+      if (Client.getInstance().getUserData().getJoinedChannels().size() > 0) {
+         Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
+            Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
+            channelJoinMessage.CHANNEL = c;
+            Client.getInstance().sender.sendToServer(channelJoinMessage);
+         });
       } else {
-          Message joinGeneral = new Message(MessageType.JOIN_CHANNEL);
-          joinGeneral.CHANNEL = "General";
-          Client.getInstance().sender.sendToServer(joinGeneral);
+         Message joinGeneral = new Message(MessageType.JOIN_CHANNEL);
+         joinGeneral.CHANNEL = "General";
+         Client.getInstance().sender.sendToServer(joinGeneral);
       }
    }
 
@@ -369,6 +370,18 @@ public class ChatWindowController {
          Client.getInstance().getChannelMessages().put(c.getName(), new ArrayList<>());
       });
       chat_box.getChildren().clear();
+      Client.getInstance().getUncheckedChannels().clear();
+      channel_list_view.refresh();
+   }
+
+   @FXML
+   private void logOut(){
+      System.out.println("Loging out");
+   }
+
+   @FXML
+   private void tryReconnect(){
+      System.out.println("Try Reconnecting");
    }
 
    public void lurig() {
