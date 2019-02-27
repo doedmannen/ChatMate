@@ -102,6 +102,9 @@ public class Client {
        Platform.runLater(() -> {
            chatWindowController.channels.clear();
        });
+       Message name = new Message(MessageType.NICKNAME_CHANGE);
+       name.TEXT_CONTENT = Client.getInstance().getThisUser().getNickName();
+       Client.getInstance().sender.sendToServer(name);
        Client.getInstance().channelList.keySet().stream().forEach(channel -> {
            Message joinMessage = new Message(MessageType.JOIN_CHANNEL);
            joinMessage.CHANNEL = channel;

@@ -9,6 +9,7 @@ import javax.crypto.SealedObject;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class Sender extends Thread {
@@ -48,18 +49,20 @@ public class Sender extends Thread {
     public void run() {
         while (Client.getInstance().isRunning()) {
             while (hasMessagesTosend()) {
-                while (socket.isClosed() && Client.getInstance().isRunning()){
+                while (socket.isClosed() && Client.getInstance().isRunning()) {
                     //sender waiting for reconnect
-                    try{
+                    try {
                         Thread.sleep(100);
-                    }catch (Exception e){}
+                    } catch (Exception e) {
+                    }
                 }
-                Sendable m = outbox.getFirst();
-                SealedObject encryptedObject = encrypt.encryptObject(m);
                 try {
+                    Sendable m = outbox.getFirst();
+                    SealedObject encryptedObject = encrypt.encryptObject(m);
                     objectOutputStream.reset();
                     objectOutputStream.writeObject(encryptedObject);  // Try to send first sendable
                     outbox.removeFirst();               // Remove if sent
+                } catch (NoSuchElementException e) {
                 } catch (Exception e) {
                     Client.getInstance().tryReconnect();
                 }
