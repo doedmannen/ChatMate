@@ -7,9 +7,23 @@ import models.SerializableLabel;
 import models.Message;
 
 public class MessageCreator {
+    String[] joinMessages;
     ChatWindowController chatWindowController;
 
     public MessageCreator() {
+        joinMessages = new String[]{
+                "- glhf!",
+                "Everyone, look busy!",
+                "You must construct additional pylons.",
+                "Ermagherd!",
+                "Stay awhile and listen.",
+                "We were expecting you 8===D",
+                "We hope you brought pizza.",
+                "Leave your weapons by the door.",
+                "Hide your bananas.",
+                "Seems OP - please nerf.",
+                "Hold my beer."
+        };
         chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
     }
 
@@ -33,7 +47,7 @@ public class MessageCreator {
                 label = labelCreator(message.TIMESTAMP + message.NICKNAME + ": " + message.TEXT_CONTENT, "channel_message");
                 break;
             case JOIN_CHANNEL:
-                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has joined the channel.", "join_message");
+                label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has joined the channel. " + joinMessages[(int)(Math.random()*joinMessages.length)], "join_message");
                 break;
             case LEAVE_CHANNEL:
                 label = labelCreator(message.TIMESTAMP + message.NICKNAME + " has left the channel.", "leave_channel");
