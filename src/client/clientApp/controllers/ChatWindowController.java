@@ -96,8 +96,6 @@ public class ChatWindowController {
       createChannelList();
       createContextMenuForLeavingChannel();
       toggleDarkMode();
-      createChannelList();
-      createContextMenuForLeavingChannel();
       createContextMenuForUser();
 
       // needs to happen here otherwise it wont work
@@ -128,6 +126,7 @@ public class ChatWindowController {
       ignoreMenuItem.setOnAction((e) -> {
          User user = (User) now_online_list.getSelectionModel().getSelectedItem();
          Client.getInstance().toggleIgnoreOnUser(user.getID());
+         refreshUserList();
       });
       MenuItem wisperMenuItem = new MenuItem("Whisper");
       wisperMenuItem.setOnAction((e) -> {
@@ -148,7 +147,15 @@ public class ChatWindowController {
                   if (empty) {
                      setText(null);
                   } else {
-                     setText(item.getNickName());
+                      setOpacity(1);
+                      if(Client.getInstance().getThisUser().getID().equals(item.getID())){
+                          setText("[me] " + item.getNickName());
+                      }else if(Client.getInstance().userIsIgnored(item.getID())){
+                          setText("[i] " + item.getNickName());
+                          setOpacity(0.3);
+                     } else {
+                          setText(item.getNickName());
+                      }
                   }
                }
             };
@@ -171,6 +178,7 @@ public class ChatWindowController {
       Message message = new Message();
       message.CHANNEL = Client.getInstance().getCurrentChannel();
       input_text.clear();
+      // Check if message is a whisper or channel message
       if (textToBeSent.trim().toLowerCase().startsWith("/w")) {
          message.TYPE = MessageType.WHISPER_MESSAGE;
          try {
@@ -178,9 +186,7 @@ public class ChatWindowController {
             input_text.appendText(textToBeSent.substring(0, 39).concat(" "));
             textToBeSent = textToBeSent.substring(39);
             msgIsOk = true;
-         } catch (Exception e) {
-            e.printStackTrace();
-         }
+         } catch (Exception e) { }
       } else {
          message.TYPE = MessageType.CHANNEL_MESSAGE;
          msgIsOk = true;
@@ -324,12 +330,17 @@ public class ChatWindowController {
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
       nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
       Client.getInstance().sender.sendToServer(nickChangeMessage);
-
-      Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
-         Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
-         channelJoinMessage.CHANNEL = c;
-         Client.getInstance().sender.sendToServer(channelJoinMessage);
-      });
+      if(Client.getInstance().getUserData().getJoinedChannels().size() > 0){
+          Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
+              Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
+              channelJoinMessage.CHANNEL = c;
+              Client.getInstance().sender.sendToServer(channelJoinMessage);
+          });
+      } else {
+          Message joinGeneral = new Message(MessageType.JOIN_CHANNEL);
+          joinGeneral.CHANNEL = "General";
+          Client.getInstance().sender.sendToServer(joinGeneral);
+      }
    }
 
    @FXML

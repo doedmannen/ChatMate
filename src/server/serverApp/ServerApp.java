@@ -1,17 +1,11 @@
 package server.serverApp;
 
 
-import models.Message;
 import models.Sendable;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.time.Instant;
-import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,8 +35,6 @@ public class ServerApp {
         messageHandlerQueue = new LinkedBlockingQueue<>();
         adminSystemMonitoring = new AdminSystemMonitoring(this);
         messageHandler = new MessageHandler(messageHandlerQueue, adminSystemMonitoring);
-
-
     }
 
     public boolean isRunning() {
@@ -65,6 +57,7 @@ public class ServerApp {
             new Thread(messageHandler).start();
             new Thread(adminSystemMonitoring).start();
             System.out.println("Server is running on port " + PORT);
+            System.out.println("Type 'help' for command list");
         }
         while (running) {
             try {
