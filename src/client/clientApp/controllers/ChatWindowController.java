@@ -353,7 +353,6 @@ public class ChatWindowController {
 
    @FXML
    private void deleteHistory() {
-      System.out.println("deleting history");
       Client.getInstance().getChannelMessages().clear();
       channels.forEach(c -> {
          Client.getInstance().getChannelMessages().put(c.getName(), new ArrayList<>());
