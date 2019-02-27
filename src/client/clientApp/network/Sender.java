@@ -14,7 +14,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 public class Sender extends Thread {
     private Socket socket;
-    private static ObjectOutputStream objectOutputStream;
+    private ObjectOutputStream objectOutputStream;
     private LinkedBlockingDeque<Sendable> outbox;
     private Encryption encrypt;
 
@@ -41,14 +41,14 @@ public class Sender extends Thread {
         }
     }
 
-    private boolean hasMessagesTosend() {
+    private boolean hasMessagesToSend() {
         return outbox.size() > 0;
     }
 
     @Override
     public void run() {
         while (Client.getInstance().isRunning()) {
-            while (hasMessagesTosend()) {
+            while (hasMessagesToSend()) {
                 while (socket.isClosed() && Client.getInstance().isRunning()) {
                     //sender waiting for reconnect
                     try {

@@ -22,7 +22,8 @@ public class MessageCreator {
                 "Leave your weapons by the door.",
                 "Hide your bananas.",
                 "Seems OP - please nerf.",
-                "Hold my beer."
+                "Hold my beer.",
+                "As the prophecy foretold."
         };
         chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
     }
