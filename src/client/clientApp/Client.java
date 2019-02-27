@@ -106,7 +106,6 @@ public class Client {
            Message joinMessage = new Message(MessageType.JOIN_CHANNEL);
            joinMessage.CHANNEL = channel;
            sender.sendToServer(joinMessage);
-           System.out.println(channel);
        });
    }
 
