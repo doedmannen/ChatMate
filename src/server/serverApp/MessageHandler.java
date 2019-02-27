@@ -121,24 +121,24 @@ public class MessageHandler implements Runnable {
    private void changeUserNickName(Message m) {
       // Trim the string
       m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
-      if (validUserNickName(m.TEXT_CONTENT)) {
-         // If the username is valid, change it on the server
-         User user = ActiveUserController.getInstance().getUser(m.SENDER);
-         String oldUsername = user.getNickName();
-         user.setNickName(m.TEXT_CONTENT);
+      if (!m.TEXT_CONTENT.equals(m.NICKNAME)) {
+          if (validUserNickName(m.TEXT_CONTENT)) {
+              // If the username is valid, change it on the server
+              User user = ActiveUserController.getInstance().getUser(m.SENDER);
+              String oldUsername = user.getNickName();
+              user.setNickName(m.TEXT_CONTENT);
 
-         // Send new username to all channels the user is active in
+              // Send new username to all channels the user is active in
 
-         adminSystemMonitoring.addToLog("User " + m.SENDER + "(" + oldUsername +")"  + " changed name to " + m.TEXT_CONTENT);
+              adminSystemMonitoring.addToLog("User " + m.SENDER + "(" + oldUsername + ")" + " changed name to " + m.TEXT_CONTENT);
 
-         sendOutNewUserNickName(user, m);
-
-
-      } else {
-         // If username was invalid, send an error to the user
-         sendErrorToUser(m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
-                 "\nPlease choose one with no whitespaces and 3-10 characters in length. " +
-                 "\nNo offensive words are allowed as names. ");
+              sendOutNewUserNickName(user, m);
+          } else {
+              // If username was invalid, send an error to the user
+              sendErrorToUser(m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
+                      "\nPlease choose one with no whitespaces and 3-10 characters in length. " +
+                      "\nNo offensive words are allowed as names. ");
+          }
       }
    }
 
