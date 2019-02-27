@@ -15,32 +15,33 @@ public class MessageHandler implements Runnable {
    private LinkedBlockingQueue<Sendable> messages;
    private String[] badWordList;
    private String[] betterWordList;
-    private final AdminSystemMonitoring adminSystemMonitoring;
-    private boolean isRunning;
-    public MessageHandler(LinkedBlockingQueue<Sendable> messages, AdminSystemMonitoring adminSystemMonitoring) {
-        this.messages = messages;
-        this.adminSystemMonitoring = adminSystemMonitoring;
-        this.isRunning=true;
+   private final AdminSystemMonitoring adminSystemMonitoring;
+   private boolean isRunning;
+
+   public MessageHandler(LinkedBlockingQueue<Sendable> messages, AdminSystemMonitoring adminSystemMonitoring) {
+      this.messages = messages;
+      this.adminSystemMonitoring = adminSystemMonitoring;
+      this.isRunning = true;
       badWordList = new String[]
               {"fuck", "pussy", "cunt", "whore", "nigger", "ass", "bitch", "cock", "poop", "shit", "fag", "dick", "slut"};
       betterWordList = new String[]
               {"flower", "potato", "tomato", "love", "kitten"};
    }
 
-    @Override
-    public void run() {
-        // TODO: 2019-02-14 change true to isrunning
-        while (isRunning) {
-            if (messages.size() > 0) {
-                processMessages();
-            }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-            }
+   @Override
+   public void run() {
+      // TODO: 2019-02-14 change true to isrunning
+      while (isRunning) {
+         if (messages.size() > 0) {
+            processMessages();
+         }
+         try {
+            Thread.sleep(1);
+         } catch (InterruptedException e) {
+         }
 
-        }
-    }
+      }
+   }
 
    private void processMessages() {
       Message m = (Message) this.messages.remove();
@@ -66,33 +67,34 @@ public class MessageHandler implements Runnable {
             break;
       }
    }
-    public void kill(){
-        this.isRunning=false;
-    }
 
-   private void fixMessageContent(Message m){
+   public void kill() {
+      this.isRunning = false;
+   }
+
+   private void fixMessageContent(Message m) {
       // Only apply is there is text-content and the message is sent to a channel or user
-      if(m.TEXT_CONTENT != null && m.TYPE == MessageType.CHANNEL_MESSAGE || m.TYPE == MessageType.WHISPER_MESSAGE){
+      if (m.TEXT_CONTENT != null && m.TYPE == MessageType.CHANNEL_MESSAGE || m.TYPE == MessageType.WHISPER_MESSAGE) {
          // remove multiple whitespaces and trim
          m.TEXT_CONTENT = m.TEXT_CONTENT.replaceAll("[ ]{2,}", " ");
          // Limit length if client sent us to much text
-         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 1000 ? m.TEXT_CONTENT.substring(0,1000).trim() : m.TEXT_CONTENT.trim();
+         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 1000 ? m.TEXT_CONTENT.substring(0, 1000).trim() : m.TEXT_CONTENT.trim();
          applyWordFilter(m);
       }
    }
 
-   private void applyWordFilter(Message m){
+   private void applyWordFilter(Message m) {
       m.TEXT_CONTENT = m.TEXT_CONTENT
-              .replaceAll("(("+String.join("|", badWordList)+")\\w*\\b)",
+              .replaceAll("((" + String.join("|", badWordList) + ")\\w*\\b)",
                       betterWordList[(int) (Math.random() * betterWordList.length)]);
    }
 
-   private boolean checkIfChannelIsValid(String channel){
+   private boolean checkIfChannelIsValid(String channel) {
       return channel.matches("^[^\\s]{3,10}$");
    }
 
-   private void sendToChannelFromUser(Message m){
-      if(m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")){
+   private void sendToChannelFromUser(Message m) {
+      if (m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")) {
          sendToChannel(m);
       }
    }
@@ -121,8 +123,12 @@ public class MessageHandler implements Runnable {
       if (validUserNickName(m.TEXT_CONTENT)) {
          // If the username is valid, change it on the server
          User user = ActiveUserController.getInstance().getUser(m.SENDER);
+         String oldUsername = user.getNickName();
          user.setNickName(m.TEXT_CONTENT);
+
          // Send new username to all channels the user is active in
+
+         adminSystemMonitoring.addToLog("User " + m.SENDER + "(" + oldUsername +")"  + " changed name to " + m.TEXT_CONTENT);
 
          sendOutNewUserNickName(user, m);
       } else {
@@ -133,7 +139,7 @@ public class MessageHandler implements Runnable {
    }
 
    private void sendErrorToUser(UUID user_ID, String channel, String errorText) {
-      if(user_ID != null && channel != null){
+      if (user_ID != null && channel != null) {
          Message errorMessage = new Message(MessageType.ERROR);
          errorMessage.TEXT_CONTENT = errorText;
          errorMessage.RECEIVER = user_ID;
@@ -170,50 +176,52 @@ public class MessageHandler implements Runnable {
    }
 
    private void addUserToChannel(Message m) {
-       adminSystemMonitoring.addToLog("Adding User " + m.SENDER + " to channel " + m.CHANNEL);
       String channel = m.CHANNEL;
       User user = ActiveUserController.getInstance().getUser(m.SENDER);
       boolean userIsInChannel = ActiveChannelController.getInstance().userIsInChannel(channel, user);
       if (channel != null && user != null && !userIsInChannel && checkIfChannelIsValid(m.CHANNEL)) {
-            m.NICKNAME = user.getNickName();
-            ActiveChannelController.getInstance().addUserToChannel(user, channel);
-            Channel c = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
-            ActiveUserController.getInstance().getUserOutbox(user).add(c);
-            sendToChannel(m);
+         m.NICKNAME = user.getNickName();
+         ActiveChannelController.getInstance().addUserToChannel(user, channel);
+         Channel c = ActiveChannelController.getInstance().getChannel(m.CHANNEL);
+         if (ActiveUserController.getInstance().getUserOutbox(user).add(c)) {
+            adminSystemMonitoring.addToLog("Adding User " + m.SENDER +"(" + user.getNickName() +")" + " to channel " + m.CHANNEL);
+         }
+         sendToChannel(m);
       }
    }
 
-    private void removeUserFromChannel(Message m) {
-        if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
-            this.sendToChannel(m);
-            adminSystemMonitoring.addToLog(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER +
-                    " removed from channel " + m.CHANNEL : "");
-        }
-    }
+   private void removeUserFromChannel(Message m) {
+         User user = ActiveUserController.getInstance().getUser(m.SENDER);
+      if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("") && user != null) {
+         this.sendToChannel(m);
+         adminSystemMonitoring.addToLog(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) ? "User " + m.SENDER  + "(" + user.getNickName() +")" +
+                 " removed from channel " + m.CHANNEL : "");
+      }
+   }
 
-   private void sendWhisperToUser(Message m){
+   private void sendWhisperToUser(Message m) {
       User user = ActiveUserController.getInstance().getUser(m.RECEIVER);
-      if (user.equals(m.SENDER)){
+      if (user.equals(m.SENDER)) {
          sendErrorToUser(m.SENDER, m.CHANNEL, "Only loosers chat with themselves");
-      }else if(user != null && ActiveChannelController.getInstance().userIsInChannel(m.CHANNEL, user)){
-         if(m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")){
+      } else if (user != null && ActiveChannelController.getInstance().userIsInChannel(m.CHANNEL, user)) {
+         if (m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")) {
             sendWhisperToSender(m);
             sendToUser(m);
          }
-      }else{
+      } else {
          sendErrorToUser(m.SENDER, m.CHANNEL, "The user does not exist in this channel anymore");
       }
    }
 
    private void sendToUser(Message m) {
-      try{
+      try {
          ActiveUserController.getInstance().getUserOutbox(m.RECEIVER).add(m);
-      }catch (Exception e){
+      } catch (Exception e) {
          adminSystemMonitoring.addToLog("A message was sent to a user that doesn't exist on the server");
       }
    }
 
-   private void sendWhisperToSender(Message m){
+   private void sendWhisperToSender(Message m) {
       User receiver = ActiveUserController.getInstance().getUser(m.RECEIVER);
       Message replay = new Message(m.TYPE);
       replay.RECEIVER = m.SENDER;
