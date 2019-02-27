@@ -25,6 +25,7 @@ import models.MessageType;
 import models.User;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.UUID;
 
@@ -348,6 +349,16 @@ public class ChatWindowController {
 
    public TextField getInput_text() {
       return input_text;
+   }
+
+   @FXML
+   private void deleteHistory() {
+      System.out.println("deleting history");
+      Client.getInstance().getChannelMessages().clear();
+      channels.forEach(c -> {
+         Client.getInstance().getChannelMessages().put(c.getName(), new ArrayList<>());
+      });
+      chat_box.getChildren().clear();
    }
 
    public void lurig() {
