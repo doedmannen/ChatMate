@@ -5,6 +5,7 @@ import client.ClientMain;
 import client.clientApp.network.Receiver;
 import client.clientApp.network.Sender;
 import client.clientApp.util.FileManager;
+import javafx.application.Platform;
 import models.*;
 
 import java.io.IOException;
@@ -69,11 +70,41 @@ public class Client {
       this.userData = userData;
    }
 
-   private void joinChannel(String channelName) {
-      Message m = new Message(MessageType.JOIN_CHANNEL);
-      m.CHANNEL = channelName;
-      sender.sendToServer(m);
+   public void tryReconnect(){
+      final int WAIT = 1000;
+      System.out.println("Reconnect was called in...");
+      for(int i = 1; i < 10; i++){
+         ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+         try{
+            socket.close();
+            socket = new Socket(this.IP, 54322);
+            sender.setSocket(socket);
+            reciever.setSocket(socket);
+            Platform.runLater(() -> {
+               chatWindowController.channels.clear();
+            });
+            Client.getInstance().channelList.keySet().stream().forEach(channel -> {
+               Message joinMessage = new Message(MessageType.JOIN_CHANNEL);
+               joinMessage.CHANNEL = channel;
+               sender.sendToServer(joinMessage);
+               System.out.println(channel);
+            });
+            break;
+         }catch (Exception e){
+            // todo print on clients gui
+            System.out.println("Connection is lost sleeping for " + (i*WAIT) + " ms");
+            try{
+               Thread.sleep((i*WAIT));
+            }catch (Exception ex){}
+         }
+         if(i == 9){
+            // todo what should happen here? 
+            System.out.println("Could not reconnect. Ending life as we know it");
+            this.kill(); // ??
+         }
+      }
    }
+
 
    public void kill() {
       isRunning = false;

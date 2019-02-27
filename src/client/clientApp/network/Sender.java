@@ -19,17 +19,18 @@ public class Sender extends Thread {
 
 
     public Sender(Socket socket) {
-        this.socket = socket;
         this.encrypt = new Encryption();
         outbox = new LinkedBlockingDeque<>();
+        this.setSocket(socket);
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+        outbox.clear();
         try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            System.out.println("Failed to create stream");
-            Client.getInstance().setIsRunning(false);
-            // todo kolla om server är död, prova återanslutning
         } catch (Exception e) {
-            e.printStackTrace();
+            Client.getInstance().tryReconnect();
         }
     }
 
@@ -47,6 +48,12 @@ public class Sender extends Thread {
     public void run() {
         while (Client.getInstance().isRunning()) {
             while (hasMessagesTosend()) {
+                while (socket.isClosed() && Client.getInstance().isRunning()){
+                    System.out.println("sender waiting for reconnect");
+                    try{
+                        Thread.sleep(1000);
+                    }catch (Exception e){}
+                }
                 Sendable m = outbox.getFirst();
                 SealedObject encryptedObject = encrypt.encryptObject(m);
                 try {
@@ -54,7 +61,7 @@ public class Sender extends Thread {
                     objectOutputStream.writeObject(encryptedObject);  // Try to send first sendable
                     outbox.removeFirst();               // Remove if sent
                 } catch (Exception e) {
-                  e.printStackTrace();
+                    Client.getInstance().tryReconnect();
                 }
             }
             try {

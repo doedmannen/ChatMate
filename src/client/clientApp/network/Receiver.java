@@ -18,22 +18,28 @@ public class Receiver extends Thread {
    private Encryption decrypt;
 
    public Receiver(Socket socket) {
-      this.socket = socket;
       this.decrypt = new Encryption();
+      this.setSocket(socket);
+   }
+
+   public void setSocket(Socket socket) {
+      this.socket = socket;
       try {
          this.objectInputStream = new ObjectInputStream(socket.getInputStream());
-      } catch (IOException e) {
-         System.out.println("Failed to create input stream");
-         Client.getInstance().setIsRunning(false);
-         // todo kolla om server är död, prova återanslutning
       } catch (Exception e) {
-         e.printStackTrace();
+         Client.getInstance().tryReconnect();
       }
    }
 
    @Override
    public void run() {
       while (Client.getInstance().isRunning()) {
+         while (socket.isClosed() && Client.getInstance().isRunning()){
+            System.out.println("receiver waiting for reconnect");
+            try{
+               Thread.sleep(1000);
+            }catch (Exception e){}
+         }
          try {
             SealedObject encryptedObject = (SealedObject) objectInputStream.readObject();
             Sendable inData = (Sendable) decrypt.decryptObject(encryptedObject);
@@ -45,13 +51,9 @@ public class Receiver extends Thread {
                Client.getInstance().channelList.put(channel.getName(), channel.getUsers());
                MessageInboxHandler.getInstance().addChannel(channel);
             }
-         } catch (IOException e) {
-            Client.getInstance().setIsRunning(false);
-            // todo kolla om server är död, prova återanslutning
          } catch (ClassNotFoundException e) {
-            System.out.println("Message Error");
          } catch (Exception e) {
-            e.printStackTrace();
+            Client.getInstance().tryReconnect();
          }
       }
    }
