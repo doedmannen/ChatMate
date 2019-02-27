@@ -13,9 +13,22 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
             prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="client.clientApp.controllers.ChatWindowController">
+    <top>
+        <MenuBar>
+            <Menu text="File">
+                <items>
+                    <MenuItem text="Delete history" onAction="#deleteHistory"/>
+                </items>
+            </Menu>
+        </MenuBar>
+    </top>
     <center>
         <VBox id="chat_box" alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="577.0" BorderPane.alignment="CENTER">
             <children>
