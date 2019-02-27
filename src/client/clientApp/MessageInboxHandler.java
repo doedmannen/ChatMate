@@ -26,7 +26,7 @@ public class MessageInboxHandler {
    private Media sound;
 
    private MessageInboxHandler() {
-      chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+//      chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
       messageCreator = new MessageCreator();
       String musicFile = "src" + File.separator + "client" + File.separator + "clientApp" + File.separator + "sound" + File.separator + "Message.mp3";
       sound = new Media(new File(musicFile).toURI().toString());
@@ -95,7 +95,6 @@ public class MessageInboxHandler {
    }
 
    public void addChannel(Channel channel) {
-      //// TODO: 2019-02-22 update chatbox with text on join
       ArrayList<SerializableLabel> list = Client.getInstance().getChannelMessages().getOrDefault(channel.getName(), new ArrayList<>());
       Client.getInstance().getChannelMessages().put(channel.getName(), list);
       Client.getInstance().setCurrentChannel(channel.getName());
@@ -160,5 +159,9 @@ public class MessageInboxHandler {
       if (!chatWindowController.mute_checkbox.isSelected() && !message.CHANNEL.equals(Client.getInstance().getCurrentChannel())) {
          mediaPlayer.play();
       }
+   }
+
+   public void createNewChatWindowController(){
+      chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
    }
 }

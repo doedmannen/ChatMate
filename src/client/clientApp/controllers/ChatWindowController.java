@@ -8,6 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -147,15 +149,15 @@ public class ChatWindowController {
                   if (empty) {
                      setText(null);
                   } else {
-                      setOpacity(1);
-                      if(Client.getInstance().getThisUser().getID().equals(item.getID())){
-                          setText("[me] " + item.getNickName());
-                      }else if(Client.getInstance().userIsIgnored(item.getID())){
-                          setText("[i] " + item.getNickName());
-                          setOpacity(0.3);
+                     setOpacity(1);
+                     if (Client.getInstance().getThisUser().getID().equals(item.getID())) {
+                        setText("[me] " + item.getNickName());
+                     } else if (Client.getInstance().userIsIgnored(item.getID())) {
+                        setText("[i] " + item.getNickName());
+                        setOpacity(0.3);
                      } else {
-                          setText(item.getNickName());
-                      }
+                        setText(item.getNickName());
+                     }
                   }
                }
             };
@@ -186,7 +188,8 @@ public class ChatWindowController {
             input_text.appendText(textToBeSent.substring(0, 39).concat(" "));
             textToBeSent = textToBeSent.substring(39);
             msgIsOk = true;
-         } catch (Exception e) { }
+         } catch (Exception e) {
+         }
       } else {
          message.TYPE = MessageType.CHANNEL_MESSAGE;
          msgIsOk = true;
@@ -330,16 +333,16 @@ public class ChatWindowController {
       Message nickChangeMessage = new Message(MessageType.NICKNAME_CHANGE);
       nickChangeMessage.TEXT_CONTENT = Client.getInstance().getUserData().getUsername();
       Client.getInstance().sender.sendToServer(nickChangeMessage);
-      if(Client.getInstance().getUserData().getJoinedChannels().size() > 0){
-          Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
-              Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
-              channelJoinMessage.CHANNEL = c;
-              Client.getInstance().sender.sendToServer(channelJoinMessage);
-          });
+      if (Client.getInstance().getUserData().getJoinedChannels().size() > 0) {
+         Client.getInstance().getUserData().getJoinedChannels().forEach(c -> {
+            Message channelJoinMessage = new Message(MessageType.JOIN_CHANNEL);
+            channelJoinMessage.CHANNEL = c;
+            Client.getInstance().sender.sendToServer(channelJoinMessage);
+         });
       } else {
-          Message joinGeneral = new Message(MessageType.JOIN_CHANNEL);
-          joinGeneral.CHANNEL = "General";
-          Client.getInstance().sender.sendToServer(joinGeneral);
+         Message joinGeneral = new Message(MessageType.JOIN_CHANNEL);
+         joinGeneral.CHANNEL = "General";
+         Client.getInstance().sender.sendToServer(joinGeneral);
       }
    }
 
@@ -369,6 +372,37 @@ public class ChatWindowController {
          Client.getInstance().getChannelMessages().put(c.getName(), new ArrayList<>());
       });
       chat_box.getChildren().clear();
+      Client.getInstance().getUncheckedChannels().clear();
+      channel_list_view.refresh();
+   }
+
+   @FXML
+   private void logOut() throws Exception {
+//      Client.getInstance().kill();
+      Client.getInstance().saveData();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/clientApp/views/Startup_Window.fxml"));
+      Parent startup = loader.load();
+
+      ClientMain.primaryStage.getIcons().add(new Image("/client/clientApp/images/logo.png"));
+      ClientMain.primaryStage.setResizable(false);
+      ClientMain.primaryStage.setTitle("Chatter Matter");
+      ClientMain.primaryStage.setScene(new Scene(startup, 380, 270));
+
+
+      if (Client.getInstance().getUserData().isDarkMode()) {
+         String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
+         ClientMain.primaryStage.getScene().getStylesheets().add(darkmodeCss);
+      } else {
+         String normalCss = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+         ClientMain.primaryStage.getScene().getStylesheets().add(normalCss);
+      }
+
+      ClientMain.primaryStage.show();
+   }
+
+   @FXML
+   private void tryReconnect(){
+      System.out.println("Try Reconnecting");
    }
 
    public void lurig() {
