@@ -75,7 +75,7 @@ public class Client {
        Message m = new Message(MessageType.ERROR);
        for(int i = 1; i < 10; i++){
            m.CHANNEL = Client.getInstance().currentChannel;
-           m.TEXT_CONTENT = "Connection to server was lost. Trying to reconnect in " + i + "seconds...";
+           m.TEXT_CONTENT = "Connection to server was lost. Trying to reconnect in " + i + " seconds...";
            MessageInboxHandler.getInstance().messageSwitch(m);
           try{
               Thread.sleep((i*WAIT));
