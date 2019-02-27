@@ -90,7 +90,8 @@ public class MessageHandler implements Runnable {
    }
 
    private boolean checkIfChannelIsValid(String channel) {
-      return channel.matches("^[^\\s]{3,10}$");
+      return channel.matches("^[\\w]{3,10}$") &&
+              !channel.matches(".("+ String.join("|",badWordList) +").");
    }
 
    private void sendToChannelFromUser(Message m) {
@@ -131,10 +132,13 @@ public class MessageHandler implements Runnable {
          adminSystemMonitoring.addToLog("User " + m.SENDER + "(" + oldUsername +")"  + " changed name to " + m.TEXT_CONTENT);
 
          sendOutNewUserNickName(user, m);
+
+
       } else {
          // If username was invalid, send an error to the user
          sendErrorToUser(m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
-                 "\nPlease choose one with no whitespaces and 3-10 characters in length.");
+                 "\nPlease choose one with no whitespaces and 3-10 characters in length. " +
+                 "\nNo offensive words are allowed as names. ");
       }
    }
 
@@ -172,7 +176,8 @@ public class MessageHandler implements Runnable {
 
 
    private boolean validUserNickName(String newName) {
-      return newName.matches("^[^\\s]{3,10}$");
+      return newName.matches("^[\\w]{3,10}$") &&
+              !newName.matches(".("+ String.join("|",badWordList) +").");
    }
 
    private void addUserToChannel(Message m) {
@@ -233,5 +238,7 @@ public class MessageHandler implements Runnable {
       sendToUser(replay);
    }
 
+   
+   
 
 }

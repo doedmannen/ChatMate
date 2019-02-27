@@ -5,6 +5,7 @@ import client.ClientMain;
 import client.clientApp.network.Receiver;
 import client.clientApp.network.Sender;
 import client.clientApp.util.FileManager;
+import javafx.application.Platform;
 import models.*;
 
 import java.io.IOException;
@@ -69,11 +70,48 @@ public class Client {
       this.userData = userData;
    }
 
-   private void joinChannel(String channelName) {
-      Message m = new Message(MessageType.JOIN_CHANNEL);
-      m.CHANNEL = channelName;
-      sender.sendToServer(m);
+   public void tryReconnect(){
+      final int WAIT = 1000;
+       Message m = new Message(MessageType.ERROR);
+       for(int i = 1; i < 10; i++){
+           m.CHANNEL = Client.getInstance().currentChannel;
+           m.TEXT_CONTENT = "Connection to server was lost. Trying to reconnect in " + i + " seconds...";
+           MessageInboxHandler.getInstance().messageSwitch(m);
+          try{
+              Thread.sleep((i*WAIT));
+          }catch (Exception ex){}
+         try{
+            socket.close();
+            socket = new Socket(this.IP, 54322);
+            sender.setSocket(socket);
+            reciever.setSocket(socket);
+            rejoinChannels();
+            break;
+         }catch (Exception e){
+         }
+         if(i == 9){
+             m.TEXT_CONTENT = "The connection to the server has been lost and couldn't be recreated!";
+             MessageInboxHandler.getInstance().messageSwitch(m);
+            this.kill();
+         }
+      }
    }
+
+   private void rejoinChannels(){
+       ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+       Platform.runLater(() -> {
+           chatWindowController.channels.clear();
+       });
+       Message name = new Message(MessageType.NICKNAME_CHANGE);
+       name.TEXT_CONTENT = Client.getInstance().getThisUser().getNickName();
+       Client.getInstance().sender.sendToServer(name);
+       Client.getInstance().channelList.keySet().stream().forEach(channel -> {
+           Message joinMessage = new Message(MessageType.JOIN_CHANNEL);
+           joinMessage.CHANNEL = channel;
+           sender.sendToServer(joinMessage);
+       });
+   }
+
 
    public void kill() {
       isRunning = false;
