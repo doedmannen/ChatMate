@@ -49,9 +49,9 @@ public class Sender extends Thread {
         while (Client.getInstance().isRunning()) {
             while (hasMessagesTosend()) {
                 while (socket.isClosed() && Client.getInstance().isRunning()){
-                    System.out.println("sender waiting for reconnect");
+                    //sender waiting for reconnect
                     try{
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                     }catch (Exception e){}
                 }
                 Sendable m = outbox.getFirst();

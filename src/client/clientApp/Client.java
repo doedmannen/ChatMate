@@ -72,37 +72,42 @@ public class Client {
 
    public void tryReconnect(){
       final int WAIT = 1000;
-      System.out.println("Reconnect was called in...");
-      for(int i = 1; i < 10; i++){
-         ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+       Message m = new Message(MessageType.ERROR);
+       for(int i = 1; i < 10; i++){
+           m.CHANNEL = Client.getInstance().currentChannel;
+           m.TEXT_CONTENT = "Connection to server was lost. Trying to reconnect in " + i + "seconds...";
+           MessageInboxHandler.getInstance().messageSwitch(m);
+          try{
+              Thread.sleep((i*WAIT));
+          }catch (Exception ex){}
          try{
             socket.close();
             socket = new Socket(this.IP, 54322);
             sender.setSocket(socket);
             reciever.setSocket(socket);
-            Platform.runLater(() -> {
-               chatWindowController.channels.clear();
-            });
-            Client.getInstance().channelList.keySet().stream().forEach(channel -> {
-               Message joinMessage = new Message(MessageType.JOIN_CHANNEL);
-               joinMessage.CHANNEL = channel;
-               sender.sendToServer(joinMessage);
-               System.out.println(channel);
-            });
+            rejoinChannels();
             break;
          }catch (Exception e){
-            // todo print on clients gui
-            System.out.println("Connection is lost sleeping for " + (i*WAIT) + " ms");
-            try{
-               Thread.sleep((i*WAIT));
-            }catch (Exception ex){}
          }
          if(i == 9){
-            // todo what should happen here? 
-            System.out.println("Could not reconnect. Ending life as we know it");
-            this.kill(); // ??
+             m.TEXT_CONTENT = "The connection to the server has been lost and couldn't be recreated!";
+             MessageInboxHandler.getInstance().messageSwitch(m);
+            this.kill();
          }
       }
+   }
+
+   private void rejoinChannels(){
+       ChatWindowController chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
+       Platform.runLater(() -> {
+           chatWindowController.channels.clear();
+       });
+       Client.getInstance().channelList.keySet().stream().forEach(channel -> {
+           Message joinMessage = new Message(MessageType.JOIN_CHANNEL);
+           joinMessage.CHANNEL = channel;
+           sender.sendToServer(joinMessage);
+           System.out.println(channel);
+       });
    }
 
 

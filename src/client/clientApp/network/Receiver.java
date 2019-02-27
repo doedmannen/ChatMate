@@ -35,9 +35,9 @@ public class Receiver extends Thread {
    public void run() {
       while (Client.getInstance().isRunning()) {
          while (socket.isClosed() && Client.getInstance().isRunning()){
-            System.out.println("receiver waiting for reconnect");
+            // receiver waiting for reconnect
             try{
-               Thread.sleep(1000);
+               Thread.sleep(100);
             }catch (Exception e){}
          }
          try {
