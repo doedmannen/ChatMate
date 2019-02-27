@@ -2,6 +2,7 @@ package client.clientApp.controllers;
 
 import client.ClientMain;
 import client.clientApp.Client;
+import client.clientApp.MessageInboxHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -80,6 +81,8 @@ public class StartupWindowController {
       ClientMain.primaryStage.setOnCloseRequest(e -> Client.getInstance().saveData());
       ClientMain.primaryStage.setTitle("Chatter Matter");
       ClientMain.primaryStage.setScene(new Scene(root, 1000, 600));
+
+      MessageInboxHandler.getInstance().createNewChatWindowController();
    }
 
    @FXML

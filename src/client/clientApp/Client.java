@@ -71,28 +71,31 @@ public class Client {
    }
 
    public void tryReconnect(){
-      final int WAIT = 1000;
-       Message m = new Message(MessageType.ERROR);
-       for(int i = 1; i < 10; i++){
-           m.CHANNEL = Client.getInstance().currentChannel;
-           m.TEXT_CONTENT = "Connection to server was lost. Trying to reconnect in " + i + " seconds...";
-           MessageInboxHandler.getInstance().messageSwitch(m);
-          try{
-              Thread.sleep((i*WAIT));
-          }catch (Exception ex){}
-         try{
-            socket.close();
-            socket = new Socket(this.IP, 54322);
-            sender.setSocket(socket);
-            reciever.setSocket(socket);
-            rejoinChannels();
-            break;
-         }catch (Exception e){
-         }
-         if(i == 9){
-             m.TEXT_CONTENT = "The connection to the server has been lost and couldn't be recreated!";
-             MessageInboxHandler.getInstance().messageSwitch(m);
-            this.kill();
+      if(this.isRunning){
+         final int WAIT = 1000;
+         Message m = new Message(MessageType.ERROR);
+         for (int i = 1; i < 10; i++) {
+            m.CHANNEL = Client.getInstance().currentChannel;
+            m.TEXT_CONTENT = "Connection to server was lost. Trying to reconnect in " + i + " seconds...";
+            MessageInboxHandler.getInstance().messageSwitch(m);
+            try {
+               Thread.sleep((i * WAIT));
+            } catch (Exception ex) {
+            }
+            try {
+               socket.close();
+               socket = new Socket(this.IP, 54322);
+               sender.setSocket(socket);
+               reciever.setSocket(socket);
+               rejoinChannels();
+               break;
+            } catch (Exception e) {
+            }
+            if (i == 9) {
+               m.TEXT_CONTENT = "The connection to the server has been lost and couldn't be recreated!";
+               MessageInboxHandler.getInstance().messageSwitch(m);
+               this.kill();
+            }
          }
       }
    }
@@ -163,6 +166,8 @@ public class Client {
          socket = new Socket(ip, 54322);
          isRunning = true;
          this.IP = ip;
+         sender = new Sender(socket);
+         reciever = new Receiver(socket);
          return true;
       } catch (Exception e) {
          e.printStackTrace();
@@ -171,8 +176,6 @@ public class Client {
    }
 
    public void startSenderAndReceiver() {
-      sender = new Sender(socket);
-      reciever = new Receiver(socket);
       sender.start();
       reciever.start();
    }

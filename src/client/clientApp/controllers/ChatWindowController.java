@@ -8,6 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -375,8 +377,27 @@ public class ChatWindowController {
    }
 
    @FXML
-   private void logOut(){
-      System.out.println("Loging out");
+   private void logOut() throws Exception {
+//      Client.getInstance().kill();
+      Client.getInstance().saveData();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/client/clientApp/views/Startup_Window.fxml"));
+      Parent startup = loader.load();
+
+      ClientMain.primaryStage.getIcons().add(new Image("/client/clientApp/images/logo.png"));
+      ClientMain.primaryStage.setResizable(false);
+      ClientMain.primaryStage.setTitle("Chatter Matter");
+      ClientMain.primaryStage.setScene(new Scene(startup, 380, 270));
+
+
+      if (Client.getInstance().getUserData().isDarkMode()) {
+         String darkmodeCss = this.getClass().getResource("/client/clientApp/css/darkmode.css").toExternalForm();
+         ClientMain.primaryStage.getScene().getStylesheets().add(darkmodeCss);
+      } else {
+         String normalCss = this.getClass().getResource("/client/clientApp/css/normal.css").toExternalForm();
+         ClientMain.primaryStage.getScene().getStylesheets().add(normalCss);
+      }
+
+      ClientMain.primaryStage.show();
    }
 
    @FXML
