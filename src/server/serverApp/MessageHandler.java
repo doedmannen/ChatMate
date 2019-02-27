@@ -187,7 +187,7 @@ public class MessageHandler implements Runnable {
         if (m.SENDER != null && m.CHANNEL != null && !m.CHANNEL.equals("")) {
             this.sendToChannel(m);
             adminSystemMonitoring.addToLog(ActiveChannelController.getInstance().removeUserFromChannel(m.SENDER, m.CHANNEL) == true ? m.SENDER +
-                    " removed from channel " : "");
+                    " removed from channel " + m.CHANNEL : "");
         }
     }
 

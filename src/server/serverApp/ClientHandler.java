@@ -81,44 +81,28 @@ public class ClientHandler implements Runnable {
       } catch (SocketTimeoutException e) {
       } catch (IOException e) {
          // Kolla om möjlig återanslutning till server
-         serverApp.adminSystemMonitoring.addToLog("Error in Clientreader" +socket.getInetAddress());
+         serverApp.adminSystemMonitoring.addToLog("Error in Clientreader " + socket.getInetAddress());
          tryDisconnect();
          // todo kolla om klienten är död, prova återanslutning
       } catch (ClassNotFoundException e) {
-         serverApp.adminSystemMonitoring.addToLog("Faulty class sent from" +socket.getInetAddress());
+         serverApp.adminSystemMonitoring.addToLog("Faulty class sent from " + socket.getInetAddress());
       } catch (Exception e) {
          serverApp.adminSystemMonitoring.addToLog(e.getMessage());
       }
    }
 
    private void writeMessage() {
-      int stop = 1;
-      for (int i = 0; i < stop; i++) {
-         if (clientHasMessages()) {
-            Sendable m = this.userOutbox.getFirst();
-            SealedObject encryptedObject = encryption.encryptObject(m);
-            try {
-               streamOut.reset();
-               streamOut.writeObject(encryptedObject);
-               this.userOutbox.removeFirst();
-               i = 10;
-            } catch (IOException e) {
-               serverApp.adminSystemMonitoring.addToLog("Error in Clientwriter" +socket.getInetAddress());
-               stop = 10;
-               try {
-                  Thread.sleep(100);
-               } catch (Exception exception) {
-               }
-               if (i == stop - 1) {
-                  tryDisconnect();
-                  i = 10;
-               }
-               // todo kolla om klienten är död, prova återanslutning
-            } catch (Exception e) {
-               serverApp.adminSystemMonitoring.addToLog(e.getMessage());
-            }
+      if (clientHasMessages()) {
+         Sendable m = this.userOutbox.getFirst();
+         SealedObject encryptedObject = encryption.encryptObject(m);
+         try{
+            streamOut.reset();
+            streamOut.writeObject(encryptedObject);
+            this.userOutbox.removeFirst();
+         }catch(IOException e){
+            serverApp.adminSystemMonitoring.addToLog("Error in Clientwriter " + socket.getInetAddress());
+            tryDisconnect();
          }
-
       }
    }
 
