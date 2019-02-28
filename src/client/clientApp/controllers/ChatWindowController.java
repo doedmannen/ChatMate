@@ -2,8 +2,10 @@ package client.clientApp.controllers;
 
 import client.ClientMain;
 import client.clientApp.Client;
+import client.clientApp.controllers.controllerLogic.ChannelLogic;
 import client.clientApp.controllers.controllerLogic.MessageLogic;
 import client.clientApp.controllers.controllerLogic.UiLogic;
+import client.clientApp.controllers.controllerLogic.UserLogic;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -78,8 +80,6 @@ public class ChatWindowController {
     @FXML
     private ListView now_online_list;
 
-    private ObservableList<User> users;
-
 
     public VBox getChatBox() {
         return chat_box;
@@ -90,6 +90,8 @@ public class ChatWindowController {
 
     UiLogic uilogic = new UiLogic();
     MessageLogic messageLogic = new MessageLogic();
+    UserLogic userLogic = new UserLogic();
+    ChannelLogic channelLogic = new ChannelLogic();
 
     public void initialize() {
         uilogic.loadCss();
@@ -128,7 +130,7 @@ public class ChatWindowController {
         ignoreMenuItem.setOnAction((e) -> {
             User user = (User) now_online_list.getSelectionModel().getSelectedItem();
             Client.getInstance().toggleIgnoreOnUser(user.getID());
-            refreshUserList();
+            printUsers();
         });
         MenuItem whisperMenuItem = new MenuItem("Whisper");
         whisperMenuItem.setOnAction((e) -> {
@@ -212,17 +214,13 @@ public class ChatWindowController {
 
     @FXML
     public void printUsers() {
-        String channel = Client.getInstance().getCurrentChannel();
-        users = FXCollections.observableArrayList();
-        if (channel != null) {
-            users.addAll(Client.getInstance().channelList.get(channel));
-        }
-        SortedList<User> sortedList = new SortedList<>(users, Comparator.comparing(User::getNickName));
+        SortedList<User> sortedList = userLogic.printUsers();
         now_online_list.setItems(sortedList);
         now_online_list.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
 
+    @Deprecated
     @FXML
     public void refreshUserList() {
         printUsers();
@@ -230,10 +228,7 @@ public class ChatWindowController {
 
     @FXML
     private void addChannel() {
-        Message message = new Message();
-        message.CHANNEL = channel_textField.getText();
-        message.TYPE = MessageType.JOIN_CHANNEL;
-        Client.getInstance().sender.sendToServer(message);
+        channelLogic.addChannel(channel_textField.getText());
         channel_textField.clear();
     }
 
@@ -255,7 +250,7 @@ public class ChatWindowController {
                 });
             }
             Client.getInstance().changeTitle();
-            refreshUserList();
+            printUsers();
         });
     }
 
