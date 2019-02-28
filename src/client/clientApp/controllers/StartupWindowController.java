@@ -39,7 +39,7 @@ public class StartupWindowController {
          if (Client.getInstance().connect(serverAddressTextField.getText())) {
             data.setUsername(nicknameTextField.getText());
             Client.getInstance().setUserData(data);
-            swtichWindow();
+            switchWindow();
          } else {
             errorLabel.setText("Could not connect");
          }
@@ -71,7 +71,7 @@ public class StartupWindowController {
       }
    }
 
-   private void swtichWindow() throws Exception {
+   private void switchWindow() throws Exception {
       FXMLLoader loader = new FXMLLoader(getClass().getResource("../views/Chat_Window.fxml"));
       Parent root = loader.load();
       ChatWindowController chatWindowController = loader.getController();

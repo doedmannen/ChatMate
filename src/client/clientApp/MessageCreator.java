@@ -9,7 +9,7 @@ public class MessageCreator {
 
     public MessageCreator() {
         joinMessages = new String[]{
-                "- glhf!",
+                "glhf!",
                 "Everyone, look busy!",
                 "You must construct additional pylons.",
                 "Ermagherd!",
