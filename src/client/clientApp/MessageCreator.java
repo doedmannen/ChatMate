@@ -1,14 +1,11 @@
 package client.clientApp;
 
-import client.clientApp.controllers.ChatWindowController;
-import client.ClientMain;
 import javafx.fxml.FXML;
 import models.SerializableLabel;
 import models.Message;
 
 public class MessageCreator {
-    String[] joinMessages;
-    ChatWindowController chatWindowController;
+    private String[] joinMessages;
 
     public MessageCreator() {
         joinMessages = new String[]{
@@ -25,7 +22,6 @@ public class MessageCreator {
                 "Hold my beer.",
                 "As the prophecy foretold."
         };
-        chatWindowController = (ChatWindowController) ClientMain.primaryStage.getUserData();
     }
 
     public SerializableLabel labelCreator(String text, String id) {

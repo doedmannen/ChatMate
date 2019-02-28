@@ -52,20 +52,20 @@ public class MessageInboxHandler {
                addMessageToList(message);
                addUserToList(message);
                printLabelOnClient(message);
-               chatWindowController.refreshUserList();
+               chatWindowController.printUsers();
                break;
             case LEAVE_CHANNEL:
             case DISCONNECT:
                removeUserFromList(message);
                addMessageToList(message);
                printLabelOnClient(message);
-               chatWindowController.refreshUserList();
+               chatWindowController.printUsers();
                break;
             case NICKNAME_CHANGE:
                changeNickname(message);
                printLabelOnClient(message);
                addMessageToList(message);
-               chatWindowController.refreshUserList();
+               chatWindowController.printUsers();
                break;
             case CONNECT:
                connect(message);
@@ -88,7 +88,7 @@ public class MessageInboxHandler {
          Client.getInstance().getChannelMessages().get(message.CHANNEL).add(label);
          if (!message.CHANNEL.equals(Client.getInstance().getCurrentChannel()) && (message.TYPE.equals(MessageType.WHISPER_MESSAGE) || (message.TYPE.equals(MessageType.CHANNEL_MESSAGE)))) {
             Client.getInstance().getUncheckedChannels().add(message.CHANNEL);
-            chatWindowController.channel_list_view.refresh();
+            chatWindowController.getChannel_list_view().refresh();
          }
       }
 

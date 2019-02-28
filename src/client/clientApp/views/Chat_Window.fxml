@@ -5,7 +5,11 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -13,25 +17,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-            prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.clientApp.controllers.ChatWindowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="902.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.clientApp.controllers.ChatWindowController">
     <top>
         <MenuBar>
             <Menu text="File">
                 <items>
-                    <MenuItem text="Delete History" onAction="#deleteHistory"/>
+                    <MenuItem onAction="#deleteHistory" text="Delete History" />
                 </items>
             </Menu>
             <Menu text="Connection">
                 <items>
-                    <MenuItem text="Log Out" onAction="#logOut"/>
-                    <SeparatorMenuItem/>
-                    <MenuItem text="Try Refresh" onAction="#tryReconnect"/>
+                    <MenuItem onAction="#logOut" text="Log Out" />
+                    <SeparatorMenuItem />
                 </items>
             </Menu>
         </MenuBar>
@@ -39,34 +36,30 @@
     <center>
         <VBox id="chat_box" alignment="BOTTOM_LEFT" prefHeight="600.0" prefWidth="577.0" BorderPane.alignment="CENTER">
             <children>
-                <ScrollPane id="chat_box" fx:id="scroll_pane" hbarPolicy="NEVER" minWidth="-Infinity" prefHeight="566.0"
-                            prefWidth="530.0">
+                <ScrollPane id="chat_box" fx:id="scroll_pane" hbarPolicy="NEVER" minWidth="-Infinity" prefHeight="566.0" prefWidth="530.0">
                     <content>
-                        <VBox id="chat_box" fx:id="chat_box" maxHeight="Infinity" minHeight="-Infinity"
-                              prefWidth="531.0">
+                        <VBox id="chat_box" fx:id="chat_box" maxHeight="Infinity" minHeight="-Infinity" prefWidth="531.0">
                             <padding>
-                                <Insets left="10.0" right="10.0" top="10.0"/>
+                                <Insets left="10.0" right="10.0" top="10.0" />
                             </padding>
                         </VBox>
                     </content>
                 </ScrollPane>
                 <HBox alignment="CENTER" prefHeight="39.0" prefWidth="698.0">
                     <children>
-                        <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0"
-                                   HBox.hgrow="ALWAYS"/>
-                        <Button id="send_button" fx:id="send_button" mnemonicParsing="false" prefHeight="39.0"
-                                prefWidth="99.0" text="Send"/>
+                        <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" HBox.hgrow="ALWAYS" />
+                        <Button id="send_button" fx:id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                     </children>
                     <padding>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </padding>
                 </HBox>
             </children>
             <BorderPane.margin>
-                <Insets bottom="10.0" top="10.0"/>
+                <Insets bottom="10.0" top="10.0" />
             </BorderPane.margin>
             <padding>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </padding>
         </VBox>
     </center>
@@ -75,34 +68,30 @@
             <children>
                 <VBox minHeight="-Infinity" prefHeight="70.0">
                     <children>
-                        <Label prefHeight="27.0" prefWidth="168.0" text="Users:"/>
+                        <Label prefHeight="27.0" prefWidth="168.0" text="Users:" />
                         <HBox>
-                            <TextField fx:id="nickname_change" minHeight="-Infinity" prefHeight="31.0"
-                                       promptText="Nickname"/>
-                            <Button minHeight="-Infinity"
-                                    prefHeight="31.0" text="Change" prefWidth="150"/>
+                            <TextField fx:id="nickname_change" minHeight="-Infinity" prefHeight="31.0" promptText="Nickname" />
+                            <Button minHeight="-Infinity" prefHeight="31.0" prefWidth="150" text="Change" />
                         </HBox>
                     </children>
                     <padding>
-                        <Insets bottom="10.0"/>
+                        <Insets bottom="10.0" />
                     </padding>
                     <VBox.margin>
-                        <Insets/>
+                        <Insets />
                     </VBox.margin>
                 </VBox>
-                <ListView fx:id="now_online_list" prefHeight="635.0" prefWidth="195.0" VBox.vgrow="ALWAYS"/>
+                <ListView fx:id="now_online_list" prefHeight="635.0" prefWidth="195.0" VBox.vgrow="ALWAYS" />
                 <HBox prefHeight="39.0" prefWidth="300" spacing="10">
                     <padding>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </padding>
-                    <CheckBox fx:id="darkmode_checkbox" minHeight="-Infinity"
-                              prefHeight="27.0" text="Dark mode"/>
-                    <CheckBox fx:id="mute_checkbox" minHeight="-Infinity" prefHeight="27.0"
-                              text="Mute" alignment="CENTER_RIGHT"/>
+                    <CheckBox fx:id="darkmode_checkbox" minHeight="-Infinity" prefHeight="27.0" text="Dark mode" />
+                    <CheckBox fx:id="mute_checkbox" alignment="CENTER_RIGHT" minHeight="-Infinity" prefHeight="27.0" text="Mute" />
                 </HBox>
             </children>
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </VBox>
     </right>
@@ -113,10 +102,9 @@
                     <children>
                         <VBox fx:id="image_icon">
                             <children>
-                                <ImageView fitHeight="117.0" fitWidth="115.0" onMouseClicked="#lurig"
-                                           pickOnBounds="true" preserveRatio="true">
+                                <ImageView fitHeight="117.0" fitWidth="115.0" onMouseClicked="#lurig" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@../images/logo.png"/>
+                                        <Image url="@../images/logo.png" />
                                     </image>
                                 </ImageView>
                             </children>
@@ -125,25 +113,23 @@
                 </HBox>
                 <VBox minHeight="-Infinity" prefHeight="60.0">
                     <children>
-                        <Label prefHeight="27.0" text="Channels:"/>
+                        <Label prefHeight="27.0" text="Channels:" />
                         <HBox prefHeight="0.0" prefWidth="177.0">
                             <children>
-                                <TextField fx:id="channel_textField" minHeight="-Infinity" prefHeight="31.0"
-                                           prefWidth="73.0" promptText="Add channel" HBox.hgrow="ALWAYS"/>
-                                <Button fx:id="add_channel_button" minHeight="-Infinity" mnemonicParsing="false"
-                                        prefHeight="31.0" prefWidth="60.0" text="Add"/>
+                                <TextField fx:id="channel_textField" minHeight="-Infinity" prefHeight="31.0" prefWidth="73.0" promptText="Add channel" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="add_channel_button" minHeight="-Infinity" mnemonicParsing="false" prefHeight="31.0" prefWidth="60.0" text="Add" />
                             </children>
                         </HBox>
                     </children>
                 </VBox>
                 <ListView fx:id="channel_list_view" prefHeight="489.0" prefWidth="157.0" VBox.vgrow="ALWAYS">
                     <VBox.margin>
-                        <Insets top="10.0"/>
+                        <Insets top="10.0" />
                     </VBox.margin>
                 </ListView>
             </children>
             <padding>
-                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>
         </VBox>
     </left>
