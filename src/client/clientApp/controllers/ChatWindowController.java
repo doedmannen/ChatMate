@@ -43,6 +43,7 @@ public class ChatWindowController {
     @FXML private CheckBox darkmode_checkbox;
     @FXML private VBox image_icon;
     @FXML private ListView now_online_list;
+    @FXML private Label errorLabel;
     private ContextMenu listContextMenu;
     private ContextMenu ignoreListContextMenu;
 
@@ -98,6 +99,10 @@ public class ChatWindowController {
             if (tf.getText().length() > maxLength) {
                 String s = tf.getText().substring(0, maxLength);
                 tf.setText(s);
+            } else if (tf.getText().length() == maxLength) {
+                errorLabel.setText("Maximum length reached. You can't write more than " + maxLength + " characters.");
+            } else {
+                errorLabel.setText("");
             }
         });
     }

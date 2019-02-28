@@ -43,14 +43,21 @@
                         </VBox>
                     </content>
                 </ScrollPane>
+            <Label id="error" fx:id="errorLabel">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="1.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding></Label>
                 <HBox alignment="CENTER" prefHeight="39.0" prefWidth="698.0">
                     <children>
-                        <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" HBox.hgrow="ALWAYS" />
+                        <TextField id="input_text" fx:id="input_text" prefHeight="39.0" prefWidth="508.0" HBox.hgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="5.0" left="50.0" right="5.0" top="5.0" />
+                     </padding></TextField>
                         <Button id="send_button" fx:id="send_button" mnemonicParsing="false" prefHeight="39.0" prefWidth="99.0" text="Send" />
                     </children>
-                    <padding>
-                        <Insets top="10.0" />
-                    </padding>
                 </HBox>
             </children>
             <BorderPane.margin>
