@@ -135,12 +135,15 @@ public class ChatWindowController {
                         } else {
                             setOpacity(1);
                             if (Client.getInstance().getThisUser().getID().equals(item.getID())) {
-                                setText("[me] " + item.getNickName());
+                                setText("\uD83D\uDC68" + item.getNickName());
+                                setStyle("-fx-font-weight: bold");
                             } else if (Client.getInstance().userIsIgnored(item.getID())) {
-                                setText("[i] " + item.getNickName());
-                                setOpacity(0.3);
+                                setText("\uD83D\uDD07" + item.getNickName());
+                                setStyle("-fx-font-weight: normal");
+                                setOpacity(0.5);
                             } else {
                                 setText(item.getNickName());
+                                setStyle("-fx-font-weight: normal");
                             }
                         }
                     }
