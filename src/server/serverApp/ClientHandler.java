@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
 public class ClientHandler implements Runnable {
@@ -23,7 +24,7 @@ public class ClientHandler implements Runnable {
    private Socket socket;
    private ServerApp serverApp;
    private boolean isRunning = false;
-   private final int TIMEOUT_MS = 1;
+   private final int TIMEOUT_MS = 50;
    private final User user;
    private final LinkedBlockingDeque<Sendable> userOutbox;
    private final LinkedBlockingQueue<Sendable> messageHandlerQueue;
@@ -64,7 +65,7 @@ public class ClientHandler implements Runnable {
       String[] alpha = new String[]{"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
       String name = "User_";
       for (int i = 0; i < 5; i++) {
-         name = name.concat((alpha[(int)(Math.random() * alpha.length)]));
+         name = name.concat((alpha[(int)(ThreadLocalRandom.current().nextDouble() * alpha.length)]));
       }
       return name;
    }
@@ -130,7 +131,6 @@ public class ClientHandler implements Runnable {
       try {
          this.socket.close();
       } catch (IOException e) {
-         e.printStackTrace();
       }
    }
 

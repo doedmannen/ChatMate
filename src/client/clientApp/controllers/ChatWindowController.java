@@ -87,7 +87,7 @@ public class ChatWindowController {
 
    public void initialize() {
       loadCss();
-      addTextLimiter(input_text, 1000);
+      addTextLimiter(input_text, 200);
       input_text.setOnAction(e -> sendMessage());
       channel_textField.setOnAction(event -> addChannel());
       send_button.setOnAction(e -> sendMessage());

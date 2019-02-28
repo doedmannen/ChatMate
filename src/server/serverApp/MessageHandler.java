@@ -78,7 +78,7 @@ public class MessageHandler implements Runnable {
          // remove multiple whitespaces and trim
          m.TEXT_CONTENT = m.TEXT_CONTENT.replaceAll("[ ]{2,}", " ");
          // Limit length if client sent us to much text
-         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 1000 ? m.TEXT_CONTENT.substring(0, 1000).trim() : m.TEXT_CONTENT.trim();
+         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 200 ? m.TEXT_CONTENT.substring(0, 200).trim() : m.TEXT_CONTENT.trim();
          applyWordFilter(m);
       }
    }
