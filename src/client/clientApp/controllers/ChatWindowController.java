@@ -5,6 +5,7 @@ import client.clientApp.controllers.controllerLogic.ChannelLogic;
 import client.clientApp.controllers.controllerLogic.MessageLogic;
 import client.clientApp.controllers.controllerLogic.UiLogic;
 import client.clientApp.controllers.controllerLogic.UserLogic;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -205,6 +206,8 @@ public class ChatWindowController {
                     chat_box.getChildren().add(l);
                     Client.getInstance().getUncheckedChannels().remove(newValue.getName());
                     channel_list_view.refresh();
+                    input_text.clear();
+                    Platform.runLater(input_text::requestFocus);
                 });
             }
             Client.getInstance().changeTitle();
