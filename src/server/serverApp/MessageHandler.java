@@ -23,7 +23,10 @@ public class MessageHandler implements Runnable {
       this.adminSystemMonitoring = adminSystemMonitoring;
       this.isRunning = true;
       badWordList = new String[]
-              {"fuck", "pussy", "cunt", "whore", "nigger", "ass", "bitch", "cock", "poop", "shit", "fag", "dick", "slut"};
+              {"fuck", "pussy", "cunt", "whore", "nigger", "ass",
+                      "bitch", "cock", "poop", "shit", "fag", "dick", "slut",
+                      "linux", "iphone", "mac", "torvalds", "crap", "bastard",
+                      "crap", "cum"};
       betterWordList = new String[]
               {"flower", "potato", "tomato", "love", "kitten"};
    }
@@ -95,7 +98,7 @@ public class MessageHandler implements Runnable {
    }
 
    private void sendToChannelFromUser(Message m) {
-      if (m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")) {
+      if (m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("") && !spamProtectorDetectsDanger(m)) {
          sendToChannel(m);
       }
    }
@@ -135,16 +138,16 @@ public class MessageHandler implements Runnable {
               sendOutNewUserNickName(user, m);
           } else {
               // If username was invalid, send an error to the user
-              sendErrorToUser(m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
+              sendErrorToUser(MessageType.ERROR, m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
                       "\nNames should be 3-10 characters long containing only letters and/or numbers. " +
                       "\nNo offensive words are allowed as names. ");
           }
       }
    }
 
-   private void sendErrorToUser(UUID user_ID, String channel, String errorText) {
+   private void sendErrorToUser(MessageType messageType, UUID user_ID, String channel, String errorText) {
       if (user_ID != null && channel != null) {
-         Message errorMessage = new Message(MessageType.ERROR);
+         Message errorMessage = new Message(messageType);
          errorMessage.TEXT_CONTENT = errorText;
          errorMessage.RECEIVER = user_ID;
          errorMessage.CHANNEL = channel;
@@ -207,14 +210,14 @@ public class MessageHandler implements Runnable {
    private void sendWhisperToUser(Message m) {
       User user = ActiveUserController.getInstance().getUser(m.RECEIVER);
       if (user.equals(m.SENDER)) {
-         sendErrorToUser(m.SENDER, m.CHANNEL, "Only loosers chat with themselves");
+         sendErrorToUser(MessageType.ERROR, m.SENDER, m.CHANNEL, "Only loosers chat with themselves");
       } else if (user != null && ActiveChannelController.getInstance().userIsInChannel(m.CHANNEL, user)) {
-         if (m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("")) {
+         if (m.TEXT_CONTENT != null && !m.TEXT_CONTENT.equals("") && !spamProtectorDetectsDanger(m)) {
             sendWhisperToSender(m);
             sendToUser(m);
          }
       } else {
-         sendErrorToUser(m.SENDER, m.CHANNEL, "The user does not exist in this channel anymore");
+         sendErrorToUser(MessageType.ERROR, m.SENDER, m.CHANNEL, "The user does not exist in this channel anymore");
       }
    }
 
@@ -238,7 +241,15 @@ public class MessageHandler implements Runnable {
       sendToUser(replay);
    }
 
-   
-   
+   private boolean spamProtectorDetectsDanger(Message message){
+      User user = ActiveUserController.getInstance().getUser(message.SENDER);
+      boolean isSpamming = user.userIsSpammingServer();
+      if(isSpamming){
+         sendErrorToUser(MessageType.WARNING, message.SENDER, message.CHANNEL, "Stop spamming the chat...");
+      }
+      return isSpamming;
+   }
+
+
 
 }

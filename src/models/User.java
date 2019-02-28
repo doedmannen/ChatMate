@@ -1,6 +1,7 @@
 package models;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.UUID;
 
 
@@ -10,14 +11,25 @@ public class User implements Serializable, Comparable<User> {
 
    private final UUID ID;
    private String nickName;
+   private transient long spammerTimer;
+   private transient byte warnings;
 
    public User(String nickName) {
       this.nickName = nickName;
       this.ID = UUID.randomUUID();
+      this.spammerTimer = Calendar.getInstance().getTimeInMillis();
    }
    public User(String nickName, UUID id) {
       this.nickName = nickName;
       this.ID = id;
+      this.spammerTimer = Calendar.getInstance().getTimeInMillis();
+   }
+
+   public boolean userIsSpammingServer(){
+      long timeNow = Calendar.getInstance().getTimeInMillis();
+      boolean validation = timeNow - this.spammerTimer < 200;
+      this.spammerTimer = timeNow;
+      return validation;
    }
 
    public void setNickName(String nickName){
