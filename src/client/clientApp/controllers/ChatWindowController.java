@@ -5,6 +5,7 @@ import client.clientApp.controllers.controllerLogic.ChannelLogic;
 import client.clientApp.controllers.controllerLogic.MessageLogic;
 import client.clientApp.controllers.controllerLogic.UiLogic;
 import client.clientApp.controllers.controllerLogic.UserLogic;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -139,12 +140,15 @@ public class ChatWindowController {
                         } else {
                             setOpacity(1);
                             if (Client.getInstance().getThisUser().getID().equals(item.getID())) {
-                                setText("[me] " + item.getNickName());
+                                setText("\uD83D\uDC68" + item.getNickName());
+                                setStyle("-fx-font-weight: bold");
                             } else if (Client.getInstance().userIsIgnored(item.getID())) {
-                                setText("[i] " + item.getNickName());
-                                setOpacity(0.3);
+                                setText("\uD83D\uDD07" + item.getNickName());
+                                setStyle("-fx-font-weight: normal");
+                                setOpacity(0.5);
                             } else {
                                 setText(item.getNickName());
+                                setStyle("-fx-font-weight: normal");
                             }
                         }
                     }
@@ -210,6 +214,8 @@ public class ChatWindowController {
                     chat_box.getChildren().add(l);
                     Client.getInstance().getUncheckedChannels().remove(newValue.getName());
                     channel_list_view.refresh();
+                    input_text.clear();
+                    Platform.runLater(input_text::requestFocus);
                 });
             }
             Client.getInstance().changeTitle();

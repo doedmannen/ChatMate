@@ -53,12 +53,12 @@ public class StartupWindowController {
       String serverAddress = serverAddressTextField.getText().trim();
       serverAddressTextField.setText(serverAddress);
 
-      String nicknameRegex = "^[a-zA-z0-9\\-_]{3,10}$";
+      String nicknameRegex = "^[\\w]{3,10}$";
       Pattern pattern = Pattern.compile(nicknameRegex);
       Matcher nicknameMatcher = pattern.matcher(nickname);
 
       if (!nicknameMatcher.matches()) {
-         errorLabel.setText("Name should be 3-10 characters long containing only letter and/or numbers");
+         errorLabel.setText("Name should be 3-10 characters long containing only letters and/or numbers");
          nicknameTextField.selectAll();
          return false;
       }

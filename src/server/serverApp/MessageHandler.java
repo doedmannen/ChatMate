@@ -136,7 +136,7 @@ public class MessageHandler implements Runnable {
           } else {
               // If username was invalid, send an error to the user
               sendErrorToUser(m.SENDER, m.CHANNEL, "The username you wanted is not valid. " +
-                      "\nPlease choose one with no whitespaces and 3-10 characters in length. " +
+                      "\nNames should be 3-10 characters long containing only letters and/or numbers. " +
                       "\nNo offensive words are allowed as names. ");
           }
       }
