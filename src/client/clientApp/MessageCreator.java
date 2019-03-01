@@ -24,7 +24,7 @@ public class MessageCreator {
         };
     }
 
-    public SerializableLabel labelCreator(String text, String id) {
+    private SerializableLabel labelCreator(String text, String id) {
         SerializableLabel label = new SerializableLabel();
         label.setText(text);
         label.setId(id);
