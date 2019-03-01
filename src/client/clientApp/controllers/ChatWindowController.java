@@ -69,10 +69,10 @@ public class ChatWindowController {
     }
 
     public ObservableList<Channel> channels;
-    UiLogic uilogic = new UiLogic();
-    MessageLogic messageLogic = new MessageLogic();
-    UserLogic userLogic = new UserLogic();
-    ChannelLogic channelLogic = new ChannelLogic();
+    private UiLogic uilogic = new UiLogic();
+    private MessageLogic messageLogic = new MessageLogic();
+    private UserLogic userLogic = new UserLogic();
+    private ChannelLogic channelLogic = new ChannelLogic();
 
     public void initialize() {
         uilogic.loadCss();
