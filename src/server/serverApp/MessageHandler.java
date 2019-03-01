@@ -78,19 +78,15 @@ public class MessageHandler implements Runnable {
    private void fixMessageContent(Message m) {
       // Only apply is there is text-content and the message is sent to a channel or user
       if (m.TEXT_CONTENT != null && m.TYPE == MessageType.CHANNEL_MESSAGE || m.TYPE == MessageType.WHISPER_MESSAGE) {
-         // remove multiple whitespaces and trim
-         m.TEXT_CONTENT = m.TEXT_CONTENT.replaceAll("[ ]{2,}", " ");
-         // Limit length if client sent us to much text
-         m.TEXT_CONTENT = m.TEXT_CONTENT.length() > 200 ? m.TEXT_CONTENT.substring(0, 200).trim() : m.TEXT_CONTENT.trim();
-         applyWordFilter(m);
+         // Remove multiple whitespaces, replace bad words, fix the length to 200 chars
+         m.TEXT_CONTENT = m.TEXT_CONTENT
+                 .replaceAll("^ +([^ ]+)|( ?) *([^ ]+)( ) *| *$","$1$2$3$4")
+                 .replaceAll("(?i)((" + String.join("|", badWordList) + ")\\w*\\b)",
+                         betterWordList[(int) (Math.random() * betterWordList.length)])
+                 .replaceFirst("^(.{0,200}).*$","$1");
       }
    }
 
-   private void applyWordFilter(Message m) {
-      m.TEXT_CONTENT = m.TEXT_CONTENT
-              .replaceAll("(?i)((" + String.join("|", badWordList) + ")\\w*\\b)",
-                      betterWordList[(int) (Math.random() * betterWordList.length)]);
-   }
 
    private boolean checkIfChannelIsValid(String channel) {
       return channel.matches("^[\\w]{3,10}$") &&
