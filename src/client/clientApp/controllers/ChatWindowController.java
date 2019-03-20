@@ -172,7 +172,7 @@ public class ChatWindowController {
         whisperMenuItem.setOnAction((e) -> {
             User user = (User) now_online_list.getSelectionModel().getSelectedItem();
             input_text.clear();
-            input_text.setText("/w " + user.getID() + " ");
+            input_text.setText("/w " + user.getNickName() + " ");
             input_text.requestFocus();
             input_text.forward();
         });

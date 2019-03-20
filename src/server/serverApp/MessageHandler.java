@@ -117,11 +117,14 @@ public class MessageHandler implements Runnable {
       }
    }
 
-   private void changeUserNickName(Message m) {
-      // Trim the string
-      m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
-      if (!m.TEXT_CONTENT.equals(m.NICKNAME)) {
-          if (validUserNickName(m.TEXT_CONTENT)) {
+    private void changeUserNickName(Message m) {
+        // Trim the string
+        m.TEXT_CONTENT = m.TEXT_CONTENT.trim();
+        if (!m.TEXT_CONTENT.equals(m.NICKNAME)) {
+            if (validUserNickName(m.TEXT_CONTENT)) {
+                while (ActiveUserController.getInstance().compareNickName(m.TEXT_CONTENT)) {
+                    m.TEXT_CONTENT = m.TEXT_CONTENT.concat("" + (int) (Math.random() * 100));
+                }
               // If the username is valid, change it on the server
               User user = ActiveUserController.getInstance().getUser(m.SENDER);
               String oldUsername = user.getNickName();

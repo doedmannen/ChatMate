@@ -69,4 +69,18 @@ public class ActiveUserController {
       return null;
    }
 
-}
+    public boolean compareNickName(String nickName) {
+        List<User> toSort = new ArrayList<>();
+        for (User user : this.connectedUsers.keySet()) {
+            toSort.add(user);
+        }
+        toSort.sort(Comparator.comparing(User::getNickName));
+        for (User user : toSort) {
+            String s = (user.getNickName());
+            if (s.equals(nickName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
